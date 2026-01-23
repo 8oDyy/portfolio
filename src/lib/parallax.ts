@@ -9,7 +9,7 @@ export interface MousePosition {
   normalizedY: number;
 }
 
-export function useMousePosition() {
+export function useMousePosition(throttleMs: number = 32) {
   const [mousePosition, setMousePosition] = useState<MousePosition>({
     x: 0,
     y: 0,
@@ -18,8 +18,21 @@ export function useMousePosition() {
   });
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
+    let lastUpdate = 0;
+    let rafId: number | null = null;
+    let latestEvent: MouseEvent | null = null;
+
+    const updatePosition = () => {
+      if (!latestEvent) return;
+      
+      const now = Date.now();
+      if (now - lastUpdate < throttleMs) {
+        rafId = requestAnimationFrame(updatePosition);
+        return;
+      }
+      
+      lastUpdate = now;
+      const { clientX, clientY } = latestEvent;
       const { innerWidth, innerHeight } = window;
       
       setMousePosition({
@@ -28,11 +41,23 @@ export function useMousePosition() {
         normalizedX: (clientX / innerWidth - 0.5) * 2,
         normalizedY: (clientY / innerHeight - 0.5) * 2,
       });
+      
+      latestEvent = null;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    const handleMouseMove = (e: MouseEvent) => {
+      latestEvent = e;
+      if (!rafId) {
+        rafId = requestAnimationFrame(updatePosition);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [throttleMs]);
 
   return mousePosition;
 }

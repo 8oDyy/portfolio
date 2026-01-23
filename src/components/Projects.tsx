@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import { ExternalLink, Github, Eye, Code2, Layers } from 'lucide-react';
 
 const projects = [
@@ -96,26 +96,22 @@ const cardVariants = {
 
 function ProjectCard({ project }: { project: typeof projects[0] }) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { once: true, margin: '-50px' });
 
   return (
     <motion.div
-      ref={cardRef}
       variants={cardVariants}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      exit="exit"
       layout
       className="perspective-1000 h-[420px]"
+      style={{ willChange: 'transform' }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
-      <motion.div
-        className="relative w-full h-full cursor-pointer"
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, type: 'spring', stiffness: 80 }}
-        style={{ transformStyle: 'preserve-3d' }}
+      <div
+        className="relative w-full h-full cursor-pointer transition-transform duration-500"
+        style={{ 
+          transformStyle: 'preserve-3d',
+          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+        }}
       >
         {/* Front */}
         <div 
@@ -127,13 +123,9 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
             className="relative h-48 overflow-hidden"
             style={{ background: `linear-gradient(135deg, ${project.color}30, ${project.color}10)` }}
           >
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              animate={{ scale: isFlipped ? 1.1 : 1 }}
-              transition={{ duration: 0.3 }}
-            >
+            <div className="absolute inset-0 flex items-center justify-center">
               <Layers className="w-16 h-16 text-white/30" />
-            </motion.div>
+            </div>
             
             {/* Category badge */}
             <div 
@@ -144,22 +136,20 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
             </div>
 
             {/* Hover overlay */}
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center gap-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: isFlipped ? 1 : 0 }}
-              style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}
+            <div
+              className="absolute inset-0 flex items-center justify-center gap-4 transition-opacity duration-300"
+              style={{ 
+                backgroundColor: 'rgba(0,0,0,0.7)',
+                opacity: isFlipped ? 1 : 0
+              }}
             >
               <Eye className="w-8 h-8 text-white" />
               <span className="text-white font-medium">Voir détails</span>
-            </motion.div>
+            </div>
           </div>
 
           <div className="p-6">
-            <h3 
-              className="text-xl font-bold text-white mb-2 transition-colors"
-              style={{ color: isFlipped ? project.color : 'white' }}
-            >
+            <h3 className="text-xl font-bold text-white mb-2">
               {project.title}
             </h3>
             <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
@@ -202,63 +192,47 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
           <div className="mb-4">
             <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Technologies</p>
             <div className="flex flex-wrap gap-2">
-              {project.tech.map((tech, i) => (
-                <motion.span
+              {project.tech.map((tech) => (
+                <span
                   key={tech}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: isFlipped ? 1 : 0 }}
-                  transition={{ delay: i * 0.05 }}
                   className="text-xs px-3 py-1 rounded-full text-white font-medium"
                   style={{ backgroundColor: `${project.color}40` }}
                 >
                   {tech}
-                </motion.span>
+                </span>
               ))}
             </div>
           </div>
 
           <div className="flex gap-3 mt-auto">
-            <motion.a
+            <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-medium transition-all"
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-medium transition-transform hover:scale-105"
               style={{ backgroundColor: `${project.color}30`, border: `1px solid ${project.color}50` }}
             >
               <Github size={18} />
               <span>Code</span>
-            </motion.a>
-            <motion.a
+            </a>
+            <a
               href={project.demo}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-black font-medium"
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-black font-medium transition-transform hover:scale-105"
               style={{ backgroundColor: project.color }}
             >
               <ExternalLink size={18} />
               <span>Demo</span>
-            </motion.a>
+            </a>
           </div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
 export default function Projects() {
-  const sectionRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start']
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const headerRef = useRef(null);
-  const isHeaderInView = useInView(headerRef, { once: true, margin: '-100px' });
   const [selectedCategory, setSelectedCategory] = useState('Tous');
 
   const filteredProjects = selectedCategory === 'Tous' 
@@ -266,34 +240,29 @@ export default function Projects() {
     : projects.filter(p => p.category === selectedCategory);
 
   return (
-    <section id="projects" ref={sectionRef} className="min-h-screen py-20 px-4 bg-black relative overflow-hidden">
-      {/* Parallax background */}
-      <motion.div 
-        className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-neon-blue/5 blur-3xl"
-        style={{ y }}
+    <section id="projects" className="min-h-screen py-20 px-6 bg-black relative overflow-hidden">
+      {/* Background - statique pour performance */}
+      <div 
+        className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: 'rgba(0, 240, 255, 0.05)' }}
       />
-      <motion.div 
-        className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-neon-green/5 blur-3xl"
-        style={{ y: useTransform(scrollYProgress, [0, 1], [-50, 50]) }}
+      <div 
+        className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: 'rgba(0, 255, 136, 0.05)' }}
       />
       
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
-          ref={headerRef}
-          initial={{ opacity: 0, y: 50 }}
-          animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={isHeaderInView ? { scale: 1 } : {}}
-            transition={{ type: 'spring', delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-6"
-          >
-            <Code2 className="w-4 h-4 text-neon-blue" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-6">
+            <Code2 className="w-4 h-4" style={{ color: '#00f0ff' }} />
             <span className="text-sm text-gray-400">Travaux récents</span>
-          </motion.div>
+          </div>
           
           <h2 
             className="text-5xl md:text-6xl font-bold mb-4"
@@ -311,38 +280,22 @@ export default function Projects() {
         </motion.div>
 
         {/* Category filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
-        >
-          {categories.map((category, index) => (
-            <motion.button
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {categories.map((category) => (
+            <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className={`px-6 py-2.5 rounded-full font-medium transition-all relative overflow-hidden ${
+              className={`px-6 py-2.5 rounded-full font-medium transition-all ${
                 selectedCategory === category
                   ? 'text-black'
                   : 'glass text-gray-300 hover:text-white'
               }`}
+              style={selectedCategory === category ? { background: 'linear-gradient(135deg, #00f0ff, #00ff88)' } : {}}
             >
-              {selectedCategory === category && (
-                <motion.div
-                  layoutId="activeCategory"
-                  className="absolute inset-0 bg-gradient-to-r from-neon-blue to-neon-green"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">{category}</span>
-            </motion.button>
+              {category}
+            </button>
           ))}
-        </motion.div>
+        </div>
 
         {/* Projects grid */}
         <motion.div 

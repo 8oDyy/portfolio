@@ -1,21 +1,19 @@
 @import "tailwindcss";
 
+@theme {
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+  --color-neon-blue: #00f0ff;
+  --color-neon-green: #00ff88;
+  --color-neon-purple: #b000ff;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  --background: #000000;
+  --foreground: #ffffff;
+  --neon-blue: #00f0ff;
+  --neon-green: #00ff88;
+  --neon-purple: #b000ff;
 }
 
 html {
@@ -42,14 +40,14 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+  background: linear-gradient(135deg, #00f0ff, #00ff88);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .neon-glow {
-  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+  text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #00f0ff;
 }
 
 ::-webkit-scrollbar {
@@ -61,12 +59,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--neon-blue);
+  background: #00f0ff;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-green);
+  background: #00ff88;
 }
 
 .perspective-1000 {
@@ -75,12 +73,4 @@ body {
 
 .backface-hidden {
   backface-visibility: hidden;
-}
-
-.text-neon-purple {
-  color: var(--neon-purple);
-}
-
-.bg-neon-purple {
-  background-color: var(--neon-purple);
 }
