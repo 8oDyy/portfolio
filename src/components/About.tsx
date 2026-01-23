@@ -5,10 +5,10 @@ import { useState } from 'react';
 import { Code, Database, Palette, Rocket, ChevronRight } from 'lucide-react';
 
 const skills = [
-  { name: 'Frontend', icon: Code, items: ['React', 'Next.js', 'TypeScript', 'Tailwind'], color: '#00f0ff', description: 'Interfaces modernes et réactives' },
-  { name: 'Backend', icon: Database, items: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL'], color: '#00ff88', description: 'APIs robustes et scalables' },
-  { name: 'Design', icon: Palette, items: ['Figma', 'UI/UX', 'Animations', 'Motion'], color: '#b000ff', description: 'Expériences visuelles immersives' },
-  { name: 'DevOps', icon: Rocket, items: ['Docker', 'CI/CD', 'AWS', 'Vercel'], color: '#ff6b00', description: 'Déploiement et automatisation' },
+  { name: 'Frontend', icon: Code, items: ['React', 'Next.js', 'TypeScript', 'Tailwind'], colorVar: '--neon-blue', description: 'Interfaces modernes et réactives' },
+  { name: 'Backend', icon: Database, items: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL'], colorVar: '--neon-green', description: 'APIs robustes et scalables' },
+  { name: 'Design', icon: Palette, items: ['Figma', 'UI/UX', 'Animations', 'Motion'], colorVar: '--neon-purple', description: 'Expériences visuelles immersives' },
+  { name: 'DevOps', icon: Rocket, items: ['Docker', 'CI/CD', 'AWS', 'Vercel'], colorVar: '--neon-orange', description: 'Déploiement et automatisation' },
 ];
 
 const timeline = [
@@ -21,6 +21,7 @@ const timeline = [
 function FlipCard({ skill, index }: { skill: typeof skills[0]; index: number }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const Icon = skill.icon;
+  const color = `var(${skill.colorVar})`;
 
   return (
     <motion.div
@@ -47,13 +48,13 @@ function FlipCard({ skill, index }: { skill: typeof skills[0]; index: number }) 
           <div className="h-full flex flex-col">
             <div 
               className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-              style={{ backgroundColor: `${skill.color}20`, border: `1px solid ${skill.color}40` }}
+              style={{ backgroundColor: `color-mix(in srgb, ${color} 20%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 40%, transparent)` }}
             >
-              <Icon className="w-7 h-7" style={{ color: skill.color }} />
+              <Icon className="w-7 h-7" style={{ color }} />
             </div>
-            <h4 className="text-xl font-bold text-white mb-2">{skill.name}</h4>
-            <p className="text-sm text-gray-400 mb-4">{skill.description}</p>
-            <div className="mt-auto flex items-center gap-1 text-xs text-gray-500">
+            <h4 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{skill.name}</h4>
+            <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{skill.description}</p>
+            <div className="mt-auto flex items-center gap-1 text-xs" style={{ color: 'var(--text-subtle)' }}>
               <span>Hover pour voir les skills</span>
               <ChevronRight className="w-3 h-3" />
             </div>
@@ -66,17 +67,21 @@ function FlipCard({ skill, index }: { skill: typeof skills[0]; index: number }) 
           style={{ 
             backfaceVisibility: 'hidden', 
             transform: 'rotateY(180deg)',
-            background: `linear-gradient(135deg, ${skill.color}10, transparent)`,
-            border: `1px solid ${skill.color}30`
+            background: `linear-gradient(135deg, color-mix(in srgb, ${color} 10%, transparent), transparent)`,
+            border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`
           }}
         >
-          <h4 className="text-lg font-bold mb-4" style={{ color: skill.color }}>{skill.name}</h4>
+          <h4 className="text-lg font-bold mb-4" style={{ color }}>{skill.name}</h4>
           <div className="flex flex-wrap gap-2">
             {skill.items.map((item) => (
               <span
                 key={item}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-white"
-                style={{ backgroundColor: `${skill.color}30`, border: `1px solid ${skill.color}50` }}
+                className="px-3 py-2 rounded-lg text-sm font-medium"
+                style={{ 
+                  backgroundColor: `color-mix(in srgb, ${color} 30%, transparent)`, 
+                  border: `1px solid color-mix(in srgb, ${color} 50%, transparent)`,
+                  color: 'var(--text-primary)'
+                }}
               >
                 {item}
               </span>
@@ -101,27 +106,27 @@ function TimelineItem({ item, index }: { item: typeof timeline[0]; index: number
       {/* Timeline line */}
       <div 
         className="absolute left-0 top-0 bottom-0 w-0.5"
-        style={{ background: 'linear-gradient(to bottom, #00f0ff, #00ff88, transparent)' }}
+        style={{ background: 'linear-gradient(to bottom, var(--neon-blue), var(--neon-green), transparent)' }}
       />
       
       {/* Dot */}
       <div 
         className="absolute left-[-6px] top-2 w-3 h-3 rounded-full transition-transform hover:scale-150"
-        style={{ backgroundColor: '#00f0ff' }}
+        style={{ backgroundColor: 'var(--neon-blue)' }}
       />
       
-      <div className="glass p-5 rounded-xl mb-6 transition-all duration-300 hover:translate-x-2 hover:bg-white/10">
+      <div className="glass p-5 rounded-xl mb-6 transition-all duration-300 hover:translate-x-2">
         <div className="flex items-center gap-3 mb-2">
           <span 
             className="px-3 py-1 rounded-full text-sm font-bold"
-            style={{ backgroundColor: 'rgba(0, 255, 136, 0.2)', color: '#00ff88' }}
+            style={{ backgroundColor: 'color-mix(in srgb, var(--neon-green) 20%, transparent)', color: 'var(--neon-green)' }}
           >
             {item.year}
           </span>
-          <span style={{ color: '#00f0ff' }} className="text-sm">{item.company}</span>
+          <span style={{ color: 'var(--neon-blue)' }} className="text-sm">{item.company}</span>
         </div>
-        <h4 className="text-xl font-bold text-white mb-2">{item.title}</h4>
-        <p className="text-gray-400 text-sm">{item.description}</p>
+        <h4 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{item.title}</h4>
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{item.description}</p>
       </div>
     </motion.div>
   );
@@ -129,15 +134,15 @@ function TimelineItem({ item, index }: { item: typeof timeline[0]; index: number
 
 export default function About() {
   return (
-    <section id="about" className="min-h-screen py-20 px-6 bg-black relative overflow-hidden">
-      {/* Background elements statiques */}
+    <section id="about" className="min-h-screen py-20 px-6 relative overflow-hidden bg-primary">
+      {/* Background elements */}
       <div 
         className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl pointer-events-none"
-        style={{ backgroundColor: 'rgba(0, 240, 255, 0.05)' }}
+        style={{ backgroundColor: 'var(--gradient-glow-blue)' }}
       />
       <div 
         className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl pointer-events-none"
-        style={{ backgroundColor: 'rgba(0, 255, 136, 0.05)' }}
+        style={{ backgroundColor: 'var(--gradient-glow-green)' }}
       />
       
       <div className="max-w-7xl mx-auto relative z-10">
@@ -149,17 +154,10 @@ export default function About() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 
-            className="text-5xl md:text-6xl font-bold mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #00f0ff, #00ff88)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <h2 className="text-5xl md:text-6xl font-bold mb-4 text-gradient">
             À propos
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--text-muted)' }}>
             Passionné par le développement web et les technologies innovantes, 
             je crée des expériences digitales uniques et performantes.
           </p>
@@ -174,9 +172,9 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
               className="text-3xl font-bold mb-8 flex items-center gap-3"
-              style={{ color: '#00f0ff' }}
+              style={{ color: 'var(--neon-blue)' }}
             >
-              <span className="w-10 h-1 rounded-full" style={{ backgroundColor: '#00f0ff' }} />
+              <span className="w-10 h-1 rounded-full" style={{ backgroundColor: 'var(--neon-blue)' }} />
               Mon Parcours
             </motion.h3>
             <div className="space-y-2">
@@ -194,9 +192,9 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
               className="text-3xl font-bold mb-8 flex items-center gap-3"
-              style={{ color: '#00ff88' }}
+              style={{ color: 'var(--neon-green)' }}
             >
-              <span className="w-10 h-1 rounded-full" style={{ backgroundColor: '#00ff88' }} />
+              <span className="w-10 h-1 rounded-full" style={{ backgroundColor: 'var(--neon-green)' }} />
               Compétences
             </motion.h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -218,12 +216,12 @@ export default function About() {
           {/* Decorative gradient */}
           <div 
             className="absolute top-0 left-0 w-full h-1"
-            style={{ background: 'linear-gradient(to right, #00f0ff, #00ff88, #b000ff)' }}
+            style={{ background: 'linear-gradient(to right, var(--neon-blue), var(--neon-green), var(--neon-purple))' }}
           />
           
-          <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto text-center">
+          <p className="text-lg md:text-xl leading-relaxed max-w-4xl mx-auto text-center" style={{ color: 'var(--text-secondary)' }}>
             Fort de plusieurs années d&apos;expérience dans le développement web, je me spécialise dans la création d&apos;applications modernes et performantes. 
-            Mon approche combine <span style={{ color: '#00f0ff' }} className="font-semibold">expertise technique</span>, <span style={{ color: '#00ff88' }} className="font-semibold">créativité</span> et <span style={{ color: '#b000ff' }} className="font-semibold">attention aux détails</span> pour livrer des solutions qui dépassent les attentes.
+            Mon approche combine <span style={{ color: 'var(--neon-blue)' }} className="font-semibold">expertise technique</span>, <span style={{ color: 'var(--neon-green)' }} className="font-semibold">créativité</span> et <span style={{ color: 'var(--neon-purple)' }} className="font-semibold">attention aux détails</span> pour livrer des solutions qui dépassent les attentes.
           </p>
         </motion.div>
       </div>

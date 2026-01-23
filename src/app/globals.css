@@ -1,23 +1,106 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #000000;
-  --color-foreground: #ffffff;
-  --color-neon-blue: #00f0ff;
-  --color-neon-green: #00ff88;
-  --color-neon-purple: #b000ff;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-neon-blue: var(--neon-blue);
+  --color-neon-green: var(--neon-green);
+  --color-neon-purple: var(--neon-purple);
 }
 
-:root {
+/* Dark mode (default) */
+:root,
+html.dark {
+  /* Backgrounds */
   --background: #000000;
+  --background-secondary: #0a0a0a;
+  --background-tertiary: #111111;
+  
+  /* Text colors */
   --foreground: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #e5e7eb;
+  --text-muted: #9ca3af;
+  --text-subtle: #6b7280;
+  
+  /* Accent colors - neon vives pour dark mode */
   --neon-blue: #00f0ff;
   --neon-green: #00ff88;
   --neon-purple: #b000ff;
+  --neon-orange: #ff6b00;
+  
+  /* Glass effects */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-hover: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.2);
+  
+  /* Cards & surfaces */
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: rgba(0, 0, 0, 0.5);
+  
+  /* Gradients backgrounds */
+  --gradient-glow-blue: rgba(0, 240, 255, 0.15);
+  --gradient-glow-green: rgba(0, 255, 136, 0.1);
+  --gradient-glow-purple: rgba(176, 0, 255, 0.1);
+  
+  /* Scrollbar */
+  --scrollbar-track: #1a1a1a;
+  --scrollbar-thumb: #00f0ff;
+  
+  /* Shadows */
+  --shadow-color: rgba(0, 240, 255, 0.2);
+  --shadow-glow: 0 0 40px rgba(0, 240, 255, 0.3);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Light mode */
+html.light {
+  /* Backgrounds */
+  --background: #fafbfc;
+  --background-secondary: #f1f5f9;
+  --background-tertiary: #e2e8f0;
+  
+  /* Text colors */
+  --foreground: #0f172a;
+  --text-primary: #0f172a;
+  --text-secondary: #1e293b;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+  
+  /* Accent colors - plus saturées et contrastées pour light mode */
+  --neon-blue: #0284c7;
+  --neon-green: #059669;
+  --neon-purple: #7c3aed;
+  --neon-orange: #ea580c;
+  
+  /* Glass effects */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-hover: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-hover: rgba(0, 0, 0, 0.15);
+  
+  /* Cards & surfaces */
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(0, 0, 0, 0.06);
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  
+  /* Gradients backgrounds */
+  --gradient-glow-blue: rgba(2, 132, 199, 0.08);
+  --gradient-glow-green: rgba(5, 150, 105, 0.06);
+  --gradient-glow-purple: rgba(124, 58, 237, 0.06);
+  
+  /* Scrollbar */
+  --scrollbar-track: #e2e8f0;
+  --scrollbar-thumb: #0284c7;
+  
+  /* Shadows */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+html.lenis, html.lenis body {
+  height: auto;
 }
 
 body {
@@ -25,29 +108,79 @@ body {
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--glass-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.glass:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
 }
 
 .glass-dark {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #00f0ff, #00ff88);
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .neon-glow {
-  text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #00f0ff;
+  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+}
+
+/* Text utility classes */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-subtle {
+  color: var(--text-subtle);
+}
+
+.text-accent-blue {
+  color: var(--neon-blue);
+}
+
+.text-accent-green {
+  color: var(--neon-green);
+}
+
+.text-accent-purple {
+  color: var(--neon-purple);
+}
+
+/* Background utility classes */
+.bg-primary {
+  background-color: var(--background);
+}
+
+.bg-secondary {
+  background-color: var(--background-secondary);
+}
+
+.bg-card {
+  background-color: var(--card-bg);
 }
 
 ::-webkit-scrollbar {
@@ -55,16 +188,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #00f0ff;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00ff88;
+  background: var(--neon-green);
 }
 
 .perspective-1000 {

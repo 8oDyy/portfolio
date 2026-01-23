@@ -22,16 +22,16 @@ const itemVariants = {
 
 export default function Hero() {
   return (
-    <section id="hero" className="relative min-h-screen w-full overflow-hidden bg-black">
-      {/* Background gradient simple */}
+    <section id="hero" className="relative min-h-screen w-full overflow-hidden bg-primary">
+      {/* Background gradient */}
       <div 
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at 30% 30%, rgba(0, 240, 255, 0.12) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(176, 0, 255, 0.08) 0%, transparent 50%)',
+          background: 'radial-gradient(ellipse at 30% 30%, var(--gradient-glow-blue) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, var(--gradient-glow-purple) 0%, transparent 50%)',
         }}
       />
 
-      {/* Contenu principal - centré avec pt pour la navbar */}
+      {/* Contenu principal */}
       <motion.div 
         className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20"
         variants={containerVariants}
@@ -42,32 +42,25 @@ export default function Hero() {
         <motion.div
           variants={itemVariants}
           className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full glass"
-          style={{ borderColor: 'rgba(0, 240, 255, 0.3)', borderWidth: '1px' }}
         >
-          <Sparkles className="w-4 h-4" style={{ color: '#00f0ff' }} />
-          <span className="text-sm text-gray-300">Disponible pour de nouveaux projets</span>
+          <Sparkles className="w-4 h-4 text-accent-blue" style={{ color: 'var(--neon-blue)' }} />
+          <span className="text-sm text-muted" style={{ color: 'var(--text-muted)' }}>Disponible pour de nouveaux projets</span>
         </motion.div>
 
         {/* Nom */}
         <motion.h1
           variants={itemVariants}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
-          style={{
-            background: 'linear-gradient(135deg, #00f0ff, #ffffff, #00ff88)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
+          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-gradient"
         >
-          Votre Nom
+          BOULICAUT--RAFFORT Hugo
         </motion.h1>
         
         {/* Tagline */}
         <motion.div variants={itemVariants} className="mb-8 max-w-2xl">
-          <p className="text-xl md:text-2xl text-gray-300">
+          <p className="text-xl md:text-2xl" style={{ color: 'var(--text-secondary)' }}>
             Développeur Fullstack JavaScript
           </p>
-          <p className="text-xl md:text-2xl mt-2" style={{ color: '#00f0ff' }}>
+          <p className="text-xl md:text-2xl mt-2" style={{ color: 'var(--neon-blue)' }}>
             Créateur d&apos;expériences web modernes
           </p>
         </motion.div>
@@ -79,8 +72,11 @@ export default function Hero() {
         >
           <a
             href="#projects"
-            className="px-8 py-4 font-bold rounded-full text-black transition-transform hover:scale-105"
-            style={{ background: 'linear-gradient(135deg, #00f0ff, #00ff88)' }}
+            className="px-8 py-4 font-bold rounded-full transition-transform hover:scale-105"
+            style={{ 
+              background: 'linear-gradient(135deg, var(--neon-blue), var(--neon-green))',
+              color: 'var(--background)'
+            }}
           >
             Voir mes projets
           </a>
@@ -88,7 +84,11 @@ export default function Hero() {
           <a
             href="#contact"
             className="px-8 py-4 font-bold rounded-full glass transition-transform hover:scale-105"
-            style={{ borderColor: '#00f0ff', borderWidth: '2px', color: '#00f0ff' }}
+            style={{ 
+              borderColor: 'var(--neon-blue)', 
+              borderWidth: '2px', 
+              color: 'var(--neon-blue)' 
+            }}
           >
             Me contacter
           </a>
@@ -108,24 +108,24 @@ export default function Hero() {
               key={index}
               className="glass p-4 rounded-xl"
             >
-              <div className="text-2xl md:text-3xl font-bold" style={{ color: '#00f0ff' }}>
+              <div className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--neon-blue)' }}>
                 {stat.number}
               </div>
-              <div className="text-xs md:text-sm text-gray-400 mt-1">{stat.label}</div>
+              <div className="text-xs md:text-sm mt-1" style={{ color: 'var(--text-muted)' }}>{stat.label}</div>
             </div>
           ))}
         </motion.div>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-10 flex flex-col items-center gap-2">
-          <span className="text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
+          <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-subtle)' }}>Scroll</span>
           <div 
             className="w-6 h-10 rounded-full flex justify-center"
-            style={{ borderColor: 'rgba(0, 240, 255, 0.5)', borderWidth: '2px' }}
+            style={{ borderColor: 'var(--neon-blue)', borderWidth: '2px', opacity: 0.5 }}
           >
             <div 
               className="w-1 h-3 rounded-full mt-2 animate-bounce"
-              style={{ backgroundColor: '#00f0ff' }}
+              style={{ backgroundColor: 'var(--neon-blue)' }}
             />
           </div>
         </div>

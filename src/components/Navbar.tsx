@@ -88,7 +88,8 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -2 }}
-                className="relative px-4 py-2 text-gray-300 hover:text-white transition-colors group"
+                className="relative px-4 py-2 transition-colors group"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 <span className="relative z-10">{item.name}</span>
                 <motion.div
@@ -97,7 +98,8 @@ export default function Navbar() {
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
                 <motion.div
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-neon-blue to-neon-green group-hover:w-full transition-all duration-300"
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 group-hover:w-full transition-all duration-300"
+                  style={{ background: 'linear-gradient(to right, var(--neon-blue), var(--neon-green))' }}
                 />
               </motion.a>
             ))}

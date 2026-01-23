@@ -14,7 +14,7 @@ const projects = [
     github: 'https://github.com/votre-username/projet1',
     demo: 'https://demo-projet1.vercel.app',
     category: 'Fullstack',
-    color: '#00f0ff',
+    colorVar: '--neon-blue',
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const projects = [
     github: 'https://github.com/votre-username/projet2',
     demo: 'https://demo-projet2.vercel.app',
     category: 'Frontend',
-    color: '#00ff88',
+    colorVar: '--neon-green',
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const projects = [
     github: 'https://github.com/votre-username/projet3',
     demo: 'https://demo-projet3.vercel.app',
     category: 'Fullstack',
-    color: '#b000ff',
+    colorVar: '--neon-purple',
   },
   {
     id: 4,
@@ -47,7 +47,7 @@ const projects = [
     github: 'https://github.com/votre-username/projet4',
     demo: 'https://demo-projet4.vercel.app',
     category: 'Frontend',
-    color: '#ff6b00',
+    colorVar: '--neon-orange',
   },
   {
     id: 5,
@@ -58,7 +58,7 @@ const projects = [
     github: 'https://github.com/votre-username/projet5',
     demo: 'https://demo-projet5.vercel.app',
     category: 'Backend',
-    color: '#00f0ff',
+    colorVar: '--neon-blue',
   },
   {
     id: 6,
@@ -69,7 +69,7 @@ const projects = [
     github: 'https://github.com/votre-username/projet6',
     demo: 'https://demo-projet6.vercel.app',
     category: 'Fullstack',
-    color: '#00ff88',
+    colorVar: '--neon-green',
   },
 ];
 
@@ -96,6 +96,7 @@ const cardVariants = {
 
 function ProjectCard({ project }: { project: typeof projects[0] }) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const color = `var(${project.colorVar})`;
 
   return (
     <motion.div
@@ -121,16 +122,16 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
           {/* Image placeholder avec gradient */}
           <div 
             className="relative h-48 overflow-hidden"
-            style={{ background: `linear-gradient(135deg, ${project.color}30, ${project.color}10)` }}
+            style={{ background: `linear-gradient(135deg, color-mix(in srgb, ${color} 30%, transparent), color-mix(in srgb, ${color} 10%, transparent))` }}
           >
             <div className="absolute inset-0 flex items-center justify-center">
-              <Layers className="w-16 h-16 text-white/30" />
+              <Layers className="w-16 h-16" style={{ color: 'var(--text-subtle)' }} />
             </div>
             
             {/* Category badge */}
             <div 
-              className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold text-white"
-              style={{ backgroundColor: `${project.color}80` }}
+              className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold"
+              style={{ backgroundColor: `color-mix(in srgb, ${color} 80%, transparent)`, color: 'var(--background)' }}
             >
               {project.category}
             </div>
@@ -139,33 +140,37 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
             <div
               className="absolute inset-0 flex items-center justify-center gap-4 transition-opacity duration-300"
               style={{ 
-                backgroundColor: 'rgba(0,0,0,0.7)',
+                backgroundColor: 'color-mix(in srgb, var(--background) 80%, transparent)',
                 opacity: isFlipped ? 1 : 0
               }}
             >
-              <Eye className="w-8 h-8 text-white" />
-              <span className="text-white font-medium">Voir détails</span>
+              <Eye className="w-8 h-8" style={{ color: 'var(--text-primary)' }} />
+              <span style={{ color: 'var(--text-primary)' }} className="font-medium">Voir détails</span>
             </div>
           </div>
 
           <div className="p-6">
-            <h3 className="text-xl font-bold text-white mb-2">
+            <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
               {project.title}
             </h3>
-            <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
+            <p className="text-sm mb-4 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{project.description}</p>
 
             <div className="flex flex-wrap gap-2">
               {project.tech.slice(0, 3).map((tech) => (
                 <span
                   key={tech}
-                  className="text-xs px-2 py-1 rounded-md text-white/80"
-                  style={{ backgroundColor: `${project.color}20`, border: `1px solid ${project.color}30` }}
+                  className="text-xs px-2 py-1 rounded-md"
+                  style={{ 
+                    backgroundColor: `color-mix(in srgb, ${color} 20%, transparent)`, 
+                    border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`,
+                    color: 'var(--text-secondary)'
+                  }}
                 >
                   {tech}
                 </span>
               ))}
               {project.tech.length > 3 && (
-                <span className="text-xs px-2 py-1 text-gray-500">+{project.tech.length - 3}</span>
+                <span className="text-xs px-2 py-1" style={{ color: 'var(--text-subtle)' }}>+{project.tech.length - 3}</span>
               )}
             </div>
           </div>
@@ -177,26 +182,29 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
           style={{ 
             backfaceVisibility: 'hidden', 
             transform: 'rotateY(180deg)',
-            background: `linear-gradient(135deg, ${project.color}15, transparent)`,
-            border: `1px solid ${project.color}30`
+            background: `linear-gradient(135deg, color-mix(in srgb, ${color} 15%, transparent), transparent)`,
+            border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`
           }}
         >
-          <h3 className="text-xl font-bold mb-3" style={{ color: project.color }}>
+          <h3 className="text-xl font-bold mb-3" style={{ color }}>
             {project.title}
           </h3>
           
-          <p className="text-gray-300 text-sm mb-4 flex-grow">
+          <p className="text-sm mb-4 flex-grow" style={{ color: 'var(--text-secondary)' }}>
             {project.longDescription}
           </p>
 
           <div className="mb-4">
-            <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Technologies</p>
+            <p className="text-xs mb-2 uppercase tracking-wider" style={{ color: 'var(--text-subtle)' }}>Technologies</p>
             <div className="flex flex-wrap gap-2">
               {project.tech.map((tech) => (
                 <span
                   key={tech}
-                  className="text-xs px-3 py-1 rounded-full text-white font-medium"
-                  style={{ backgroundColor: `${project.color}40` }}
+                  className="text-xs px-3 py-1 rounded-full font-medium"
+                  style={{ 
+                    backgroundColor: `color-mix(in srgb, ${color} 40%, transparent)`,
+                    color: 'var(--text-primary)'
+                  }}
                 >
                   {tech}
                 </span>
@@ -209,8 +217,12 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-medium transition-transform hover:scale-105"
-              style={{ backgroundColor: `${project.color}30`, border: `1px solid ${project.color}50` }}
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-transform hover:scale-105"
+              style={{ 
+                backgroundColor: `color-mix(in srgb, ${color} 30%, transparent)`, 
+                border: `1px solid color-mix(in srgb, ${color} 50%, transparent)`,
+                color: 'var(--text-primary)'
+              }}
             >
               <Github size={18} />
               <span>Code</span>
@@ -219,8 +231,8 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
               href={project.demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-black font-medium transition-transform hover:scale-105"
-              style={{ backgroundColor: project.color }}
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-transform hover:scale-105"
+              style={{ backgroundColor: color, color: 'var(--background)' }}
             >
               <ExternalLink size={18} />
               <span>Demo</span>
@@ -240,15 +252,15 @@ export default function Projects() {
     : projects.filter(p => p.category === selectedCategory);
 
   return (
-    <section id="projects" className="min-h-screen py-20 px-6 bg-black relative overflow-hidden">
-      {/* Background - statique pour performance */}
+    <section id="projects" className="min-h-screen py-20 px-6 relative overflow-hidden bg-primary">
+      {/* Background */}
       <div 
         className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none"
-        style={{ backgroundColor: 'rgba(0, 240, 255, 0.05)' }}
+        style={{ backgroundColor: 'var(--gradient-glow-blue)' }}
       />
       <div 
         className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
-        style={{ backgroundColor: 'rgba(0, 255, 136, 0.05)' }}
+        style={{ backgroundColor: 'var(--gradient-glow-green)' }}
       />
       
       <div className="max-w-7xl mx-auto relative z-10">
@@ -260,21 +272,14 @@ export default function Projects() {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-6">
-            <Code2 className="w-4 h-4" style={{ color: '#00f0ff' }} />
-            <span className="text-sm text-gray-400">Travaux récents</span>
+            <Code2 className="w-4 h-4" style={{ color: 'var(--neon-blue)' }} />
+            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Travaux récents</span>
           </div>
           
-          <h2 
-            className="text-5xl md:text-6xl font-bold mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #00f0ff, #00ff88)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <h2 className="text-5xl md:text-6xl font-bold mb-4 text-gradient">
             Mes Projets
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--text-muted)' }}>
             Une sélection de mes réalisations récentes
           </p>
         </motion.div>
@@ -287,10 +292,13 @@ export default function Projects() {
               onClick={() => setSelectedCategory(category)}
               className={`px-6 py-2.5 rounded-full font-medium transition-all ${
                 selectedCategory === category
-                  ? 'text-black'
-                  : 'glass text-gray-300 hover:text-white'
+                  ? ''
+                  : 'glass'
               }`}
-              style={selectedCategory === category ? { background: 'linear-gradient(135deg, #00f0ff, #00ff88)' } : {}}
+              style={selectedCategory === category 
+                ? { background: 'linear-gradient(135deg, var(--neon-blue), var(--neon-green))', color: 'var(--background)' } 
+                : { color: 'var(--text-secondary)' }
+              }
             >
               {category}
             </button>

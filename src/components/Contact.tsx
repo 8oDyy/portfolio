@@ -58,7 +58,7 @@ export default function Contact() {
   ];
 
   return (
-    <section id="contact" className="min-h-screen py-20 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
+    <section id="contact" className="min-h-screen py-20 px-4 bg-primary">
       <div className="max-w-7xl mx-auto" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -67,7 +67,7 @@ export default function Contact() {
           className="text-center mb-12"
         >
           <h2 className="text-5xl md:text-6xl font-bold text-gradient mb-4">Contact</h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--text-muted)' }}>
             Une idée de projet ? Discutons-en !
           </p>
         </motion.div>
@@ -79,11 +79,11 @@ export default function Contact() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="glass p-8 rounded-2xl">
-              <h3 className="text-3xl font-bold text-white mb-6">Envoyez-moi un message</h3>
+              <h3 className="text-3xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>Envoyez-moi un message</h3>
               
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-gray-300 mb-2 font-semibold">
+                  <label htmlFor="name" className="block mb-2 font-semibold" style={{ color: 'var(--text-secondary)' }}>
                     Nom
                   </label>
                   <input
@@ -92,13 +92,18 @@ export default function Contact() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-neon-blue/30 rounded-lg text-white focus:outline-none focus:border-neon-blue transition-colors"
+                    className="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none"
+                    style={{ 
+                      backgroundColor: 'var(--card-bg)', 
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--text-primary)'
+                    }}
                     placeholder="Votre nom"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-gray-300 mb-2 font-semibold">
+                  <label htmlFor="email" className="block mb-2 font-semibold" style={{ color: 'var(--text-secondary)' }}>
                     Email
                   </label>
                   <input
@@ -107,13 +112,18 @@ export default function Contact() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-neon-blue/30 rounded-lg text-white focus:outline-none focus:border-neon-blue transition-colors"
+                    className="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none"
+                    style={{ 
+                      backgroundColor: 'var(--card-bg)', 
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--text-primary)'
+                    }}
                     placeholder="votre.email@example.com"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-gray-300 mb-2 font-semibold">
+                  <label htmlFor="message" className="block mb-2 font-semibold" style={{ color: 'var(--text-secondary)' }}>
                     Message
                   </label>
                   <textarea
@@ -122,7 +132,12 @@ export default function Contact() {
                     rows={6}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 bg-black/50 border border-neon-blue/30 rounded-lg text-white focus:outline-none focus:border-neon-blue transition-colors resize-none"
+                    className="w-full px-4 py-3 rounded-lg transition-colors resize-none focus:outline-none"
+                    style={{ 
+                      backgroundColor: 'var(--card-bg)', 
+                      border: '1px solid var(--glass-border)',
+                      color: 'var(--text-primary)'
+                    }}
                     placeholder="Votre message..."
                   />
                 </div>
@@ -132,15 +147,16 @@ export default function Contact() {
                   disabled={status === 'sending'}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-all ${
+                  className="w-full py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-all"
+                  style={
                     status === 'sending'
-                      ? 'bg-gray-600 cursor-not-allowed'
+                      ? { backgroundColor: '#4b5563', cursor: 'not-allowed', color: 'var(--text-primary)' }
                       : status === 'success'
-                      ? 'bg-green-600'
+                      ? { backgroundColor: '#16a34a', color: 'white' }
                       : status === 'error'
-                      ? 'bg-red-600'
-                      : 'bg-gradient-to-r from-neon-blue to-neon-green text-black hover:shadow-lg hover:shadow-neon-blue/50'
-                  }`}
+                      ? { backgroundColor: '#dc2626', color: 'white' }
+                      : { background: 'linear-gradient(135deg, var(--neon-blue), var(--neon-green))', color: 'var(--background)' }
+                  }
                 >
                   {status === 'sending' && 'Envoi en cours...'}
                   {status === 'success' && '✓ Message envoyé !'}
@@ -155,7 +171,7 @@ export default function Contact() {
               </form>
 
               {status === 'idle' && (
-                <p className="mt-4 text-sm text-gray-500 text-center">
+                <p className="mt-4 text-sm text-center" style={{ color: 'var(--text-subtle)' }}>
                   * Configurez EmailJS pour activer le formulaire (voir commentaires dans le code)
                 </p>
               )}
@@ -169,7 +185,7 @@ export default function Contact() {
             className="space-y-8"
           >
             <div className="glass p-8 rounded-2xl">
-              <h3 className="text-3xl font-bold text-white mb-6">Retrouvez-moi sur</h3>
+              <h3 className="text-3xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>Retrouvez-moi sur</h3>
               <div className="space-y-4">
                 {socialLinks.map((link, index) => {
                   const Icon = link.icon;
@@ -183,7 +199,12 @@ export default function Contact() {
                       animate={isInView ? { opacity: 1, x: 0 } : {}}
                       transition={{ delay: 0.4 + index * 0.1 }}
                       whileHover={{ scale: 1.05, x: 10 }}
-                      className={`flex items-center gap-4 p-4 bg-black/50 rounded-lg border border-neon-blue/30 hover:border-neon-blue transition-all ${link.color}`}
+                      className="flex items-center gap-4 p-4 rounded-lg transition-all"
+                      style={{ 
+                        backgroundColor: 'var(--card-bg)', 
+                        border: '1px solid var(--glass-border)',
+                        color: 'var(--text-secondary)'
+                      }}
                     >
                       <Icon size={24} />
                       <span className="font-semibold">{link.name}</span>
@@ -199,9 +220,9 @@ export default function Contact() {
               transition={{ delay: 0.8 }}
               className="glass p-8 rounded-2xl"
             >
-              <h3 className="text-2xl font-bold text-neon-green mb-4">Disponibilité</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Je suis actuellement <span className="text-neon-green font-bold">disponible</span> pour des projets freelance 
+              <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--neon-green)' }}>Disponibilité</h3>
+              <p className="leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                Je suis actuellement <span style={{ color: 'var(--neon-green)' }} className="font-bold">disponible</span> pour des projets freelance 
                 et des opportunités de collaboration. N&apos;hésitez pas à me contacter pour discuter de votre projet !
               </p>
             </motion.div>
