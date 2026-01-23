@@ -94,7 +94,7 @@ const cardVariants = {
   exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
 };
 
-function ProjectCard({ project, index }: { project: typeof projects[0]; index: number }) {
+function ProjectCard({ project }: { project: typeof projects[0] }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const cardRef = useRef(null);
   const isInView = useInView(cardRef, { once: true, margin: '-50px' });
@@ -352,8 +352,8 @@ export default function Projects() {
           animate="visible"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
             ))}
           </AnimatePresence>
         </motion.div>

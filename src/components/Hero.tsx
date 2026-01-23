@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMousePosition } from '@/lib/parallax';
 
 interface Particle {
@@ -13,6 +13,50 @@ interface Particle {
   delay: number;
   duration: number;
 }
+
+// Pre-defined particles to avoid Math.random() in render and setState in useEffect
+const staticParticles: Particle[] = [
+  { id: 0, x: 15, y: 25, size: 4, delay: 0.1, duration: 4 },
+  { id: 1, x: 85, y: 15, size: 6, delay: 0.3, duration: 5 },
+  { id: 2, x: 45, y: 80, size: 3, delay: 0.5, duration: 3.5 },
+  { id: 3, x: 70, y: 45, size: 5, delay: 0.2, duration: 4.5 },
+  { id: 4, x: 25, y: 60, size: 4, delay: 0.7, duration: 5.5 },
+  { id: 5, x: 90, y: 70, size: 3, delay: 0.4, duration: 3 },
+  { id: 6, x: 10, y: 85, size: 6, delay: 0.6, duration: 4 },
+  { id: 7, x: 55, y: 20, size: 4, delay: 0.8, duration: 5 },
+  { id: 8, x: 35, y: 40, size: 5, delay: 0.1, duration: 4.5 },
+  { id: 9, x: 75, y: 90, size: 3, delay: 0.9, duration: 3.5 },
+  { id: 10, x: 5, y: 50, size: 4, delay: 0.2, duration: 5 },
+  { id: 11, x: 60, y: 65, size: 6, delay: 0.4, duration: 4 },
+  { id: 12, x: 40, y: 10, size: 3, delay: 0.6, duration: 3 },
+  { id: 13, x: 80, y: 35, size: 5, delay: 0.3, duration: 5.5 },
+  { id: 14, x: 20, y: 75, size: 4, delay: 0.8, duration: 4.5 },
+  { id: 15, x: 95, y: 55, size: 3, delay: 0.1, duration: 3.5 },
+  { id: 16, x: 50, y: 95, size: 6, delay: 0.5, duration: 5 },
+  { id: 17, x: 30, y: 30, size: 4, delay: 0.7, duration: 4 },
+  { id: 18, x: 65, y: 5, size: 5, delay: 0.2, duration: 4.5 },
+  { id: 19, x: 12, y: 42, size: 3, delay: 0.9, duration: 3 },
+  { id: 20, x: 88, y: 78, size: 4, delay: 0.4, duration: 5.5 },
+  { id: 21, x: 42, y: 58, size: 6, delay: 0.6, duration: 4 },
+  { id: 22, x: 72, y: 22, size: 3, delay: 0.3, duration: 3.5 },
+  { id: 23, x: 8, y: 68, size: 5, delay: 0.8, duration: 5 },
+  { id: 24, x: 58, y: 88, size: 4, delay: 0.1, duration: 4.5 },
+  { id: 25, x: 28, y: 12, size: 3, delay: 0.5, duration: 3 },
+  { id: 26, x: 78, y: 52, size: 6, delay: 0.7, duration: 5.5 },
+  { id: 27, x: 48, y: 32, size: 4, delay: 0.2, duration: 4 },
+  { id: 28, x: 18, y: 92, size: 5, delay: 0.9, duration: 4.5 },
+  { id: 29, x: 92, y: 8, size: 3, delay: 0.4, duration: 3.5 },
+  { id: 30, x: 38, y: 72, size: 4, delay: 0.6, duration: 5 },
+  { id: 31, x: 68, y: 38, size: 6, delay: 0.3, duration: 4 },
+  { id: 32, x: 3, y: 18, size: 3, delay: 0.8, duration: 3 },
+  { id: 33, x: 53, y: 48, size: 5, delay: 0.1, duration: 5.5 },
+  { id: 34, x: 83, y: 82, size: 4, delay: 0.5, duration: 4.5 },
+  { id: 35, x: 23, y: 2, size: 3, delay: 0.7, duration: 3.5 },
+  { id: 36, x: 63, y: 62, size: 6, delay: 0.2, duration: 5 },
+  { id: 37, x: 33, y: 98, size: 4, delay: 0.9, duration: 4 },
+  { id: 38, x: 97, y: 28, size: 5, delay: 0.4, duration: 4.5 },
+  { id: 39, x: 7, y: 58, size: 3, delay: 0.6, duration: 3 },
+];
 
 const textRevealVariants = {
   hidden: { 
@@ -101,27 +145,11 @@ function MouseRepulsiveParticle({ particle, mouseX, mouseY }: {
 }
 
 export default function Hero() {
-  const [particles, setParticles] = useState<Particle[]>([]);
-  const [mounted, setMounted] = useState(false);
   const mouse = useMousePosition();
   
   const springConfig = { stiffness: 100, damping: 30 };
   const mouseXSpring = useSpring(useMotionValue(0), springConfig);
   const mouseYSpring = useSpring(useMotionValue(0), springConfig);
-
-  useEffect(() => {
-    setMounted(true);
-    setParticles(
-      Array.from({ length: 40 }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 6 + 2,
-        delay: Math.random() * 2,
-        duration: 3 + Math.random() * 3,
-      }))
-    );
-  }, []);
 
   useEffect(() => {
     mouseXSpring.set(mouse.x);
@@ -184,7 +212,7 @@ export default function Hero() {
 
       {/* Particules mouse-repulsives */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {mounted && particles.map((particle) => (
+        {staticParticles.map((particle) => (
           <MouseRepulsiveParticle
             key={particle.id}
             particle={particle}

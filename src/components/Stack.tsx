@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Code, Database, Cloud, Wrench, Zap, Globe, Palette, Terminal } from 'lucide-react';
+import { Code, Database, Cloud, Wrench, Zap } from 'lucide-react';
 
 const technologies = [
   { 
@@ -69,7 +69,7 @@ const itemVariants = {
   }
 };
 
-function ConfettiParticle({ color, delay }: { color: string; delay: number }) {
+function ConfettiParticle({ color, delay, offsetX, offsetY, rotation }: { color: string; delay: number; offsetX: number; offsetY: number; rotation: number }) {
   return (
     <motion.div
       className="absolute w-2 h-2 rounded-full"
@@ -77,9 +77,9 @@ function ConfettiParticle({ color, delay }: { color: string; delay: number }) {
       initial={{ scale: 0, x: 0, y: 0 }}
       animate={{
         scale: [0, 1, 0],
-        x: (Math.random() - 0.5) * 100,
-        y: (Math.random() - 0.5) * 100,
-        rotate: Math.random() * 360,
+        x: offsetX,
+        y: offsetY,
+        rotate: rotation,
       }}
       transition={{
         duration: 0.6,
@@ -90,7 +90,14 @@ function ConfettiParticle({ color, delay }: { color: string; delay: number }) {
   );
 }
 
-function TechCard({ tech, index }: { tech: typeof technologies[0]; index: number }) {
+const confettiOffsets = [
+  { x: -45, y: -30, r: 45 }, { x: 50, y: -25, r: 120 }, { x: -30, y: 45, r: 200 },
+  { x: 40, y: 35, r: 280 }, { x: -50, y: 10, r: 60 }, { x: 25, y: -45, r: 150 },
+  { x: -15, y: 50, r: 240 }, { x: 45, y: -10, r: 320 }, { x: -40, y: -40, r: 90 },
+  { x: 30, y: 50, r: 180 }, { x: -25, y: 20, r: 270 }, { x: 50, y: 45, r: 350 },
+];
+
+function TechCard({ tech }: { tech: typeof technologies[0] }) {
   const [isHovered, setIsHovered] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const Icon = tech.icon;
@@ -117,11 +124,14 @@ function TechCard({ tech, index }: { tech: typeof technologies[0]; index: number
       <AnimatePresence>
         {showConfetti && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {[...Array(12)].map((_, i) => (
+            {confettiOffsets.map((offset, i) => (
               <ConfettiParticle 
                 key={i} 
                 color={tech.color} 
-                delay={i * 0.03} 
+                delay={i * 0.03}
+                offsetX={offset.x}
+                offsetY={offset.y}
+                rotation={offset.r}
               />
             ))}
           </div>
@@ -247,8 +257,8 @@ export default function Stack() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {technologies.map((tech, index) => (
-            <TechCard key={tech.category} tech={tech} index={index} />
+          {technologies.map((tech) => (
+            <TechCard key={tech.category} tech={tech} />
           ))}
         </motion.div>
 
