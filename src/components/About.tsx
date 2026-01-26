@@ -5,17 +5,17 @@ import { useState } from 'react';
 import { Code, Database, Palette, Rocket, ChevronRight } from 'lucide-react';
 
 const skills = [
-  { name: 'Frontend', icon: Code, items: ['React', 'Next.js', 'TypeScript', 'Tailwind'], colorVar: '--neon-blue', description: 'Interfaces modernes et réactives' },
-  { name: 'Backend', icon: Database, items: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL'], colorVar: '--neon-green', description: 'APIs robustes et scalables' },
+  { name: 'Frontend', icon: Code, items: ['React', 'Next.js', 'Vue.js', 'TypeScript', 'Flutter', 'C/C++'], colorVar: '--neon-blue', description: 'Interfaces modernes et réactives' },
+  { name: 'Backend', icon: Database, items: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Supabase'], colorVar: '--neon-green', description: 'APIs robustes et scalables' },
   { name: 'Design', icon: Palette, items: ['Figma', 'UI/UX', 'Animations', 'Motion'], colorVar: '--neon-purple', description: 'Expériences visuelles immersives' },
-  { name: 'DevOps', icon: Rocket, items: ['Docker', 'CI/CD', 'AWS', 'Vercel'], colorVar: '--neon-orange', description: 'Déploiement et automatisation' },
+  { name: 'DevOps', icon: Rocket, items: ['Docker', 'CI/CD', 'AWS', 'Vercel', 'Azure'], colorVar: '--neon-orange', description: 'Déploiement et automatisation' },
 ];
 
 const timeline = [
-  { year: '2024', title: 'Développeur Fullstack Senior', company: 'Tech Company', description: 'Lead technique sur projets web innovants' },
-  { year: '2022', title: 'Développeur Frontend', company: 'Startup Inc', description: 'Création d\'interfaces modernes et performantes' },
-  { year: '2020', title: 'Développeur Junior', company: 'Digital Agency', description: 'Apprentissage et développement web' },
-  { year: '2019', title: 'Formation Développement Web', company: 'École/Bootcamp', description: 'Diplôme en développement web fullstack' },
+  { year: '2026', title: 'BTS CIEL', company: 'Saint Michel Annecy', description: 'Développement fullstack d\'applications web innovantes et sécurisées.' },
+  { year: '2025', title: 'Creation Alp-Web', company: 'Agence Web', description: 'Conception d\'interfaces modernes et performantes avec stacks variées' },
+  { year: '2023', title: 'Ecole 42', company: 'Lyon', description: 'Formation intensive en algorithmique et développement logiciel collaboratif."' },
+  { year: '2022', title: 'Baccalauréat', company: 'Louis Armand Chambery', description: 'Fondations solides en sciences et résolution de problèmes techniques.' },
 ];
 
 function FlipCard({ skill, index }: { skill: typeof skills[0]; index: number }) {
@@ -220,8 +220,8 @@ export default function About() {
           />
           
           <p className="text-lg md:text-xl leading-relaxed max-w-4xl mx-auto text-center" style={{ color: 'var(--text-secondary)' }}>
-            Fort de plusieurs années d&apos;expérience dans le développement web, je me spécialise dans la création d&apos;applications modernes et performantes. 
-            Mon approche combine <span style={{ color: 'var(--neon-blue)' }} className="font-semibold">expertise technique</span>, <span style={{ color: 'var(--neon-green)' }} className="font-semibold">créativité</span> et <span style={{ color: 'var(--neon-purple)' }} className="font-semibold">attention aux détails</span> pour livrer des solutions qui dépassent les attentes.
+            Avec plusieurs projets concrets à mon actif en <span style={{ color: 'var(--neon-blue)' }} className="font-semibold">développement web</span>, je me spécialise dans la création d’<span style={{ color: 'var(--neon-green)' }} className="font-semibold">applications modernes, rapides et soignées</span>.
+            J’aime construire “proprement”, avec une vraie attention à l’UX et aux détails, pour livrer des solutions <span style={{ color: 'var(--neon-purple)' }} className="font-semibold">fiables et efficaces</span>, adaptées aux besoins réels du client.
           </p>
         </motion.div>
       </div>

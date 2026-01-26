@@ -8,7 +8,7 @@ const technologies = [
   { 
     category: 'Frontend', 
     icon: Code,
-    items: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'HTML/CSS'],
+    items: ['React', 'Next.js','Vue.js', 'Nuxt.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Three.js', 'HTML/CSS', 'C/C++', 'Dart', 'Flutter' ],
     colorVar: '--neon-blue',
   },
   { 

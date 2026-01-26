@@ -24,20 +24,15 @@ export default function Contact() {
     setStatus('sending');
 
     try {
-      // CONFIGURATION EMAILJS - Remplacez par vos IDs
-      // 1. Créez un compte sur https://www.emailjs.com/
-      // 2. Créez un service email
-      // 3. Créez un template
-      // 4. Remplacez les valeurs ci-dessous
       await emailjs.send(
-        'YOUR_SERVICE_ID',      // Remplacez par votre Service ID
-        'YOUR_TEMPLATE_ID',     // Remplacez par votre Template ID
+        'service_fv7r9tk',      // Remplacez par votre Service ID
+        'template_i5y4s5k',     // Remplacez par votre Template ID
         {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
         },
-        'YOUR_PUBLIC_KEY'       // Remplacez par votre Public Key
+        'gxO199Q3iQXQ1dZfg'       // Remplacez par votre Public Key
       );
 
       setStatus('success');
@@ -51,10 +46,10 @@ export default function Contact() {
   };
 
   const socialLinks = [
-    { name: 'GitHub', icon: Github, url: 'https://github.com/votre-username', color: 'hover:text-white' },
-    { name: 'LinkedIn', icon: Linkedin, url: 'https://linkedin.com/in/votre-profil', color: 'hover:text-blue-500' },
+    { name: 'GitHub', icon: Github, url: 'https://github.com/8oDyy', color: 'hover:text-white' },
+    { name: 'LinkedIn', icon: Linkedin, url: 'https://www.linkedin.com/in/boulicautraffort-hugo/', color: 'hover:text-blue-500' },
     { name: 'Twitter', icon: Twitter, url: 'https://twitter.com/votre-username', color: 'hover:text-blue-400' },
-    { name: 'Email', icon: Mail, url: 'mailto:votre.email@example.com', color: 'hover:text-neon-green' },
+    { name: 'Email', icon: Mail, url: 'mailto:hugoboulicaut@gmail.com', color: 'hover:text-neon-green' },
   ];
 
   return (
@@ -222,8 +217,8 @@ export default function Contact() {
             >
               <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--neon-green)' }}>Disponibilité</h3>
               <p className="leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                Je suis actuellement <span style={{ color: 'var(--neon-green)' }} className="font-bold">disponible</span> pour des projets freelance 
-                et des opportunités de collaboration. N&apos;hésitez pas à me contacter pour discuter de votre projet !
+                Je suis actuellement <span style={{ color: 'var(--neon-green)' }} className="font-bold"> à la recherche d’une alternance </span>
+                 à partir de maintenant et ouvert aux opportunités en développement. N&apos;hésitez pas à me contacter pour en discuter !
               </p>
             </motion.div>
           </motion.div>

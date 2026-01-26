@@ -42,6 +42,16 @@ export default function Navbar() {
     document.documentElement.classList.toggle('light', !isDark);
   }, [isDark]);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setIsOpen(false);
+    }
+  };
+
   const navItems = [
     { name: 'Accueil', href: '#hero' },
     { name: 'À propos', href: '#about' },
@@ -84,6 +94,7 @@ export default function Navbar() {
               <motion.a
                 key={item.name}
                 href={item.href}
+                onClick={(e) => handleNavClick(e, item.href)}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -162,7 +173,7 @@ export default function Navbar() {
               initial={{ x: -20, opacity: 0 }}
               animate={isOpen ? { x: 0, opacity: 1 } : { x: -20, opacity: 0 }}
               transition={{ delay: index * 0.05 }}
-              onClick={() => setIsOpen(false)}
+              onClick={(e) => handleNavClick(e, item.href)}
               className="block py-3 px-4 text-gray-300 hover:text-neon-blue hover:bg-white/5 rounded-lg transition-all"
             >
               {item.name}
