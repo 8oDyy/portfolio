@@ -158,7 +158,7 @@ export default function About() {
             À propos
           </h2>
           <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--text-muted)' }}>
-            Passionné par le développement web et les technologies innovantes, 
+            Passionné par le développement et les technologies innovantes,
             je crée des expériences digitales uniques et performantes.
           </p>
         </motion.div>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import SmoothScroll from "@/lib/lenis";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,13 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio - Développeur Fullstack",
-  description: "Portfolio moderne et immersif d'un développeur fullstack JavaScript spécialisé en React, Next.js et Three.js",
-  keywords: ["portfolio", "développeur", "fullstack", "react", "nextjs", "threejs"],
-  authors: [{ name: "Votre Nom" }],
+  title: "Portfolio - En construction",
+  description: "Mon portfolio est en cours de développement. Revenez bientôt !",
+  keywords: ["portfolio", "développeur", "fullstack", "react", "nextjs"],
   openGraph: {
-    title: "Portfolio - Développeur Fullstack",
-    description: "Portfolio moderne et immersif",
+    title: "Portfolio - En construction",
+    description: "Mon portfolio est en cours de développement. Revenez bientôt !",
     type: "website",
   },
 };
@@ -35,7 +33,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SmoothScroll />
         {children}
       </body>
     </html>

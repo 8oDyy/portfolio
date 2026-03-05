@@ -2,19 +2,21 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { ExternalLink, Github, Eye, Code2, Layers } from 'lucide-react';
+import { ExternalLink, Github, Eye, Code2, Layers, X } from 'lucide-react';
+import Image from 'next/image';
 
 const projects = [
   {
     id: 1,
-    title: 'E-Commerce Platform',
+    title: 'Checkly',
     description: 'Plateforme e-commerce complète avec panier, paiement et gestion admin. Interface moderne et responsive.',
     longDescription: 'Solution e-commerce full-stack avec gestion des stocks, système de paiement Stripe, tableau de bord admin et analytics en temps réel.',
-    tech: ['Next.js', 'TypeScript', 'Stripe', 'MongoDB'],
-    github: 'https://github.com/votre-username/projet1',
+    tech: ['Vue.js', 'Nuxt UI', 'Stripe', 'Supabase'],
+    github: 'https://github.com/8oDyy/booly',
     demo: 'https://demo-projet1.vercel.app',
     category: 'Fullstack',
     colorVar: '--neon-blue',
+    image: '/logo-checkly.svg',
   },
   {
     id: 2,
@@ -26,6 +28,7 @@ const projects = [
     demo: 'https://demo-projet2.vercel.app',
     category: 'Frontend',
     colorVar: '--neon-green',
+    image: null,
   },
   {
     id: 3,
@@ -37,6 +40,7 @@ const projects = [
     demo: 'https://demo-projet3.vercel.app',
     category: 'Fullstack',
     colorVar: '--neon-purple',
+    image: null,
   },
   {
     id: 4,
@@ -48,6 +52,7 @@ const projects = [
     demo: 'https://demo-projet4.vercel.app',
     category: 'Frontend',
     colorVar: '--neon-orange',
+    image: null,
   },
   {
     id: 5,
@@ -59,6 +64,7 @@ const projects = [
     demo: 'https://demo-projet5.vercel.app',
     category: 'Backend',
     colorVar: '--neon-blue',
+    image: null,
   },
   {
     id: 6,
@@ -70,6 +76,7 @@ const projects = [
     demo: 'https://demo-projet6.vercel.app',
     category: 'Fullstack',
     colorVar: '--neon-green',
+    image: null,
   },
 ];
 
@@ -94,7 +101,7 @@ const cardVariants = {
   exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
 };
 
-function ProjectCard({ project }: { project: typeof projects[0] }) {
+function ProjectCard({ project, onOpenModal }: { project: typeof projects[0], onOpenModal: (project: typeof projects[0]) => void }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const color = `var(${project.colorVar})`;
 
@@ -106,6 +113,7 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
       style={{ willChange: 'transform' }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
+      onClick={() => onOpenModal(project)}
     >
       <div
         className="relative w-full h-full cursor-pointer transition-transform duration-500"
@@ -124,9 +132,21 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
             className="relative h-48 overflow-hidden"
             style={{ background: `linear-gradient(135deg, color-mix(in srgb, ${color} 30%, transparent), color-mix(in srgb, ${color} 10%, transparent))` }}
           >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Layers className="w-16 h-16" style={{ color: 'var(--text-subtle)' }} />
-            </div>
+            {project.image ? (
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  width={300}
+                  height={300}
+                  className="object-contain w-full h-full"
+                />
+              </div>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Layers className="w-16 h-16" style={{ color: 'var(--text-subtle)' }} />
+              </div>
+            )}
             
             {/* Category badge */}
             <div 
@@ -246,6 +266,7 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
 
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('Tous');
+  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
 
   const filteredProjects = selectedCategory === 'Tous' 
     ? projects 
@@ -314,11 +335,135 @@ export default function Projects() {
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard key={project.id} project={project} onOpenModal={setSelectedProject} />
             ))}
           </AnimatePresence>
         </motion.div>
       </div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedProject(null)}
+          >
+            {/* Backdrop */}
+            <div className="absolute inset-0" style={{ backgroundColor: 'color-mix(in srgb, var(--background) 90%, transparent)', backdropFilter: 'blur(8px)' }} />
+            
+            {/* Modal content */}
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="relative glass rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              style={{ border: `1px solid color-mix(in srgb, var(${selectedProject.colorVar}) 30%, transparent)` }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-4 right-4 p-2 rounded-full glass hover:scale-110 transition-transform z-10"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                <X size={24} />
+              </button>
+
+              {/* Header with gradient */}
+              <div
+                className="relative h-48 rounded-t-3xl overflow-hidden"
+                style={{ background: `linear-gradient(135deg, color-mix(in srgb, var(${selectedProject.colorVar}) 50%, transparent), color-mix(in srgb, var(${selectedProject.colorVar}) 20%, transparent))` }}
+              >
+                {selectedProject.image ? (
+                  <div className="absolute inset-0 flex items-center justify-center p-2">
+                    <Image
+                      src={selectedProject.image}
+                      alt={selectedProject.title}
+                      width={1000}
+                      height={1000}
+                      className="object-contain w-full h-full"
+                    />
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Layers className="w-24 h-24" style={{ color: 'var(--text-subtle)' }} />
+                  </div>
+                )}
+                <div
+                  className="absolute bottom-4 left-6 px-4 py-1.5 rounded-full text-sm font-bold"
+                  style={{ backgroundColor: `color-mix(in srgb, var(${selectedProject.colorVar}) 80%, transparent)`, color: 'var(--background)' }}
+                >
+                  {selectedProject.category}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-8">
+                <h2 className="text-3xl font-bold mb-4" style={{ color: `var(${selectedProject.colorVar})` }}>
+                  {selectedProject.title}
+                </h2>
+
+                <p className="text-base mb-6 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  {selectedProject.longDescription}
+                </p>
+
+                {/* Technologies */}
+                <div className="mb-6">
+                  <h3 className="text-sm uppercase tracking-wider mb-3 font-semibold" style={{ color: 'var(--text-subtle)' }}>
+                    Technologies utilisées
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProject.tech.map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-sm px-4 py-2 rounded-full font-medium"
+                        style={{
+                          backgroundColor: `color-mix(in srgb, var(${selectedProject.colorVar}) 30%, transparent)`,
+                          border: `1px solid color-mix(in srgb, var(${selectedProject.colorVar}) 50%, transparent)`,
+                          color: 'var(--text-primary)'
+                        }}
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-4">
+                  <a
+                    href={selectedProject.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-transform hover:scale-105"
+                    style={{
+                      backgroundColor: `color-mix(in srgb, var(${selectedProject.colorVar}) 30%, transparent)`,
+                      border: `1px solid color-mix(in srgb, var(${selectedProject.colorVar}) 50%, transparent)`,
+                      color: 'var(--text-primary)'
+                    }}
+                  >
+                    <Github size={20} />
+                    <span>Voir le code</span>
+                  </a>
+                  <a
+                    href={selectedProject.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-transform hover:scale-105"
+                    style={{ backgroundColor: `var(${selectedProject.colorVar})`, color: 'var(--background)' }}
+                  >
+                    <ExternalLink size={20} />
+                    <span>Voir la démo</span>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

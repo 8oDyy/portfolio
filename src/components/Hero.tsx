@@ -58,10 +58,10 @@ export default function Hero() {
         {/* Tagline */}
         <motion.div variants={itemVariants} className="mb-8 max-w-2xl">
           <p className="text-xl md:text-2xl" style={{ color: 'var(--text-secondary)' }}>
-            Développeur Fullstack JavaScript
+            Développeur Fullstack
           </p>
           <p className="text-xl md:text-2xl mt-2" style={{ color: 'var(--neon-blue)' }}>
-            Créateur d&apos;expériences web modernes
+            Créateur d&apos;expériences modernes
           </p>
         </motion.div>
 
@@ -100,9 +100,9 @@ export default function Hero() {
           className="grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto"
         >
           {[
-            { number: "5+", label: "Années d'expérience" },
-            { number: "50+", label: "Projets réalisés" },
-            { number: "100%", label: "Clients satisfaits" },
+            { number: "3+", label: "Années d'expérience" },
+            { number: "10+", label: "Projets réalisés" },
+            { number: "Alternance", label: "En recherche" },
           ].map((stat, index) => (
             <div
               key={index}
