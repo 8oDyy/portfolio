@@ -1,8 +1,8 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
-import { ExternalLink, Github, Eye, Code2, Layers } from 'lucide-react';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { ExternalLink, Github, Code2, Layers, X, Info } from 'lucide-react';
 
 const projects = [
   {
@@ -94,16 +94,171 @@ const cardVariants = {
   exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
 };
 
-function ProjectCard({ project }: { project: typeof projects[0] }) {
+function ProjectModal({ project, onClose }: { project: typeof projects[0]; onClose: () => void }) {
+  const color = `var(${project.colorVar})`;
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
+
+      <motion.div
+        className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col"
+        style={{
+          border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`,
+          background: 'var(--background-secondary)',
+        }}
+        initial={{ scale: 0.9, opacity: 0, y: 40 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 25 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Glow background */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at top left, color-mix(in srgb, ${color} 12%, transparent) 0%, transparent 50%)` }}
+        />
+
+        {/* Sticky header */}
+        <div
+          className="sticky top-0 z-20 flex items-center justify-between px-8 py-5 backdrop-blur-xl"
+          style={{
+            background: 'color-mix(in srgb, var(--background-secondary) 85%, transparent)',
+            borderBottom: '1px solid var(--glass-border)',
+          }}
+        >
+          <div className="flex items-center gap-4">
+            <span
+              className="px-3 py-1 rounded-full text-xs font-bold"
+              style={{ backgroundColor: `color-mix(in srgb, ${color} 80%, transparent)`, color: 'var(--background)' }}
+            >
+              {project.category}
+            </span>
+            <h3 className="text-xl md:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+              {project.title}
+            </h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full glass transition-transform hover:scale-110"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-10">
+          {/* Hero banner */}
+          <div
+            className="relative w-full h-56 md:h-72 rounded-2xl overflow-hidden flex items-center justify-center"
+            style={{ background: `linear-gradient(135deg, color-mix(in srgb, ${color} 25%, transparent), color-mix(in srgb, ${color} 8%, transparent))` }}
+          >
+            <Layers className="w-20 h-20" style={{ color: `color-mix(in srgb, ${color} 60%, transparent)` }} />
+          </div>
+
+          {/* Description */}
+          <div>
+            <h4 className="text-lg font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>À propos du projet</h4>
+            <p className="leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              {project.longDescription}
+            </p>
+          </div>
+
+          {/* Technologies */}
+          <div>
+            <h4 className="text-lg font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Technologies utilisées</h4>
+            <div className="flex flex-wrap gap-3">
+              {project.tech.map((tech) => (
+                <span
+                  key={tech}
+                  className="px-4 py-2 rounded-xl text-sm font-medium"
+                  style={{
+                    backgroundColor: `color-mix(in srgb, ${color} 20%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${color} 35%, transparent)`,
+                    color: 'var(--text-primary)',
+                  }}
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Placeholder sections for future content */}
+          <div
+            className="rounded-2xl p-6"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)' }}
+          >
+            <h4 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Fonctionnalités clés</h4>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+              Contenu à venir...
+            </p>
+          </div>
+
+          <div
+            className="rounded-2xl p-6"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)' }}
+          >
+            <h4 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Captures d&apos;écran</h4>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+              Contenu à venir...
+            </p>
+          </div>
+        </div>
+
+        {/* Sticky footer with links */}
+        <div
+          className="sticky bottom-0 z-20 flex gap-4 px-8 py-5 backdrop-blur-xl"
+          style={{
+            background: 'color-mix(in srgb, var(--background-secondary) 85%, transparent)',
+            borderTop: '1px solid var(--glass-border)',
+          }}
+        >
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-medium transition-transform hover:scale-[1.02]"
+            style={{
+              backgroundColor: `color-mix(in srgb, ${color} 20%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${color} 40%, transparent)`,
+              color: 'var(--text-primary)',
+            }}
+          >
+            <Github size={20} />
+            <span>Voir le code</span>
+          </a>
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-medium transition-transform hover:scale-[1.02]"
+            style={{ backgroundColor: color, color: 'var(--background)' }}
+          >
+            <ExternalLink size={20} />
+            <span>Voir la demo</span>
+          </a>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function ProjectCard({ project, onOpenModal }: { project: typeof projects[0]; onOpenModal: () => void }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const color = `var(${project.colorVar})`;
 
   return (
     <motion.div
       variants={cardVariants}
-      layout
       className="perspective-1000 h-[420px]"
-      style={{ willChange: 'transform' }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
@@ -136,17 +291,6 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
               {project.category}
             </div>
 
-            {/* Hover overlay */}
-            <div
-              className="absolute inset-0 flex items-center justify-center gap-4 transition-opacity duration-300"
-              style={{ 
-                backgroundColor: 'color-mix(in srgb, var(--background) 80%, transparent)',
-                opacity: isFlipped ? 1 : 0
-              }}
-            >
-              <Eye className="w-8 h-8" style={{ color: 'var(--text-primary)' }} />
-              <span style={{ color: 'var(--text-primary)' }} className="font-medium">Voir détails</span>
-            </div>
           </div>
 
           <div className="p-6">
@@ -227,16 +371,14 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
               <Github size={18} />
               <span>Code</span>
             </a>
-            <a
-              href={project.demo}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={(e) => { e.stopPropagation(); onOpenModal(); }}
               className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-transform hover:scale-105"
               style={{ backgroundColor: color, color: 'var(--background)' }}
             >
-              <ExternalLink size={18} />
-              <span>Demo</span>
-            </a>
+              <Info size={18} />
+              <span>Plus d&apos;infos</span>
+            </button>
           </div>
         </div>
       </div>
@@ -244,8 +386,24 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
   );
 }
 
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
+  }
+};
+
+const headerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+};
+
 export default function Projects() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [selectedCategory, setSelectedCategory] = useState('Tous');
+  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
 
   const filteredProjects = selectedCategory === 'Tous' 
     ? projects 
@@ -263,12 +421,15 @@ export default function Projects() {
         style={{ backgroundColor: 'var(--gradient-glow-green)' }}
       />
       
-      <div className="max-w-7xl mx-auto relative z-10">
+      <motion.div
+        ref={ref}
+        className="max-w-7xl mx-auto relative z-10"
+        variants={sectionVariants}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+      >
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          variants={headerVariants}
           className="text-center mb-12"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-6">
@@ -309,16 +470,18 @@ export default function Projects() {
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={containerVariants}
-          initial="hidden"
-          animate="visible"
         >
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </AnimatePresence>
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} onOpenModal={() => setSelectedProject(project)} />
+          ))}
         </motion.div>
-      </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 
 export default function Navbar() {
@@ -9,32 +9,31 @@ export default function Navbar() {
   const [isDark, setIsDark] = useState(true);
   const [scrolled, setScrolled] = useState(false);
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springConfig = { stiffness: 150, damping: 20 };
-  const mouseXSpring = useSpring(mouseX, springConfig);
-  const mouseYSpring = useSpring(mouseY, springConfig);
-
-  const logoX = useTransform(mouseXSpring, [0, typeof window !== 'undefined' ? window.innerWidth : 1920], [-5, 5]);
-  const logoY = useTransform(mouseYSpring, [0, 100], [-2, 2]);
-
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
+    let rafId: number | null = null;
+    let last = false;
+
+    const update = () => {
+      rafId = null;
+      const next = window.scrollY > 50;
+      if (next === last) return;
+      last = next;
+      setScrolled(next);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      if (rafId != null) return;
+      rafId = requestAnimationFrame(update);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    last = window.scrollY > 50;
+    setScrolled(last);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId != null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
@@ -74,7 +73,6 @@ export default function Navbar() {
           {/* Logo avec mouse parallax */}
           <motion.a
             href="#hero"
-            style={{ x: logoX, y: logoY }}
             whileHover={{ scale: 1.05 }}
             className="text-2xl font-bold relative group"
           >
@@ -103,10 +101,8 @@ export default function Navbar() {
                 style={{ color: 'var(--text-secondary)' }}
               >
                 <span className="relative z-10">{item.name}</span>
-                <motion.div
-                  className="absolute inset-0 rounded-lg bg-white/5 opacity-0 group-hover:opacity-100"
-                  layoutId="navbar-hover"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                <div
+                  className="absolute inset-0 rounded-lg bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 />
                 <motion.div
                   className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 group-hover:w-full transition-all duration-300"

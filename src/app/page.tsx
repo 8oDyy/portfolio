@@ -14,7 +14,7 @@ export default function Home() {
     <>
       <LoadingScreen />
       <Navbar />
-      <main className="relative">
+      <main className="relative z-10">
         <Hero />
         <About />
         <Projects />

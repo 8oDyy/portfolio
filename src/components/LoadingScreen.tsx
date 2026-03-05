@@ -12,12 +12,12 @@ export default function LoadingScreen() {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => setIsComplete(true), 500);
+          setTimeout(() => setIsComplete(true), 300);
           return 100;
         }
-        return prev + 2;
+        return prev + 4;
       });
-    }, 30);
+    }, 60);
 
     return () => clearInterval(interval);
   }, []);

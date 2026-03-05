@@ -1,10 +1,22 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Send, Mail, Github, Linkedin, Twitter } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+};
 
 export default function Contact() {
   const ref = useRef(null);
@@ -53,14 +65,15 @@ export default function Contact() {
   ];
 
   return (
-    <section id="contact" className="min-h-screen py-20 px-4 bg-primary">
-      <div className="max-w-7xl mx-auto" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+    <section id="contact" className="relative min-h-screen py-20 px-4 bg-primary shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+      <motion.div
+        ref={ref}
+        className="max-w-7xl mx-auto"
+        variants={sectionVariants}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+      >
+        <motion.div variants={itemVariants} className="text-center mb-12">
           <h2 className="text-5xl md:text-6xl font-bold text-gradient mb-4">Contact</h2>
           <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--text-muted)' }}>
             Une idée de projet ? Discutons-en !
@@ -68,11 +81,7 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <motion.div variants={itemVariants}>
             <div className="glass p-8 rounded-2xl">
               <h3 className="text-3xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>Envoyez-moi un message</h3>
               
@@ -173,28 +182,19 @@ export default function Contact() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-8"
-          >
+          <motion.div variants={itemVariants} className="space-y-8">
             <div className="glass p-8 rounded-2xl">
               <h3 className="text-3xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>Retrouvez-moi sur</h3>
               <div className="space-y-4">
-                {socialLinks.map((link, index) => {
+                {socialLinks.map((link) => {
                   const Icon = link.icon;
                   return (
-                    <motion.a
+                    <a
                       key={link.name}
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={isInView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                      whileHover={{ scale: 1.05, x: 10 }}
-                      className="flex items-center gap-4 p-4 rounded-lg transition-all"
+                      className="flex items-center gap-4 p-4 rounded-lg transition-all duration-200 hover:scale-[1.03] hover:translate-x-2"
                       style={{ 
                         backgroundColor: 'var(--card-bg)', 
                         border: '1px solid var(--glass-border)',
@@ -203,27 +203,22 @@ export default function Contact() {
                     >
                       <Icon size={24} />
                       <span className="font-semibold">{link.name}</span>
-                    </motion.a>
+                    </a>
                   );
                 })}
               </div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.8 }}
-              className="glass p-8 rounded-2xl"
-            >
+            <div className="glass p-8 rounded-2xl">
               <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--neon-green)' }}>Disponibilité</h3>
               <p className="leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                Je suis actuellement <span style={{ color: 'var(--neon-green)' }} className="font-bold"> à la recherche d’une alternance </span>
+                Je suis actuellement <span style={{ color: 'var(--neon-green)' }} className="font-bold"> à la recherche d&apos;une alternance </span>
                  à partir de maintenant et ouvert aux opportunités en développement. N&apos;hésitez pas à me contacter pour en discuter !
               </p>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

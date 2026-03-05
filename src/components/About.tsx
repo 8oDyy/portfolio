@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { useRef, useState } from 'react';
 import { Code, Database, Palette, Rocket, ChevronRight } from 'lucide-react';
 
 const skills = [
@@ -18,27 +18,39 @@ const timeline = [
   { year: '2022', title: 'Baccalauréat', company: 'Louis Armand Chambery', description: 'Fondations solides en sciences et résolution de problèmes techniques.' },
 ];
 
-function FlipCard({ skill, index }: { skill: typeof skills[0]; index: number }) {
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
+};
+
+const itemFromLeft = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } }
+};
+
+function FlipCard({ skill }: { skill: typeof skills[0] }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const Icon = skill.icon;
   const color = `var(${skill.colorVar})`;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ delay: index * 0.1, duration: 0.4 }}
+      variants={itemVariants}
       className="perspective-1000 h-64"
-      style={{ willChange: 'transform, opacity' }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
-      <motion.div
-        className="relative w-full h-full cursor-pointer"
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.5 }}
-        style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+      <div
+        className="relative w-full h-full cursor-pointer transition-transform duration-500"
+        style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
       >
         {/* Front */}
         <div 
@@ -88,20 +100,16 @@ function FlipCard({ skill, index }: { skill: typeof skills[0]; index: number }) 
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
-function TimelineItem({ item, index }: { item: typeof timeline[0]; index: number }) {
+function TimelineItem({ item }: { item: typeof timeline[0] }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ delay: index * 0.1, duration: 0.4 }}
+      variants={itemFromLeft}
       className="relative pl-8 group"
-      style={{ willChange: 'transform, opacity' }}
     >
       {/* Timeline line */}
       <div 
@@ -111,11 +119,11 @@ function TimelineItem({ item, index }: { item: typeof timeline[0]; index: number
       
       {/* Dot */}
       <div 
-        className="absolute left-[-6px] top-2 w-3 h-3 rounded-full transition-transform hover:scale-150"
+        className="absolute left-[-6px] top-2 w-3 h-3 rounded-full"
         style={{ backgroundColor: 'var(--neon-blue)' }}
       />
       
-      <div className="glass p-5 rounded-xl mb-6 transition-all duration-300 hover:translate-x-2">
+      <div className="glass p-5 rounded-xl mb-6">
         <div className="flex items-center gap-3 mb-2">
           <span 
             className="px-3 py-1 rounded-full text-sm font-bold"
@@ -133,6 +141,9 @@ function TimelineItem({ item, index }: { item: typeof timeline[0]; index: number
 }
 
 export default function About() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
+
   return (
     <section id="about" className="min-h-screen py-20 px-6 relative overflow-hidden bg-primary">
       {/* Background elements */}
@@ -145,15 +156,15 @@ export default function About() {
         style={{ backgroundColor: 'var(--gradient-glow-green)' }}
       />
       
-      <div className="max-w-7xl mx-auto relative z-10">
+      <motion.div
+        ref={ref}
+        className="max-w-7xl mx-auto relative z-10"
+        variants={sectionVariants}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+      >
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
+        <motion.div variants={itemVariants} className="text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-bold mb-4 text-gradient">
             À propos
           </h2>
@@ -165,52 +176,41 @@ export default function About() {
 
         <div className="grid lg:grid-cols-2 gap-12 mb-20">
           {/* Timeline */}
-          <div>
-            <motion.h3 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
+          <motion.div variants={itemVariants}>
+            <h3 
               className="text-3xl font-bold mb-8 flex items-center gap-3"
               style={{ color: 'var(--neon-blue)' }}
             >
               <span className="w-10 h-1 rounded-full" style={{ backgroundColor: 'var(--neon-blue)' }} />
               Mon Parcours
-            </motion.h3>
-            <div className="space-y-2">
+            </h3>
+            <motion.div className="space-y-2" variants={sectionVariants}>
               {timeline.map((item, index) => (
-                <TimelineItem key={index} item={item} index={index} />
+                <TimelineItem key={index} item={item} />
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Skills avec flip cards */}
-          <div>
-            <motion.h3 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
+          <motion.div variants={itemVariants}>
+            <h3 
               className="text-3xl font-bold mb-8 flex items-center gap-3"
               style={{ color: 'var(--neon-green)' }}
             >
               <span className="w-10 h-1 rounded-full" style={{ backgroundColor: 'var(--neon-green)' }} />
               Compétences
-            </motion.h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {skills.map((skill, index) => (
-                <FlipCard key={skill.name} skill={skill} index={index} />
+            </h3>
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 gap-4" variants={sectionVariants}>
+              {skills.map((skill) => (
+                <FlipCard key={skill.name} skill={skill} />
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* Bio */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          variants={itemVariants}
           className="glass p-8 md:p-12 rounded-2xl relative overflow-hidden"
         >
           {/* Decorative gradient */}
@@ -220,11 +220,11 @@ export default function About() {
           />
           
           <p className="text-lg md:text-xl leading-relaxed max-w-4xl mx-auto text-center" style={{ color: 'var(--text-secondary)' }}>
-            Avec plusieurs projets concrets à mon actif en <span style={{ color: 'var(--neon-blue)' }} className="font-semibold">développement web</span>, je me spécialise dans la création d’<span style={{ color: 'var(--neon-green)' }} className="font-semibold">applications modernes, rapides et soignées</span>.
-            J’aime construire “proprement”, avec une vraie attention à l’UX et aux détails, pour livrer des solutions <span style={{ color: 'var(--neon-purple)' }} className="font-semibold">fiables et efficaces</span>, adaptées aux besoins réels du client.
+            Avec plusieurs projets concrets à mon actif en <span style={{ color: 'var(--neon-blue)' }} className="font-semibold">développement web</span>, je me spécialise dans la création d&apos;<span style={{ color: 'var(--neon-green)' }} className="font-semibold">applications modernes, rapides et soignées</span>.
+            J&apos;aime construire &quot;proprement&quot;, avec une vraie attention à l&apos;UX et aux détails, pour livrer des solutions <span style={{ color: 'var(--neon-purple)' }} className="font-semibold">fiables et efficaces</span>, adaptées aux besoins réels du client.
           </p>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

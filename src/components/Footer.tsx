@@ -8,11 +8,25 @@ export default function Footer() {
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setShowButton(window.scrollY > 500);
+    let rafId: number | null = null;
+
+    const update = () => {
+      rafId = null;
+      const next = window.scrollY > 500;
+      setShowButton((prev) => (prev === next ? prev : next));
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const handleScroll = () => {
+      if (rafId != null) return;
+      rafId = requestAnimationFrame(update);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId != null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -20,7 +34,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative border-t py-12 px-4 bg-primary" style={{ borderColor: 'var(--glass-border)' }}>
+    <footer className="sticky bottom-0 z-0 border-t py-12 px-4 bg-primary" style={{ borderColor: 'var(--glass-border)' }}>
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
