@@ -1,135 +1,112 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
-  }
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { 
-    y: 0, 
-    opacity: 1,
-    transition: { duration: 0.5, ease: 'easeOut' }
-  }
-};
+import { useEffect, useRef, useState } from "react";
+import MagneticLetters from "./kinetic/MagneticLetters";
 
 export default function Hero() {
+  const [now, setNow] = useState<string>("");
+  const veilRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const update = () => {
+      const d = new Date();
+      const fmt = new Intl.DateTimeFormat("fr-FR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Europe/Paris",
+      }).format(d);
+      setNow(fmt.replace(".", ""));
+    };
+    update();
+    const id = setInterval(update, 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Reveal veil slides off on mount
+  useEffect(() => {
+    const v = veilRef.current;
+    if (!v) return;
+    requestAnimationFrame(() => {
+      v.style.transform = "translateY(-100%)";
+    });
+  }, []);
+
   return (
-    <section id="hero" className="relative min-h-screen w-full overflow-hidden bg-primary">
-      {/* Background gradient */}
-      <div 
-        className="absolute inset-0"
+    <section
+      id="hero"
+      className="relative min-h-screen w-full overflow-hidden bg-bone text-ink"
+    >
+      {/* Reveal veil */}
+      <div
+        ref={veilRef}
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-30 bg-ink"
         style={{
-          background: 'radial-gradient(ellipse at 30% 30%, var(--gradient-glow-blue) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, var(--gradient-glow-purple) 0%, transparent 50%)',
+          transform: "translateY(0%)",
+          transition: "transform 1.2s cubic-bezier(0.83, 0, 0.17, 1)",
         }}
       />
 
-      {/* Contenu principal */}
-      <motion.div 
-        className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Badge */}
-        <motion.div
-          variants={itemVariants}
-          className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full glass"
-        >
-          <Sparkles className="w-4 h-4 text-accent-blue" style={{ color: 'var(--neon-blue)' }} />
-          <span className="text-sm text-muted" style={{ color: 'var(--text-muted)' }}>Disponible pour de nouveaux projets</span>
-        </motion.div>
-
-        {/* Nom */}
-        <motion.h1
-          variants={itemVariants}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-gradient"
-        >
-          BOULICAUT--RAFFORT Hugo
-        </motion.h1>
-        
-        {/* Tagline */}
-        <motion.div variants={itemVariants} className="mb-8 max-w-2xl">
-          <p className="text-xl md:text-2xl" style={{ color: 'var(--text-secondary)' }}>
-            Développeur Fullstack JavaScript
-          </p>
-          <p className="text-xl md:text-2xl mt-2" style={{ color: 'var(--neon-blue)' }}>
-            Créateur d&apos;expériences web modernes
-          </p>
-        </motion.div>
-
-        {/* CTAs */}
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
-        >
-          <a
-            href="#projects"
-            className="px-8 py-4 font-bold rounded-full transition-transform hover:scale-105"
-            style={{ 
-              background: 'linear-gradient(135deg, var(--neon-blue), var(--neon-green))',
-              color: 'var(--background)'
-            }}
-          >
-            Voir mes projets
-          </a>
-          
-          <a
-            href="#contact"
-            className="px-8 py-4 font-bold rounded-full glass transition-transform hover:scale-105"
-            style={{ 
-              borderColor: 'var(--neon-blue)', 
-              borderWidth: '2px', 
-              color: 'var(--neon-blue)' 
-            }}
-          >
-            Me contacter
-          </a>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          variants={itemVariants}
-          className="grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto"
-        >
-          {[
-            { number: "5+", label: "Années d'expérience" },
-            { number: "50+", label: "Projets réalisés" },
-            { number: "100%", label: "Clients satisfaits" },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="glass p-4 rounded-xl"
-            >
-              <div className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--neon-blue)' }}>
-                {stat.number}
-              </div>
-              <div className="text-xs md:text-sm mt-1" style={{ color: 'var(--text-muted)' }}>{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 flex flex-col items-center gap-2">
-          <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-subtle)' }}>Scroll</span>
-          <div 
-            className="w-6 h-10 rounded-full flex justify-center"
-            style={{ borderColor: 'var(--neon-blue)', borderWidth: '2px', opacity: 0.5 }}
-          >
-            <div 
-              className="w-1 h-3 rounded-full mt-2 animate-bounce"
-              style={{ backgroundColor: 'var(--neon-blue)' }}
-            />
-          </div>
+      {/* Top meta bar */}
+      <div className="absolute inset-x-0 top-14 z-10 px-6 md:px-10 pt-10">
+        <div className="flex items-baseline justify-between rule-b pb-3">
+          <span className="eyebrow">Portfolio — Éd. 2026</span>
+          <span className="eyebrow tabular-nums">{now || "— Chargement —"}</span>
         </div>
-      </motion.div>
+      </div>
+
+      {/* Name composition */}
+      <div className="relative z-10 flex min-h-screen flex-col justify-center px-6 md:px-10">
+        <div className="flex items-baseline gap-4 mb-6 md:mb-10">
+          <span className="eyebrow">N° 00 / Hello</span>
+          <span className="hidden md:block h-px flex-1 bg-[var(--line-strong)]" />
+          <span className="eyebrow hidden md:block">Développeur fullstack</span>
+        </div>
+
+        <h1 className="display text-[18vw] md:text-[15vw] leading-[0.86] tracking-tight">
+          <span className="block">
+            <MagneticLetters text="Hugo" strength={22} radius={160} />
+          </span>
+          <span className="display-italic block -mt-[0.04em] text-ink/95">
+            <MagneticLetters text="Boulicaut–Raffort" strength={30} radius={220} wobble />
+          </span>
+        </h1>
+
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+          <p className="mono col-span-1 md:col-span-4 text-xs uppercase tracking-[0.22em] text-muted">
+            Basé à Annecy
+            <br />
+            Disponible — Alternance
+          </p>
+
+          <p className="col-span-1 md:col-span-7 md:col-start-6 text-xl md:text-2xl leading-snug max-w-xl">
+            Je construis des <span className="marker display-italic">interfaces soignées</span>,
+            rapides et robustes. Des bases propres, des <span className="marker">détails qui comptent</span>,
+            et du code qu&apos;on aime relire.
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom edge: scroll cue */}
+      <div className="absolute inset-x-0 bottom-6 z-10 px-6 md:px-10">
+        <div className="flex items-center justify-between rule-t pt-3">
+          <a
+            href="#about"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="eyebrow group inline-flex items-center gap-3"
+          >
+            <span className="inline-block h-px w-8 bg-ink transition-all duration-500 group-hover:w-16" />
+            Scroll / Commencer
+          </a>
+          <span className="eyebrow hidden md:block">© 2026 — HBR</span>
+        </div>
+      </div>
     </section>
   );
 }

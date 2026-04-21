@@ -1,209 +1,154 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-neon-blue: var(--neon-blue);
-  --color-neon-green: var(--neon-green);
-  --color-neon-purple: var(--neon-purple);
+  --color-bone: #f5f2ec;
+  --color-ink: #0e0e0e;
+  --color-pollen: #e8ff00;
+  --color-muted: #6b6864;
+  --color-subtle: #a09b94;
+  --color-line: rgba(14, 14, 14, 0.08);
+  --color-line-strong: rgba(14, 14, 14, 0.18);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
-/* Dark mode (default) */
-:root,
-html.dark {
-  /* Backgrounds */
-  --background: #000000;
-  --background-secondary: #0a0a0a;
-  --background-tertiary: #111111;
-  
-  /* Text colors */
-  --foreground: #ffffff;
-  --text-primary: #ffffff;
-  --text-secondary: #e5e7eb;
-  --text-muted: #9ca3af;
-  --text-subtle: #6b7280;
-  
-  /* Accent colors - neon vives pour dark mode */
-  --neon-blue: #00f0ff;
-  --neon-green: #00ff88;
-  --neon-purple: #b000ff;
-  --neon-orange: #ff6b00;
-  
-  /* Glass effects */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-bg-hover: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-hover: rgba(255, 255, 255, 0.2);
-  
-  /* Cards & surfaces */
-  --card-bg: rgba(255, 255, 255, 0.03);
-  --card-border: rgba(255, 255, 255, 0.08);
-  --card-shadow: rgba(0, 0, 0, 0.5);
-  
-  /* Gradients backgrounds */
-  --gradient-glow-blue: rgba(0, 240, 255, 0.15);
-  --gradient-glow-green: rgba(0, 255, 136, 0.1);
-  --gradient-glow-purple: rgba(176, 0, 255, 0.1);
-  
-  /* Scrollbar */
-  --scrollbar-track: #1a1a1a;
-  --scrollbar-thumb: #00f0ff;
-  
-  /* Shadows */
-  --shadow-color: rgba(0, 240, 255, 0.2);
-  --shadow-glow: 0 0 40px rgba(0, 240, 255, 0.3);
+:root {
+  --bone: #f5f2ec;
+  --ink: #0e0e0e;
+  --pollen: #e8ff00;
+  --pollen-ink: #0e0e0e;
+  --muted: #6b6864;
+  --subtle: #a09b94;
+  --line: rgba(14, 14, 14, 0.08);
+  --line-strong: rgba(14, 14, 14, 0.18);
+  --overlay-ink-05: rgba(14, 14, 14, 0.05);
+  --overlay-ink-10: rgba(14, 14, 14, 0.1);
 }
 
-/* Light mode */
-html.light {
-  /* Backgrounds */
-  --background: #fafbfc;
-  --background-secondary: #f1f5f9;
-  --background-tertiary: #e2e8f0;
-  
-  /* Text colors */
-  --foreground: #0f172a;
-  --text-primary: #0f172a;
-  --text-secondary: #1e293b;
-  --text-muted: #475569;
-  --text-subtle: #64748b;
-  
-  /* Accent colors - plus saturées et contrastées pour light mode */
-  --neon-blue: #0284c7;
-  --neon-green: #059669;
-  --neon-purple: #7c3aed;
-  --neon-orange: #ea580c;
-  
-  /* Glass effects */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-bg-hover: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-border-hover: rgba(0, 0, 0, 0.15);
-  
-  /* Cards & surfaces */
-  --card-bg: rgba(255, 255, 255, 0.8);
-  --card-border: rgba(0, 0, 0, 0.06);
-  --card-shadow: rgba(0, 0, 0, 0.1);
-  
-  /* Gradients backgrounds */
-  --gradient-glow-blue: rgba(2, 132, 199, 0.08);
-  --gradient-glow-green: rgba(5, 150, 105, 0.06);
-  --gradient-glow-purple: rgba(124, 58, 237, 0.06);
-  
-  /* Scrollbar */
-  --scrollbar-track: #e2e8f0;
-  --scrollbar-thumb: #0284c7;
-  
-  /* Shadows */
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 4px 20px rgba(0, 0, 0, 0.08);
+html {
+  background: var(--bone);
+  color: var(--ink);
 }
 
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01", "cv01", "cv11";
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  transition: background 0.3s ease, border-color 0.3s ease;
+::selection {
+  background: var(--pollen);
+  color: var(--ink);
 }
 
-.glass:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
+/* Film grain — subtle, additive, fixed overlay ------------------------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9'/></svg>");
+  background-size: 200px 200px;
 }
 
-.glass-dark {
-  background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--card-border);
-  transition: background 0.3s ease, border-color 0.3s ease;
+/* Typography scale ------------------------------------------------------ */
+.display {
+  font-family: var(--font-display), Georgia, serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 25, "WONK" 0;
+  letter-spacing: -0.03em;
+  line-height: 0.88;
+  font-weight: 400;
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.display-italic {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-variation-settings: "SOFT" 70, "WONK" 1;
+  letter-spacing: -0.02em;
 }
 
-.neon-glow {
-  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+.mono {
+  font-family: var(--font-mono), "SF Mono", monospace;
+  font-feature-settings: "ss01", "zero";
+  letter-spacing: 0.02em;
 }
 
-/* Text utility classes */
-.text-primary {
-  color: var(--text-primary);
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-.text-secondary {
-  color: var(--text-secondary);
+/* Editorial text utilities --------------------------------------------- */
+.text-ink     { color: var(--ink); }
+.text-muted   { color: var(--muted); }
+.text-subtle  { color: var(--subtle); }
+.text-pollen  { color: var(--pollen); }
+.bg-bone      { background: var(--bone); }
+.bg-ink       { background: var(--ink); }
+.bg-pollen    { background: var(--pollen); }
+
+/* Hairlines — editorial rules */
+.rule-t { border-top: 1px solid var(--line-strong); }
+.rule-b { border-bottom: 1px solid var(--line-strong); }
+
+/* Marker highlight — pollen behind text on hover */
+.marker {
+  background-image: linear-gradient(var(--pollen), var(--pollen));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 38%;
+  transition: background-size 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 0 0.05em;
+}
+.marker:hover,
+.marker-on { background-size: 100% 38%; }
+
+/* Letter scatter utility for hero */
+.letter {
+  display: inline-block;
+  will-change: transform;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.text-muted {
-  color: var(--text-muted);
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .letter,
+  .marker { transition: none !important; }
+  body::after { display: none; }
 }
 
-.text-subtle {
-  color: var(--text-subtle);
-}
-
-.text-accent-blue {
-  color: var(--neon-blue);
-}
-
-.text-accent-green {
-  color: var(--neon-green);
-}
-
-.text-accent-purple {
-  color: var(--neon-purple);
-}
-
-/* Background utility classes */
-.bg-primary {
-  background-color: var(--background);
-}
-
-.bg-secondary {
-  background-color: var(--background-secondary);
-}
-
-.bg-card {
-  background-color: var(--card-bg);
-}
-
+/* Scrollbar — hairline on bone */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  height: 10px;
 }
-
 ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
+  background: var(--bone);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 4px;
+  background: var(--ink);
+  border: 3px solid var(--bone);
+  border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-green);
-}
-
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
-}
+/* Legacy perspective utilities kept for compatibility ----------------- */
+.perspective-1000 { perspective: 1000px; }
+.backface-hidden { backface-visibility: hidden; }

@@ -1,230 +1,121 @@
-'use client';
+"use client";
 
-import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
-import { Code, Database, Palette, Rocket, ChevronRight } from 'lucide-react';
+import HorizontalTimeline, { type TimelineEntry } from "./about/HorizontalTimeline";
 
-const skills = [
-  { name: 'Frontend', icon: Code, items: ['React', 'Next.js', 'Vue.js', 'TypeScript', 'Flutter', 'C/C++'], colorVar: '--neon-blue', description: 'Interfaces modernes et réactives' },
-  { name: 'Backend', icon: Database, items: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Supabase'], colorVar: '--neon-green', description: 'APIs robustes et scalables' },
-  { name: 'Design', icon: Palette, items: ['Figma', 'UI/UX', 'Animations', 'Motion'], colorVar: '--neon-purple', description: 'Expériences visuelles immersives' },
-  { name: 'DevOps', icon: Rocket, items: ['Docker', 'CI/CD', 'AWS', 'Vercel', 'Azure'], colorVar: '--neon-orange', description: 'Déploiement et automatisation' },
+const timeline: TimelineEntry[] = [
+  {
+    year: "2022",
+    title: "Baccalauréat",
+    place: "Louis Armand — Chambéry",
+    description:
+      "Fondations solides en sciences et résolution de problèmes techniques.",
+  },
+  {
+    year: "2023",
+    title: "École 42",
+    place: "Lyon",
+    description:
+      "Formation intensive en algorithmique et développement logiciel collaboratif.",
+  },
+  {
+    year: "2025",
+    title: "Création d'Alp-Web",
+    place: "Agence Web",
+    description:
+      "Conception d'interfaces modernes et performantes avec stacks variées — Nuxt, Next, Supabase.",
+  },
+  {
+    year: "2026",
+    title: "BTS CIEL",
+    place: "Saint-Michel — Annecy",
+    description:
+      "Développement fullstack d'applications web innovantes et sécurisées.",
+  },
 ];
 
-const timeline = [
-  { year: '2026', title: 'BTS CIEL', company: 'Saint Michel Annecy', description: 'Développement fullstack d\'applications web innovantes et sécurisées.' },
-  { year: '2025', title: 'Creation Alp-Web', company: 'Agence Web', description: 'Conception d\'interfaces modernes et performantes avec stacks variées' },
-  { year: '2023', title: 'Ecole 42', company: 'Lyon', description: 'Formation intensive en algorithmique et développement logiciel collaboratif."' },
-  { year: '2022', title: 'Baccalauréat', company: 'Louis Armand Chambery', description: 'Fondations solides en sciences et résolution de problèmes techniques.' },
+type SkillGroup = {
+  category: string;
+  items: string[];
+};
+
+const skills: SkillGroup[] = [
+  {
+    category: "Frontend",
+    items: ["React", "Next.js", "Vue 3", "Nuxt 3", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP"],
+  },
+  {
+    category: "Backend / Data",
+    items: ["Node.js", "Express", "Supabase", "PostgreSQL", "MongoDB", "REST", "GraphQL"],
+  },
+  {
+    category: "Mobile / Systèmes",
+    items: ["Flutter", "Dart", "C / C++"],
+  },
+  {
+    category: "Outillage / Infra",
+    items: ["Git", "Docker", "Vercel", "AWS", "GitHub Actions", "Figma"],
+  },
 ];
-
-const sectionVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
-};
-
-const itemFromLeft = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } }
-};
-
-function FlipCard({ skill }: { skill: typeof skills[0] }) {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const Icon = skill.icon;
-  const color = `var(${skill.colorVar})`;
-
-  return (
-    <motion.div
-      variants={itemVariants}
-      className="perspective-1000 h-64"
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
-    >
-      <div
-        className="relative w-full h-full cursor-pointer transition-transform duration-500"
-        style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
-      >
-        {/* Front */}
-        <div 
-          className="absolute inset-0 glass p-6 rounded-xl backface-hidden"
-          style={{ backfaceVisibility: 'hidden' }}
-        >
-          <div className="h-full flex flex-col">
-            <div 
-              className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-              style={{ backgroundColor: `color-mix(in srgb, ${color} 20%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 40%, transparent)` }}
-            >
-              <Icon className="w-7 h-7" style={{ color }} />
-            </div>
-            <h4 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{skill.name}</h4>
-            <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{skill.description}</p>
-            <div className="mt-auto flex items-center gap-1 text-xs" style={{ color: 'var(--text-subtle)' }}>
-              <span>Hover pour voir les skills</span>
-              <ChevronRight className="w-3 h-3" />
-            </div>
-          </div>
-        </div>
-
-        {/* Back */}
-        <div 
-          className="absolute inset-0 glass p-6 rounded-xl backface-hidden"
-          style={{ 
-            backfaceVisibility: 'hidden', 
-            transform: 'rotateY(180deg)',
-            background: `linear-gradient(135deg, color-mix(in srgb, ${color} 10%, transparent), transparent)`,
-            border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`
-          }}
-        >
-          <h4 className="text-lg font-bold mb-4" style={{ color }}>{skill.name}</h4>
-          <div className="flex flex-wrap gap-2">
-            {skill.items.map((item) => (
-              <span
-                key={item}
-                className="px-3 py-2 rounded-lg text-sm font-medium"
-                style={{ 
-                  backgroundColor: `color-mix(in srgb, ${color} 30%, transparent)`, 
-                  border: `1px solid color-mix(in srgb, ${color} 50%, transparent)`,
-                  color: 'var(--text-primary)'
-                }}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function TimelineItem({ item }: { item: typeof timeline[0] }) {
-  return (
-    <motion.div
-      variants={itemFromLeft}
-      className="relative pl-8 group"
-    >
-      {/* Timeline line */}
-      <div 
-        className="absolute left-0 top-0 bottom-0 w-0.5"
-        style={{ background: 'linear-gradient(to bottom, var(--neon-blue), var(--neon-green), transparent)' }}
-      />
-      
-      {/* Dot */}
-      <div 
-        className="absolute left-[-6px] top-2 w-3 h-3 rounded-full"
-        style={{ backgroundColor: 'var(--neon-blue)' }}
-      />
-      
-      <div className="glass p-5 rounded-xl mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <span 
-            className="px-3 py-1 rounded-full text-sm font-bold"
-            style={{ backgroundColor: 'color-mix(in srgb, var(--neon-green) 20%, transparent)', color: 'var(--neon-green)' }}
-          >
-            {item.year}
-          </span>
-          <span style={{ color: 'var(--neon-blue)' }} className="text-sm">{item.company}</span>
-        </div>
-        <h4 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{item.title}</h4>
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{item.description}</p>
-      </div>
-    </motion.div>
-  );
-}
 
 export default function About() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
-
   return (
-    <section id="about" className="min-h-screen py-20 px-6 relative overflow-hidden bg-primary">
-      {/* Background elements */}
-      <div 
-        className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl pointer-events-none"
-        style={{ backgroundColor: 'var(--gradient-glow-blue)' }}
-      />
-      <div 
-        className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl pointer-events-none"
-        style={{ backgroundColor: 'var(--gradient-glow-green)' }}
-      />
-      
-      <motion.div
-        ref={ref}
-        className="max-w-7xl mx-auto relative z-10"
-        variants={sectionVariants}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-      >
-        {/* Header */}
-        <motion.div variants={itemVariants} className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-bold mb-4 text-gradient">
-            À propos
-          </h2>
-          <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--text-muted)' }}>
-            Passionné par le développement web et les technologies innovantes, 
-            je crée des expériences digitales uniques et performantes.
-          </p>
-        </motion.div>
+    <section id="about" className="relative bg-bone text-ink">
+      {/* Intro */}
+      <div className="px-6 md:px-10 pt-24 md:pt-36 rule-b">
+        <div className="grid grid-cols-12 gap-6 md:gap-10 pb-16 md:pb-24">
+          <div className="col-span-12 md:col-span-4">
+            <span className="eyebrow">01 / À propos</span>
+          </div>
+          <div className="col-span-12 md:col-span-8">
+            <p className="display text-[clamp(2.2rem,5.5vw,5.5rem)] leading-[1.02]">
+              Je fais du <span className="marker marker-on">développement web</span>{" "}
+              depuis quelques années — avec une attention particulière pour
+              l&apos;<span className="display-italic">UX, les détails</span>, et la
+              robustesse du code.
+            </p>
+            <p className="mt-10 max-w-2xl text-base md:text-lg leading-relaxed text-muted">
+              J&apos;aime construire proprement. Des bases solides, des interfaces
+              lisibles, du code qu&apos;on relit sans grimacer. Je livre des solutions
+              adaptées aux besoins réels, pas à des specs imaginaires.
+            </p>
+          </div>
+        </div>
+      </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 mb-20">
-          {/* Timeline */}
-          <motion.div variants={itemVariants}>
-            <h3 
-              className="text-3xl font-bold mb-8 flex items-center gap-3"
-              style={{ color: 'var(--neon-blue)' }}
-            >
-              <span className="w-10 h-1 rounded-full" style={{ backgroundColor: 'var(--neon-blue)' }} />
-              Mon Parcours
-            </h3>
-            <motion.div className="space-y-2" variants={sectionVariants}>
-              {timeline.map((item, index) => (
-                <TimelineItem key={index} item={item} />
-              ))}
-            </motion.div>
-          </motion.div>
+      {/* Horizontal timeline */}
+      <HorizontalTimeline entries={timeline} />
 
-          {/* Skills avec flip cards */}
-          <motion.div variants={itemVariants}>
-            <h3 
-              className="text-3xl font-bold mb-8 flex items-center gap-3"
-              style={{ color: 'var(--neon-green)' }}
-            >
-              <span className="w-10 h-1 rounded-full" style={{ backgroundColor: 'var(--neon-green)' }} />
-              Compétences
+      {/* Skills — editorial list */}
+      <div className="px-6 md:px-10 py-24 md:py-36 rule-t">
+        <div className="grid grid-cols-12 gap-6 md:gap-10 mb-12 md:mb-20">
+          <div className="col-span-12 md:col-span-4">
+            <span className="eyebrow">Compétences</span>
+          </div>
+          <div className="col-span-12 md:col-span-8">
+            <h3 className="display text-[clamp(2.5rem,6vw,6rem)] leading-[0.92]">
+              Les outils que <span className="display-italic">j&apos;utilise</span>.
             </h3>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 gap-4" variants={sectionVariants}>
-              {skills.map((skill) => (
-                <FlipCard key={skill.name} skill={skill} />
-              ))}
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Bio */}
-        <motion.div
-          variants={itemVariants}
-          className="glass p-8 md:p-12 rounded-2xl relative overflow-hidden"
-        >
-          {/* Decorative gradient */}
-          <div 
-            className="absolute top-0 left-0 w-full h-1"
-            style={{ background: 'linear-gradient(to right, var(--neon-blue), var(--neon-green), var(--neon-purple))' }}
-          />
-          
-          <p className="text-lg md:text-xl leading-relaxed max-w-4xl mx-auto text-center" style={{ color: 'var(--text-secondary)' }}>
-            Avec plusieurs projets concrets à mon actif en <span style={{ color: 'var(--neon-blue)' }} className="font-semibold">développement web</span>, je me spécialise dans la création d&apos;<span style={{ color: 'var(--neon-green)' }} className="font-semibold">applications modernes, rapides et soignées</span>.
-            J&apos;aime construire &quot;proprement&quot;, avec une vraie attention à l&apos;UX et aux détails, pour livrer des solutions <span style={{ color: 'var(--neon-purple)' }} className="font-semibold">fiables et efficaces</span>, adaptées aux besoins réels du client.
-          </p>
-        </motion.div>
-      </motion.div>
+        <dl className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
+          {skills.map((g) => (
+            <div key={g.category} className="col-span-12 md:col-span-6 lg:col-span-3 rule-t pt-6">
+              <dt className="eyebrow mb-6">{g.category}</dt>
+              <dd className="flex flex-col gap-1">
+                {g.items.map((s) => (
+                  <span
+                    key={s}
+                    className="display text-3xl md:text-4xl leading-tight cursor-default"
+                  >
+                    <span className="marker">{s}</span>
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </section>
   );
 }

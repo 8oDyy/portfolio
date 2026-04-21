@@ -1,224 +1,216 @@
-'use client';
+"use client";
 
-import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
-import { Send, Mail, Github, Linkedin, Twitter } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import { useRef, useState } from "react";
+import emailjs from "@emailjs/browser";
 
-const sectionVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 }
-  }
-};
+const EMAIL = "hugoboulicaut@gmail.com";
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
-};
+const socials = [
+  { label: "GitHub", url: "https://github.com/8oDyy" },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/boulicautraffort-hugo/" },
+  { label: "Email", url: `mailto:${EMAIL}` },
+];
+
+type Status = "idle" | "sending" | "success" | "error";
 
 export default function Contact() {
-  const ref = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<Status>("idle");
+  const [data, setData] = useState({ name: "", email: "", message: "" });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('sending');
-
+    setStatus("sending");
     try {
       await emailjs.send(
-        'service_fv7r9tk',      // Remplacez par votre Service ID
-        'template_i5y4s5k',     // Remplacez par votre Template ID
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          message: formData.message,
-        },
-        'gxO199Q3iQXQ1dZfg'       // Remplacez par votre Public Key
+        "service_fv7r9tk",
+        "template_i5y4s5k",
+        { from_name: data.name, from_email: data.email, message: data.message },
+        "gxO199Q3iQXQ1dZfg",
       );
-
-      setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setStatus('idle'), 3000);
-    } catch (error) {
-      console.error('Error sending email:', error);
-      setStatus('error');
-      setTimeout(() => setStatus('idle'), 3000);
+      setStatus("success");
+      setData({ name: "", email: "", message: "" });
+      setTimeout(() => setStatus("idle"), 4000);
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
     }
   };
 
-  const socialLinks = [
-    { name: 'GitHub', icon: Github, url: 'https://github.com/8oDyy', color: 'hover:text-white' },
-    { name: 'LinkedIn', icon: Linkedin, url: 'https://www.linkedin.com/in/boulicautraffort-hugo/', color: 'hover:text-blue-500' },
-    { name: 'Twitter', icon: Twitter, url: 'https://twitter.com/votre-username', color: 'hover:text-blue-400' },
-    { name: 'Email', icon: Mail, url: 'mailto:hugoboulicaut@gmail.com', color: 'hover:text-neon-green' },
-  ];
-
   return (
-    <section id="contact" className="relative min-h-screen py-20 px-4 bg-primary shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-      <motion.div
-        ref={ref}
-        className="max-w-7xl mx-auto"
-        variants={sectionVariants}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-      >
-        <motion.div variants={itemVariants} className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-bold text-gradient mb-4">Contact</h2>
-          <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--text-muted)' }}>
-            Une idée de projet ? Discutons-en !
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-12">
-          <motion.div variants={itemVariants}>
-            <div className="glass p-8 rounded-2xl">
-              <h3 className="text-3xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>Envoyez-moi un message</h3>
-              
-              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block mb-2 font-semibold" style={{ color: 'var(--text-secondary)' }}>
-                    Nom
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none"
-                    style={{ 
-                      backgroundColor: 'var(--card-bg)', 
-                      border: '1px solid var(--glass-border)',
-                      color: 'var(--text-primary)'
-                    }}
-                    placeholder="Votre nom"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block mb-2 font-semibold" style={{ color: 'var(--text-secondary)' }}>
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg transition-colors focus:outline-none"
-                    style={{ 
-                      backgroundColor: 'var(--card-bg)', 
-                      border: '1px solid var(--glass-border)',
-                      color: 'var(--text-primary)'
-                    }}
-                    placeholder="votre.email@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block mb-2 font-semibold" style={{ color: 'var(--text-secondary)' }}>
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    required
-                    rows={6}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg transition-colors resize-none focus:outline-none"
-                    style={{ 
-                      backgroundColor: 'var(--card-bg)', 
-                      border: '1px solid var(--glass-border)',
-                      color: 'var(--text-primary)'
-                    }}
-                    placeholder="Votre message..."
-                  />
-                </div>
-
-                <motion.button
-                  type="submit"
-                  disabled={status === 'sending'}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-all"
-                  style={
-                    status === 'sending'
-                      ? { backgroundColor: '#4b5563', cursor: 'not-allowed', color: 'var(--text-primary)' }
-                      : status === 'success'
-                      ? { backgroundColor: '#16a34a', color: 'white' }
-                      : status === 'error'
-                      ? { backgroundColor: '#dc2626', color: 'white' }
-                      : { background: 'linear-gradient(135deg, var(--neon-blue), var(--neon-green))', color: 'var(--background)' }
-                  }
-                >
-                  {status === 'sending' && 'Envoi en cours...'}
-                  {status === 'success' && '✓ Message envoyé !'}
-                  {status === 'error' && '✗ Erreur, réessayez'}
-                  {status === 'idle' && (
-                    <>
-                      <Send size={20} />
-                      Envoyer
-                    </>
-                  )}
-                </motion.button>
-              </form>
-
-              {status === 'idle' && (
-                <p className="mt-4 text-sm text-center" style={{ color: 'var(--text-subtle)' }}>
-                  * Configurez EmailJS pour activer le formulaire (voir commentaires dans le code)
-                </p>
-              )}
-            </div>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="space-y-8">
-            <div className="glass p-8 rounded-2xl">
-              <h3 className="text-3xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>Retrouvez-moi sur</h3>
-              <div className="space-y-4">
-                {socialLinks.map((link) => {
-                  const Icon = link.icon;
-                  return (
-                    <a
-                      key={link.name}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 rounded-lg transition-all duration-200 hover:scale-[1.03] hover:translate-x-2"
-                      style={{ 
-                        backgroundColor: 'var(--card-bg)', 
-                        border: '1px solid var(--glass-border)',
-                        color: 'var(--text-secondary)'
-                      }}
-                    >
-                      <Icon size={24} />
-                      <span className="font-semibold">{link.name}</span>
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="glass p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--neon-green)' }}>Disponibilité</h3>
-              <p className="leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                Je suis actuellement <span style={{ color: 'var(--neon-green)' }} className="font-bold"> à la recherche d&apos;une alternance </span>
-                 à partir de maintenant et ouvert aux opportunités en développement. N&apos;hésitez pas à me contacter pour en discuter !
-              </p>
-            </div>
-          </motion.div>
+    <section id="contact" className="relative bg-bone text-ink">
+      <div className="px-6 md:px-10 pt-24 md:pt-36 rule-t">
+        <div className="grid grid-cols-12 gap-6 md:gap-10">
+          <div className="col-span-12 md:col-span-4">
+            <span className="eyebrow">04 / Contact</span>
+          </div>
+          <div className="col-span-12 md:col-span-8">
+            <h2 className="display text-[clamp(3.5rem,11vw,11rem)] leading-[0.88]">
+              Travaillons
+              <br />
+              <span className="display-italic">ensemble.</span>
+            </h2>
+            <p className="mt-8 max-w-xl text-base md:text-lg leading-relaxed text-muted">
+              Je suis en recherche d&apos;alternance à partir de maintenant et
+              ouvert aux opportunités en développement. Écris-moi : je réponds
+              toujours.
+            </p>
+          </div>
         </div>
-      </motion.div>
+
+        {/* Email mega-link */}
+        <div className="my-20 md:my-32">
+          <a
+            href={`mailto:${EMAIL}`}
+            className="block group"
+            aria-label="Envoyer un email"
+          >
+            <span className="eyebrow block mb-4">Par email direct</span>
+            <span className="display block text-[clamp(2rem,7vw,7rem)] leading-[0.9] break-words">
+              <span className="marker">{EMAIL}</span>
+              <span className="inline-block ml-4 -translate-x-2 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
+                ↗
+              </span>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      {/* Form + socials */}
+      <div className="px-6 md:px-10 py-20 md:py-28 rule-t">
+        <div className="grid grid-cols-12 gap-10 md:gap-16">
+          <div className="col-span-12 md:col-span-7">
+            <span className="eyebrow block mb-6">Ou envoyez un mot ici</span>
+
+            <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-10">
+              <EditorialField
+                label="Votre nom"
+                id="name"
+                value={data.name}
+                onChange={(v) => setData({ ...data, name: v })}
+                required
+              />
+              <EditorialField
+                label="Votre email"
+                id="email"
+                type="email"
+                value={data.email}
+                onChange={(v) => setData({ ...data, email: v })}
+                required
+              />
+              <EditorialField
+                label="Votre message"
+                id="message"
+                textarea
+                value={data.message}
+                onChange={(v) => setData({ ...data, message: v })}
+                required
+              />
+
+              <div className="flex items-center justify-between gap-6 mt-2">
+                <SubmitHint status={status} />
+                <button
+                  type="submit"
+                  disabled={status === "sending"}
+                  className="mono inline-flex items-center gap-3 px-6 py-4 text-xs uppercase tracking-[0.22em] bg-ink text-bone hover:bg-pollen hover:text-ink disabled:opacity-50 transition-colors"
+                >
+                  {status === "sending" ? "Envoi…" : status === "success" ? "Envoyé ✓" : status === "error" ? "Erreur — réessayer" : "Envoyer"}
+                  <span aria-hidden>→</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <aside className="col-span-12 md:col-span-5 md:border-l md:border-[var(--line)] md:pl-10">
+            <span className="eyebrow block mb-6">Ailleurs</span>
+            <ul className="flex flex-col">
+              {socials.map((s) => (
+                <li key={s.label} className="rule-t">
+                  <a
+                    href={s.url}
+                    target={s.url.startsWith("http") ? "_blank" : undefined}
+                    rel={s.url.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="group flex items-center justify-between py-5"
+                  >
+                    <span className="display text-3xl md:text-4xl leading-none">
+                      <span className="marker">{s.label}</span>
+                    </span>
+                    <span className="mono text-xs uppercase tracking-[0.22em] text-subtle group-hover:text-ink transition-colors">
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-10 rule-t pt-5">
+              <span className="eyebrow block mb-3">Basé à</span>
+              <p className="display-italic text-3xl leading-tight">Annecy — France</p>
+            </div>
+          </aside>
+        </div>
+      </div>
     </section>
   );
+}
+
+function EditorialField({
+  label,
+  id,
+  type = "text",
+  value,
+  onChange,
+  required,
+  textarea,
+}: {
+  label: string;
+  id: string;
+  type?: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  textarea?: boolean;
+}) {
+  return (
+    <label htmlFor={id} className="flex flex-col gap-2 border-b border-[var(--line-strong)] pb-2 focus-within:border-ink">
+      <span className="eyebrow flex items-center justify-between">
+        {label}
+        {required && <span className="text-subtle">— requis</span>}
+      </span>
+      {textarea ? (
+        <textarea
+          id={id}
+          required={required}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={4}
+          className="bg-transparent text-lg md:text-xl leading-relaxed text-ink outline-none resize-none placeholder:text-subtle"
+          placeholder="Dis-m&apos;en plus…"
+        />
+      ) : (
+        <input
+          id={id}
+          type={type}
+          required={required}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="bg-transparent text-lg md:text-xl leading-relaxed text-ink outline-none placeholder:text-subtle"
+          placeholder={type === "email" ? "nom@domaine.com" : "Hugo Boulicaut-Raffort"}
+        />
+      )}
+    </label>
+  );
+}
+
+function SubmitHint({ status }: { status: Status }) {
+  const msg =
+    status === "success"
+      ? "Message reçu. Je réponds sous 48h."
+      : status === "error"
+        ? "Erreur à l'envoi. Essaye l'email direct."
+        : status === "sending"
+          ? "Envoi en cours…"
+          : "Chiffré via EmailJS.";
+  return <span className="mono text-xs uppercase tracking-[0.22em] text-subtle">{msg}</span>;
 }

@@ -1,161 +1,85 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Code, Database, Cloud, Wrench, Zap } from 'lucide-react';
+import TechMarquee from "./stack/TechMarquee";
+import TechPlayground from "./stack/TechPlayground";
 
-const technologies = [
-  { 
-    category: 'Frontend', 
-    icon: Code,
-    items: ['React', 'Next.js','Vue.js', 'Nuxt.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Three.js', 'HTML/CSS', 'C/C++', 'Dart', 'Flutter' ],
-    colorVar: '--neon-blue',
+const marqueeRows = [
+  {
+    items: [
+      "React",
+      "Next.js",
+      "Vue 3",
+      "Nuxt 3",
+      "TypeScript",
+      "Tailwind",
+      "Framer Motion",
+      "GSAP",
+    ],
   },
-  { 
-    category: 'Backend', 
-    icon: Database,
-    items: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Redis', 'GraphQL'],
-    colorVar: '--neon-green',
+  {
+    items: ["Node.js", "Supabase", "PostgreSQL", "Express", "MongoDB", "Redis", "GraphQL"],
+    reverse: true,
   },
-  { 
-    category: 'DevOps', 
-    icon: Cloud,
-    items: ['Docker', 'AWS', 'Vercel', 'GitHub Actions', 'Nginx', 'CI/CD'],
-    colorVar: '--neon-purple',
-  },
-  { 
-    category: 'Tools', 
-    icon: Wrench,
-    items: ['Git', 'VS Code', 'Figma', 'Postman', 'Jest', 'ESLint'],
-    colorVar: '--neon-orange',
+  {
+    items: ["Git", "Docker", "Vercel", "AWS", "GitHub Actions", "Figma", "Flutter", "C++"],
   },
 ];
 
-function TechCard({ tech, index, scrollYProgress }: { tech: typeof technologies[0]; index: number; scrollYProgress: ReturnType<typeof useScroll>['scrollYProgress'] }) {
-  const Icon = tech.icon;
-  const color = `var(${tech.colorVar})`;
-
-  const total = technologies.length;
-  // Each card animates within its own slice of the scroll progress
-  const start = index / total;
-  const end = (index + 0.8) / total;
-
-  const opacity = useTransform(scrollYProgress, [start, start + 0.05, end], [0, 1, 1]);
-  const y = useTransform(scrollYProgress, [start, start + 0.1], [80, 0]);
-  const scale = useTransform(scrollYProgress, [start, start + 0.1], [0.85, 1]);
-
-  return (
-    <motion.div
-      style={{ opacity, y, scale }}
-      className="relative glass p-6 rounded-2xl overflow-hidden group"
-    >
-      {/* Glow background on hover */}
-      <div
-        className="absolute inset-0 opacity-0"
-        style={{
-          background: `radial-gradient(circle at center, color-mix(in srgb, ${color} 20%, transparent) 0%, transparent 70%)`,
-        }}
-      />
-
-      {/* Icon */}
-      <div 
-        className="relative w-16 h-16 rounded-xl p-4 mb-4"
-        style={{ background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 80%, transparent))` }}
-      >
-        <Icon className="w-full h-full" style={{ color: 'var(--background)' }} />
-      </div>
-      
-      <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--text-primary)' }}>{tech.category}</h3>
-      
-      {/* Items */}
-      <div className="space-y-2 relative z-10">
-        {tech.items.map((item) => (
-          <div
-            key={item}
-            className="flex items-center gap-2"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            <div 
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: color }}
-            />
-            <span className="text-sm">{item}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Border glow on hover */}
-      <div
-        className="absolute inset-0 rounded-2xl pointer-events-none opacity-0"
-        style={{ border: `1px solid ${color}` }}
-      />
-    </motion.div>
-  );
-}
+const playgroundWords = [
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Tailwind",
+  "Nuxt",
+  "Supabase",
+  "PostgreSQL",
+  "GSAP",
+  "Framer Motion",
+  "Vercel",
+  "Docker",
+  "Flutter",
+  "Node.js",
+  "Figma",
+  "Git",
+];
 
 export default function Stack() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end end'],
-  });
-
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
-  const titleY = useTransform(scrollYProgress, [0, 0.08], [40, 0]);
-
-  const bottomOpacity = useTransform(scrollYProgress, [0.85, 0.95], [0, 1]);
-  const bottomY = useTransform(scrollYProgress, [0.85, 0.95], [30, 0]);
-
   return (
-    // The outer wrapper is tall to create scroll room — the sticky inner section stays locked in view
-    <section id="stack" ref={sectionRef} className="relative" style={{ height: '300vh' }}>
-      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0">
-          <div 
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(to bottom, var(--background), var(--background-secondary), var(--background))' }}
-          />
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full"
-            style={{ background: 'radial-gradient(circle, var(--gradient-glow-blue) 0%, transparent 70%)' }}
-          />
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10 w-full px-6">
-          {/* Title */}
-          <motion.div style={{ opacity: titleOpacity, y: titleY }} className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-bold mb-4 text-gradient">
-              Ma Stack Technique
-            </h2>
-            <p 
-              className="text-xl max-w-3xl mx-auto"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Technologies et outils que j&apos;utilise au quotidien
-            </p>
-          </motion.div>
-
-          {/* Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {technologies.map((tech, i) => (
-              <TechCard key={tech.category} tech={tech} index={i} scrollYProgress={scrollYProgress} />
-            ))}
+    <section id="stack" className="relative bg-bone text-ink">
+      <header className="px-6 md:px-10 pt-24 md:pt-36 rule-b pb-8 md:pb-12">
+        <div className="grid grid-cols-12 gap-6 md:gap-10">
+          <div className="col-span-12 md:col-span-4">
+            <span className="eyebrow">03 / Stack technique</span>
           </div>
-
-          {/* Bottom text */}
-          <motion.div style={{ opacity: bottomOpacity, y: bottomY }} className="mt-16 text-center">
-            <p 
-              className="text-lg inline-flex items-center gap-2"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              <Zap className="w-5 h-5" style={{ color: 'var(--neon-blue)' }} />
-              Toujours en apprentissage continu pour rester à jour avec les dernières technologies
-              <Zap className="w-5 h-5" style={{ color: 'var(--neon-green)' }} />
-            </p>
-          </motion.div>
+          <div className="col-span-12 md:col-span-8">
+            <h2 className="display text-[clamp(3rem,9vw,9rem)] leading-[0.88]">
+              Ce que je <span className="display-italic">parle</span>.
+            </h2>
+          </div>
         </div>
+      </header>
+
+      {/* Kinetic marquee */}
+      <TechMarquee rows={marqueeRows} />
+
+      {/* Easter egg playground */}
+      <div className="px-6 md:px-10 py-20 md:py-32">
+        <div className="grid grid-cols-12 gap-6 md:gap-10 mb-12">
+          <div className="col-span-12 md:col-span-5">
+            <p className="display-italic text-3xl md:text-4xl leading-tight">
+              Un terrain de jeu — <br />
+              sans règles utiles.
+            </p>
+          </div>
+          <div className="col-span-12 md:col-span-6 md:col-start-7 max-w-lg">
+            <p className="text-base md:text-lg leading-relaxed text-muted">
+              Les outils deviennent des objets physiques. Attrapez-les, lancez-les,
+              empilez-les. Cliquez sur <em className="not-italic text-ink">Reset</em> pour
+              tout laisser retomber.
+            </p>
+          </div>
+        </div>
+        <TechPlayground words={playgroundWords} />
       </div>
     </section>
   );

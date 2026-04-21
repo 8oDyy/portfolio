@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
-import CursorHalo from "@/components/CursorHalo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,14 +12,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  axes: ["SOFT", "WONK", "opsz"],
+});
+
 export const metadata: Metadata = {
-  title: "Portfolio - Développeur Fullstack",
-  description: "Portfolio moderne et immersif d'un développeur fullstack JavaScript spécialisé en React, Next.js et Three.js",
-  keywords: ["portfolio", "développeur", "fullstack", "react", "nextjs", "threejs"],
-  authors: [{ name: "Votre Nom" }],
+  title: "Hugo Boulicaut-Raffort — Développeur",
+  description:
+    "Portfolio éditorial de Hugo Boulicaut-Raffort, développeur fullstack JavaScript. Projets, parcours, stack technique.",
+  keywords: ["portfolio", "développeur", "fullstack", "react", "nextjs", "typescript"],
+  authors: [{ name: "Hugo Boulicaut-Raffort" }],
   openGraph: {
-    title: "Portfolio - Développeur Fullstack",
-    description: "Portfolio moderne et immersif",
+    title: "Hugo Boulicaut-Raffort — Développeur",
+    description: "Portfolio éditorial — développeur fullstack JavaScript.",
     type: "website",
   },
 };
@@ -31,11 +37,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="dark">
+    <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
       >
-        <CursorHalo />
         {children}
       </body>
     </html>

@@ -6,45 +6,34 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        neon: {
-          blue: "#00f0ff",
-          green: "#00ff88",
-          purple: "#b000ff",
-        },
+        bone: "#f5f2ec",
+        ink: "#0e0e0e",
+        pollen: "#e8ff00",
+        muted: "#6b6864",
+        subtle: "#a09b94",
+      },
+      fontFamily: {
+        display: ["var(--font-fraunces)", "Georgia", "serif"],
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "SF Mono", "monospace"],
       },
       animation: {
-        "float": "float 6s ease-in-out infinite",
-        "glow": "glow 2s ease-in-out infinite alternate",
-        "slide-up": "slideUp 0.5s ease-out",
-        "fade-in": "fadeIn 0.6s ease-out",
+        "marquee": "marquee 45s linear infinite",
+        "marquee-slow": "marquee 90s linear infinite",
+        "drift": "drift 14s ease-in-out infinite",
       },
       keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-20px)" },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
         },
-        glow: {
-          "0%": { boxShadow: "0 0 5px #00f0ff, 0 0 10px #00f0ff" },
-          "100%": { boxShadow: "0 0 20px #00f0ff, 0 0 40px #00f0ff" },
+        drift: {
+          "0%, 100%": { transform: "translate(0, 0)" },
+          "50%": { transform: "translate(10px, -14px)" },
         },
-        slideUp: {
-          "0%": { transform: "translateY(100px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
   },
