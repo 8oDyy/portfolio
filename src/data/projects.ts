@@ -6,6 +6,15 @@ export type ProjectImage = {
   ratio?: string;
 };
 
+/** A horizontal strip of aligned phone screenshots — used for flows. */
+export type ProjectStrip = {
+  kind: "strip";
+  images: ProjectImage[];
+  caption?: string;
+};
+
+export type ProjectGalleryItem = ProjectImage | ProjectStrip;
+
 export type ProjectFeature = {
   title: string;
   description: string;
@@ -60,7 +69,7 @@ export type Project = {
   /** Cover image shown in the sticky column. */
   cover: ProjectImage;
   /** Additional images displayed inline below the narrative. */
-  gallery: ProjectImage[];
+  gallery: ProjectGalleryItem[];
 };
 
 export const projects: Project[] = [
@@ -277,15 +286,44 @@ export const projects: Project[] = [
       demo: "",
     },
     cover: {
-      src: "",
-      alt: "Écran principal de l'app Melo",
-      ratio: "4/5",
+      src: "/projects/melo/MainPage.png",
+      alt: "Page d'accueil de l'app Melo",
+      ratio: "9/19.5",
     },
     gallery: [
-      { src: "", alt: "Onboarding Melo", caption: "Onboarding 15 écrans — profil nutritionnel", ratio: "3/4" },
-      { src: "", alt: "Home — suggestions de repas", caption: "Suggestions contextuelles générées par LLM", ratio: "3/4" },
-      { src: "", alt: "Planning hebdomadaire", caption: "Planning 7 jours × repas — régénération à la case", ratio: "16/10" },
-      { src: "", alt: "Liste de courses", caption: "Liste de courses agrégée depuis le planning", ratio: "3/4" },
+      {
+        kind: "strip",
+        caption: "Onboarding — du profil nutritionnel aux objectifs",
+        images: [
+          { src: "/projects/melo/Onboarding1.png", alt: "Onboarding Melo — étape 1", ratio: "9/19.5" },
+          { src: "/projects/melo/Onboarding2.png", alt: "Onboarding Melo — étape 2", ratio: "9/19.5" },
+          { src: "/projects/melo/Onboarding3.png", alt: "Onboarding Melo — étape 3", ratio: "9/19.5" },
+          { src: "/projects/melo/Onboarding4.png", alt: "Onboarding Melo — étape 4", ratio: "9/19.5" },
+          { src: "/projects/melo/Onboarding5.png", alt: "Onboarding Melo — étape 5", ratio: "9/19.5" },
+        ],
+      },
+      {
+        src: "/projects/melo/MealPage.png",
+        alt: "Liste des recettes",
+        caption: "Catalogue de recettes — filtrage et recherche",
+        ratio: "9/19.5",
+      },
+      {
+        kind: "strip",
+        caption: "Recette détaillée — ingrédients, macros et étapes pas à pas",
+        images: [
+          { src: "/projects/melo/Cokking0.png", alt: "Recette — entrée", ratio: "9/19.5" },
+          { src: "/projects/melo/Cooking.png", alt: "Recette — vue d'ensemble", ratio: "9/19.5" },
+          { src: "/projects/melo/Cooking2.png", alt: "Recette — étapes de préparation", ratio: "9/19.5" },
+          { src: "/projects/melo/cooking3.png", alt: "Recette — synthèse macros", ratio: "9/19.5" },
+        ],
+      },
+      {
+        src: "/projects/melo/Week.png",
+        alt: "Prédiction hebdomadaire",
+        caption: "Planning 7 jours — repas générés par LLM",
+        ratio: "9/19.5",
+      },
     ],
   },
   {

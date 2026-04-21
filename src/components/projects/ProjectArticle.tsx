@@ -1,6 +1,6 @@
 "use client";
 
-import type { Project } from "@/data/projects";
+import type { Project, ProjectGalleryItem, ProjectImage as ProjectImageType, ProjectStrip } from "@/data/projects";
 import ProjectImage from "./ProjectImage";
 
 type Props = {
@@ -39,7 +39,12 @@ export default function ProjectArticle({ project, first }: Props) {
           {/* Cover (sticky on desktop) */}
           <div className="col-span-12 md:col-span-5">
             <div className="md:sticky md:top-24">
-              <ProjectImage image={project.cover} priority={first} />
+              <div
+                className="mx-auto md:max-w-[var(--cover-cap,none)]"
+                style={{ "--cover-cap": computeCoverCap(project.cover.ratio) } as React.CSSProperties}
+              >
+                <ProjectImage image={project.cover} priority={first} />
+              </div>
               <MetaBlock project={project} />
             </div>
           </div>
@@ -128,17 +133,32 @@ export default function ProjectArticle({ project, first }: Props) {
           <div className="mt-24 md:mt-32">
             <div className="mb-8 flex items-baseline gap-4 rule-t pt-4">
               <span className="eyebrow">Galerie</span>
-              <span className="eyebrow text-subtle">— {project.gallery.length} visuels</span>
+              <span className="eyebrow text-subtle">— {countGalleryVisuals(project.gallery)} visuels</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-              {project.gallery.map((img, i) => (
-                <ProjectImage
-                  key={i}
-                  image={img}
-                  className={i % 3 === 0 ? "md:col-span-2" : ""}
-                  ratio={i % 3 === 0 ? "16/7" : img.ratio}
-                />
-              ))}
+            <div className="flex flex-col gap-10 md:gap-16">
+              {groupGallery(project.gallery).map((g, i) =>
+                g.kind === "strip" ? (
+                  <GalleryStrip key={i} strip={g.strip} />
+                ) : g.items.length === 1 ? (
+                  <div key={i} className="md:mx-auto md:max-w-sm">
+                    <ProjectImage image={g.items[0]} />
+                  </div>
+                ) : (
+                  <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                    {g.items.map((img, j) => {
+                      const promoted = j % 3 === 0 && isLandscape(img.ratio);
+                      return (
+                        <ProjectImage
+                          key={j}
+                          image={img}
+                          className={promoted ? "md:col-span-2" : ""}
+                          ratio={promoted ? "16/7" : img.ratio}
+                        />
+                      );
+                    })}
+                  </div>
+                ),
+              )}
             </div>
           </div>
         )}
@@ -244,6 +264,73 @@ function LinkPill({ href, label, primary }: { href: string; label: string; prima
       <span aria-hidden>↗</span>
     </a>
   );
+}
+
+type GalleryGroup =
+  | { kind: "singles"; items: ProjectImageType[] }
+  | { kind: "strip"; strip: ProjectStrip };
+
+function groupGallery(items: ProjectGalleryItem[]): GalleryGroup[] {
+  const groups: GalleryGroup[] = [];
+  let buf: ProjectImageType[] = [];
+  for (const item of items) {
+    if ("kind" in item && item.kind === "strip") {
+      if (buf.length) groups.push({ kind: "singles", items: buf });
+      groups.push({ kind: "strip", strip: item });
+      buf = [];
+    } else {
+      buf.push(item as ProjectImageType);
+    }
+  }
+  if (buf.length) groups.push({ kind: "singles", items: buf });
+  return groups;
+}
+
+function countGalleryVisuals(items: ProjectGalleryItem[]): number {
+  return items.reduce(
+    (n, it) => n + ("kind" in it && it.kind === "strip" ? it.images.length : 1),
+    0,
+  );
+}
+
+function GalleryStrip({ strip }: { strip: ProjectStrip }) {
+  return (
+    <figure className="flex flex-col gap-3">
+      <div className="-mx-6 overflow-x-auto md:mx-0 md:overflow-visible">
+        <div className="flex gap-4 px-6 md:gap-6 md:px-0">
+          {strip.images.map((img, i) => (
+            <div
+              key={i}
+              className="w-[42vw] shrink-0 md:w-auto md:flex-1 md:shrink"
+            >
+              <ProjectImage image={img} />
+            </div>
+          ))}
+        </div>
+      </div>
+      {strip.caption && (
+        <figcaption className="eyebrow flex items-baseline gap-3">
+          <span className="inline-block h-px w-6 bg-ink" />
+          {strip.caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+function isLandscape(ratio?: string): boolean {
+  if (!ratio) return false;
+  const [w, h] = ratio.split("/").map(Number);
+  if (!w || !h) return false;
+  return w > h;
+}
+
+function computeCoverCap(ratio?: string): string {
+  if (!ratio) return "none";
+  const [w, h] = ratio.split("/").map(Number);
+  if (!w || !h || h / w <= 1.3) return "none";
+  const coeff = (w / h).toFixed(4);
+  return `calc((100vh - 8rem) * ${coeff})`;
 }
 
 function StatusPill({ status }: { status: Project["status"] }) {

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import type { ProjectImage as ProjectImageType } from "@/data/projects";
+import PhoneFrame from "./PhoneFrame";
 
 type Props = {
   image: ProjectImageType;
@@ -14,36 +15,41 @@ type Props = {
   label?: string;
 };
 
-/**
- * Renders a project image with an elegant editorial placeholder when the
- * source is empty or missing. The placeholder shows the declared ratio,
- * a label, and is framed by a hairline — so a page looks intentional even
- * before real screenshots are dropped in.
- */
 export default function ProjectImage({ image, ratio, className = "", priority, label }: Props) {
   const [failed, setFailed] = useState(false);
   const aspect = ratio || image.ratio || "4/5";
   const isEmpty = !image.src || failed;
+  const isPhone = isPhoneRatio(aspect);
+
+  const content = (
+    <>
+      {!isEmpty && (
+        <Image
+          src={image.src}
+          alt={image.alt}
+          fill
+          sizes="(min-width: 1024px) 40vw, 100vw"
+          priority={priority}
+          onError={() => setFailed(true)}
+          className="object-cover"
+        />
+      )}
+      {isEmpty && <Placeholder ratio={aspect} label={label || image.alt} />}
+    </>
+  );
 
   return (
     <figure className={`relative w-full ${className}`}>
-      <div
-        className="relative w-full overflow-hidden bg-ink/[0.03]"
-        style={{ aspectRatio: aspect }}
-      >
-        {!isEmpty && (
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            priority={priority}
-            onError={() => setFailed(true)}
-            className="object-cover"
-          />
-        )}
-        {isEmpty && <Placeholder ratio={aspect} label={label || image.alt} />}
-      </div>
+      {isPhone ? (
+        <PhoneFrame>{content}</PhoneFrame>
+      ) : (
+        <div
+          className="relative w-full overflow-hidden bg-ink/[0.03]"
+          style={{ aspectRatio: aspect }}
+        >
+          {content}
+        </div>
+      )}
       {image.caption && (
         <figcaption className="eyebrow mt-3 flex items-baseline gap-3">
           <span className="inline-block h-px w-6 bg-ink" />
@@ -52,6 +58,12 @@ export default function ProjectImage({ image, ratio, className = "", priority, l
       )}
     </figure>
   );
+}
+
+function isPhoneRatio(ratio: string): boolean {
+  const [w, h] = ratio.split("/").map(Number);
+  if (!w || !h) return false;
+  return h / w >= 2;
 }
 
 function Placeholder({ ratio, label }: { ratio: string; label: string }) {
