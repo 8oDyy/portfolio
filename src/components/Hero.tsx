@@ -3,33 +3,36 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 
-// Sequence: loader exit → NAME BOOM BOOM BOOM (nothing else before) → header/navbar/intro arrive after
-// Rhythm: 100 BPM — noire = 0.6s, double croche = 0.15s
+// Sequence: loader exit → NAME BOOM BOOM BOOM → tout le reste apparaît sec & net, en 3 coups
 const SNAP_EASE = [0.16, 1, 0.3, 1] as const; // expo-out — clean, sharp, no overshoot
 const BEAT = 0.6;
 const NAME_REVEAL_BASE_DELAY = 2.7;
 const NAME_SLAM_STAGGER = BEAT; // each name line = 1 noire
-const REVEAL_DONE_MS = 6700;
 
-// Arrives AFTER the name slams — top meta bar slides down
-const topBarVariants: Variants = {
-  hidden: { y: "-120%", opacity: 0 },
-  visible: {
-    y: "0%",
-    opacity: 1,
-    transition: { duration: 0.6, ease: SNAP_EASE, delay: 5.0 },
-  },
-};
+// Après le dernier slam (~4.35s) : tout apparaît en cut sec, cascade en 6 temps.
+// Haut : Navbar (4.9s, dans Navbar.tsx) → N° 00 → Portfolio. Pose.
+// Bas (même rythme, 3 temps) : scroll cue → mono col → paragraphe.
+const SNAP_DURATION = 0; // vrai cut, pas d'interpolation — évite le micro-saut sur le texte
+const EYEBROW_DELAY = 5.0; // "N° 00 / Bonjour" — très court après la navbar
+const TOP_BAR_DELAY = 5.15; // "Portfolio / Éd. 2026"
+const BELOW_EDGE_DELAY = 5.7; // pose puis scroll cue
+const INTRO_MONO_DELAY = 5.85; // col gauche "Annecy / Dispo"
+const INTRO_PARAGRAPH_DELAY = 6.0; // paragraphe "J'écris des interfaces…"
+const REVEAL_DONE_MS = 6300;
 
-// Eyebrow — arrives with the top bar group
-const eyebrowRowVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
+const snapAt = (delay: number): Variants => ({
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: SNAP_EASE, delay: 5.2 },
+    transition: { duration: SNAP_DURATION, delay },
   },
-};
+});
+
+const topBarVariants = snapAt(TOP_BAR_DELAY);
+const eyebrowRowVariants = snapAt(EYEBROW_DELAY);
+const bottomCueVariants = snapAt(BELOW_EDGE_DELAY);
+const introMonoVariants = snapAt(INTRO_MONO_DELAY);
+const introParagraphVariants = snapAt(INTRO_PARAGRAPH_DELAY);
 
 // Name h1 — orchestrates 3 line slams at 1 noire apart
 const nameContainerVariants: Variants = {
@@ -48,26 +51,6 @@ const nameLineVariants: Variants = {
   visible: {
     y: "0%",
     transition: { duration: 0.45, ease: SNAP_EASE },
-  },
-};
-
-// Double croche after the 3 slams ring out — intro arrives as quick accent
-// line 3 hits at 2.7 + 2*0.6 = 3.9s → short rest → header group at 5.0s → intro at 5.5s
-const introVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: SNAP_EASE, delay: 5.5 },
-  },
-};
-
-// Scroll cue — last to arrive
-const bottomCueVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.6, delay: 6.1 },
   },
 };
 
@@ -155,19 +138,24 @@ export default function Hero() {
           <NameLine reduce={!!reduce} italic>Raffort</NameLine>
         </motion.h1>
 
-        <motion.div
-          className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10"
-          variants={reduce ? undefined : introVariants}
-          initial={reduce ? undefined : "hidden"}
-          animate={reduce ? undefined : "visible"}
-        >
-          <p className="mono col-span-1 md:col-span-4 text-xs uppercase tracking-[0.22em] text-muted">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+          <motion.p
+            className="mono col-span-1 md:col-span-4 text-xs uppercase tracking-[0.22em] text-muted"
+            variants={reduce ? undefined : introMonoVariants}
+            initial={reduce ? undefined : "hidden"}
+            animate={reduce ? undefined : "visible"}
+          >
             Annecy — France
             <br />
             Dispo alternance / Sept. 2026
-          </p>
+          </motion.p>
 
-          <p className="col-span-1 md:col-span-7 md:col-start-6 text-xl md:text-2xl leading-snug max-w-xl">
+          <motion.p
+            className="col-span-1 md:col-span-7 md:col-start-6 text-xl md:text-2xl leading-snug max-w-xl"
+            variants={reduce ? undefined : introParagraphVariants}
+            initial={reduce ? undefined : "hidden"}
+            animate={reduce ? undefined : "visible"}
+          >
             J&apos;écris des{" "}
             <span className="marker display-italic">
               interfaces qui tiennent
@@ -175,8 +163,8 @@ export default function Hero() {
             . Rapides, lisibles, sans approximation — du code qu&apos;on peut{" "}
             <span className="marker">relire six mois plus tard</span>{" "}
             sans grimacer.
-          </p>
-        </motion.div>
+          </motion.p>
+        </div>
       </div>
 
       {/* Bottom edge: scroll cue */}

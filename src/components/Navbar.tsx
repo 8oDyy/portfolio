@@ -58,9 +58,9 @@ export default function Navbar() {
     >
       <motion.div
         className="mx-auto flex h-14 max-w-[1600px] items-center justify-between px-6 md:px-10"
-        initial={reduce ? false : { y: "-110%", opacity: 0 }}
-        animate={reduce ? false : { y: "0%", opacity: 1 }}
-        transition={{ duration: 0.6, delay: 4.9, ease: [0.16, 1, 0.3, 1] }}
+        initial={reduce ? false : { opacity: 0 }}
+        animate={reduce ? false : { opacity: 1 }}
+        transition={{ duration: 0, delay: 4.9 }}
       >
         <a
           href="#hero"

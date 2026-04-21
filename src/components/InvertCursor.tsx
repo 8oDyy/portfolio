@@ -7,11 +7,20 @@ const HOT_SIZE = 180;
 const LERP = 0.22; // higher = snappier tracking (0 = frozen, 1 = instant)
 const TRANSITION = "width 0.35s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1), margin 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s";
 const HOT_SELECTOR = "[data-invert-zone]";
+// Garde le curseur hors-champ tant que la séquence d'ouverture du Hero n'est pas finie.
+// Aligné avec les delays de Hero.tsx : dernier snap à 6.0s, curseur à 6.15s.
+const REVEAL_GATE_MS = 6150;
 
 export default function InvertCursor() {
   const ref = useRef<HTMLDivElement>(null);
   const [hot, setHot] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setRevealed(true), REVEAL_GATE_MS);
+    return () => window.clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     // Skip on touch-only devices — no cursor to invert
@@ -81,7 +90,7 @@ export default function InvertCursor() {
         height: `${size}px`,
         marginLeft: `-${halfSize}px`,
         marginTop: `-${halfSize}px`,
-        opacity: visible ? 1 : 0,
+        opacity: visible && revealed ? 1 : 0,
         transition: TRANSITION,
       }}
     />

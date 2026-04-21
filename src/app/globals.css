@@ -34,18 +34,12 @@ html {
   overflow-x: clip;
 }
 
-/* Hide native cursor on fine-pointer devices — replaced by <InvertCursor />. */
+/* Hide native cursor on fine-pointer devices — replaced by <InvertCursor />.
+   Universal selector + !important pour écraser les overrides (cursor-default, etc.). */
 @media (pointer: fine) {
   html,
-  body,
-  a,
-  button,
-  [role="button"],
-  input,
-  textarea,
-  select,
-  label {
-    cursor: none;
+  html * {
+    cursor: none !important;
   }
 }
 
