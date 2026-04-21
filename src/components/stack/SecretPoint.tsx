@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 const WORDS = ["salut.", "chut.", "tiens.", "bien joué.", "coucou.", "vu.", "trouvé."];
 const HOLD_MS = 800;
@@ -42,6 +43,11 @@ export default function SecretPoint() {
   const [charging, setCharging] = useState(false);
   const [flash, setFlash] = useState(false);
   const [word, setWord] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const clearTimer = () => {
     if (timerRef.current) {
@@ -127,6 +133,7 @@ export default function SecretPoint() {
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -233,7 +240,7 @@ export default function SecretPoint() {
       window.removeEventListener("resize", resize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [mounted]);
 
   useEffect(() => {
     return () => clearTimer();
@@ -273,48 +280,54 @@ export default function SecretPoint() {
         />
       </button>
 
-      <canvas
-        ref={canvasRef}
-        aria-hidden
-        className="fixed inset-0 pointer-events-none"
-        style={{ zIndex: 91 }}
-      />
+      {mounted &&
+        createPortal(
+          <>
+            <canvas
+              ref={canvasRef}
+              aria-hidden
+              className="fixed inset-0 pointer-events-none"
+              style={{ zIndex: 91 }}
+            />
 
-      <div
-        aria-hidden
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: "var(--pollen)",
-          opacity: flash ? 0.7 : 0,
-          transition: flash ? "opacity 40ms linear" : "opacity 280ms ease-out",
-          zIndex: 90,
-          mixBlendMode: "difference",
-        }}
-      />
+            <div
+              aria-hidden
+              className="fixed inset-0 pointer-events-none"
+              style={{
+                background: "var(--pollen)",
+                opacity: flash ? 0.7 : 0,
+                transition: flash ? "opacity 40ms linear" : "opacity 280ms ease-out",
+                zIndex: 90,
+                mixBlendMode: "difference",
+              }}
+            />
 
-      {word && (
-        <div
-          aria-hidden
-          className="fixed inset-0 pointer-events-none flex items-center justify-center"
-          style={{ zIndex: 92 }}
-        >
-          <span
-            className="display-italic"
-            style={{
-              fontSize: "clamp(7rem, 22vw, 24rem)",
-              lineHeight: 0.85,
-              color: "var(--pollen)",
-              WebkitTextStroke: "3px var(--ink)",
-              textShadow:
-                "0 0 2em rgba(232,255,0,0.6), 0 0.04em 0 var(--ink), 0 0.08em 0 rgba(14,14,14,0.4)",
-              animation: "secret-word 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards",
-              letterSpacing: "-0.04em",
-            }}
-          >
-            {word}
-          </span>
-        </div>
-      )}
+            {word && (
+              <div
+                aria-hidden
+                className="fixed inset-0 pointer-events-none flex items-center justify-center"
+                style={{ zIndex: 92 }}
+              >
+                <span
+                  className="display-italic"
+                  style={{
+                    fontSize: "clamp(7rem, 22vw, 24rem)",
+                    lineHeight: 0.85,
+                    color: "var(--pollen)",
+                    WebkitTextStroke: "3px var(--ink)",
+                    textShadow:
+                      "0 0 2em rgba(232,255,0,0.6), 0 0.04em 0 var(--ink), 0 0.08em 0 rgba(14,14,14,0.4)",
+                    animation: "secret-word 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+                    letterSpacing: "-0.04em",
+                  }}
+                >
+                  {word}
+                </span>
+              </div>
+            )}
+          </>,
+          document.body,
+        )}
     </>
   );
 }
