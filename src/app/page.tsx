@@ -7,12 +7,14 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
 import InvertCursor from "@/components/InvertCursor";
+import ConsoleEasterEgg from "@/components/ConsoleEasterEgg";
 
 export default function Home() {
   return (
     <>
       <LoadingScreen />
       <InvertCursor />
+      <ConsoleEasterEgg />
       <Navbar />
       <main
         className="relative z-10 bg-bone"

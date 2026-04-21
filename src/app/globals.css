@@ -155,12 +155,23 @@ body::after {
   will-change: transform;
 }
 
+/* Secret point — explosion confetti + mot géant */
+@keyframes secret-word {
+  0%   { opacity: 0; transform: scale(0.4) rotate(-4deg); }
+  8%   { opacity: 1; transform: scale(1.15) rotate(1.5deg); }
+  18%  { transform: scale(0.96) rotate(-0.8deg); }
+  30%  { transform: scale(1.02) rotate(0.4deg); }
+  70%  { opacity: 1; transform: scale(1) rotate(0); }
+  100% { opacity: 0; transform: scale(1.05) rotate(0); }
+}
+
 /* Reduce motion preference */
 @media (prefers-reduced-motion: reduce) {
   .letter,
   .marker { transition: none !important; }
   .animate-marquee { animation: none !important; }
   body::after { display: none; }
+  [style*="secret-word"] { animation: none !important; }
 }
 
 /* Scrollbar — hairline on bone */

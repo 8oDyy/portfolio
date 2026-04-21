@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import TechMarquee from "./stack/TechMarquee";
-import TechPlayground from "./stack/TechPlayground";
+import SecretPoint from "./stack/SecretPoint";
 
 const marqueeRows = [
   {
@@ -28,24 +28,6 @@ const marqueeRows = [
     duration: 70,
     items: ["Git", "Docker", "Vercel", "AWS", "GitHub Actions", "Figma", "Flutter", "C++"],
   },
-];
-
-const playgroundWords = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Tailwind",
-  "Nuxt",
-  "Supabase",
-  "PostgreSQL",
-  "GSAP",
-  "Framer Motion",
-  "Vercel",
-  "Docker",
-  "Flutter",
-  "Node.js",
-  "Figma",
-  "Git",
 ];
 
 export default function Stack() {
@@ -75,7 +57,7 @@ export default function Stack() {
               >
                 parle
               </motion.span>
-              .
+              <SecretPoint />
             </h2>
           </div>
         </div>
@@ -83,26 +65,6 @@ export default function Stack() {
 
       {/* Kinetic marquee */}
       <TechMarquee rows={marqueeRows} />
-
-      {/* Easter egg playground */}
-      <div className="px-6 md:px-10 py-20 md:py-32">
-        <div className="grid grid-cols-12 gap-6 md:gap-10 mb-12">
-          <div className="col-span-12 md:col-span-5">
-            <p className="display-italic text-3xl md:text-4xl leading-tight">
-              Un terrain de jeu — <br />
-              sans règles utiles.
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-6 md:col-start-7 max-w-lg">
-            <p className="text-base md:text-lg leading-relaxed text-muted">
-              Les outils deviennent des objets physiques. Attrapez-les, lancez-les,
-              empilez-les. Cliquez sur <em className="not-italic text-ink">Reset</em> pour
-              tout laisser retomber.
-            </p>
-          </div>
-        </div>
-        <TechPlayground words={playgroundWords} />
-      </div>
     </section>
   );
 }
