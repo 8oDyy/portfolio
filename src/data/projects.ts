@@ -108,12 +108,12 @@ export const projects: Project[] = [
     problem:
       "Les avis en ligne se truquent sans effort : liens statiques rejouables, multi-comptes, bots, aucun ancrage avec le point de vente. Les pros encaissent sans moyen de trier le vrai du faux, et perdent du temps à répondre à des retours fictifs.",
     solution:
-      "Chaque tag NFC ou QR délivre une URL signée avec un token dynamique, valable une fois. L'avis part — connecté via Clerk ou anonyme nominatif — et le dashboard pro agrège tout en temps réel : typologie, filtres, photos, rating recalculé à la volée.",
-    tech: ["Nuxt 3", "Vue.js", "TypeScript", "Supabase", "PostgreSQL", "Clerk", "Nuxt UI"],
+      "Chaque tag NFC ou QR délivre une URL signée avec un token dynamique, valable une fois. L'avis part — connecté via Supabase Auth ou anonyme nominatif — et le dashboard pro agrège tout en temps réel : typologie, filtres, photos, rating recalculé à la volée.",
+    tech: ["Nuxt 3", "Vue.js", "TypeScript", "Supabase", "PostgreSQL", "Supabase Auth", "Nuxt UI"],
     stack: [
       { category: "Front", items: ["Nuxt 3", "Vue 3", "Nuxt UI", "TypeScript"] },
       { category: "Back / Data", items: ["Supabase", "PostgreSQL", "Row Level Security"] },
-      { category: "Auth", items: ["Clerk", "publicMetadata.role"] },
+      { category: "Auth", items: ["Supabse Auth", "publicMetadata.role"] },
       { category: "Outillage", items: ["Supabase CLI (types)", "Vercel"] },
     ],
     features: [
@@ -130,7 +130,7 @@ export const projects: Project[] = [
       {
         title: "Avis connecté ou anonyme",
         description:
-          "Dépôt via Clerk ou anonyme nominatif. Les deux identités ne se croisent jamais dans la base.",
+          "Dépôt via Supabase Auth ou anonyme nominatif. Les deux identités ne se croisent jamais dans la base.",
       },
       {
         title: "Dashboard Pro",
@@ -150,14 +150,14 @@ export const projects: Project[] = [
     ],
     highlights: [
       "Token dynamique à chaque scan — zéro lien rejouable.",
-      "Séparation stricte user / pro via Clerk publicMetadata, gardée côté serveur.",
+      "Séparation stricte user / pro via Supabase Auth publicMetadata, gardée côté serveur.",
       "Types Supabase générés par CLI, partagés entre front et serveur sans divergence.",
       "Rating moyen et reviewCount recalculés automatiquement à l'insert et au delete.",
       "Photos rattachées à userId + businessId, reviewId optionnel pour la traçabilité.",
       "Horaires pro passés en validation admin avant publication.",
     ],
     architecture:
-      "Full-stack Nuxt 3 + Supabase. Le front consomme une librairie serveur typée qui encapsule chaque accès Supabase. Les types TypeScript descendent du schéma Postgres via la CLI. Les rôles user/pro vivent dans publicMetadata Clerk et sont contrôlés côté serveur sur chaque route sensible. Tables principales : users, businesses, reviews, photos, categories, features, hours, reactions, fraud_events.",
+      "Full-stack Nuxt 3 + Supabase. Le front consomme une librairie serveur typée qui encapsule chaque accès Supabase. Les types TypeScript descendent du schéma Postgres via la CLI. Les rôles user/pro vivent dans publicMetadata Supabase Auth et sont contrôlés côté serveur sur chaque route sensible. Tables principales : users, businesses, reviews, photos, categories, features, hours, reactions, fraud_events.",
     challenges: [
       {
         title: "Sécurité vs latence",
@@ -371,7 +371,7 @@ export const projects: Project[] = [
     role: "Backend & infra — conception & développement",
     duration: "6 semaines — en cours",
     summary:
-      "Projet de recherche backend. Une API FastAPI sur Azure génère des agents, délègue le calcul à un Raspberry Pi branché chez moi via WebSocket sortant, persiste dans Supabase, et renvoie la distribution — tout se calcule, rien ne s'invente.",
+      "Projet de recherche backend. Une API FastAPI sur Azure génère des agents, délègue le calcul à un Raspberry Pi branché au bureau d'étude via WebSocket sortant, persiste dans Supabase, et renvoie la distribution — tout se calcule, rien ne s'invente.",
     problem:
       "Demander à un LLM unique « que pense le public ? », c'est demander à une seule tête. Cher, lent, imprévisible, aucune distribution en sortie — une moyenne n'a jamais fait un sondage.",
     solution:
@@ -416,7 +416,7 @@ export const projects: Project[] = [
         items: [
           "GitHub Actions (CI + CD)",
           "ruff check & format",
-          "pytest cov ≥ 40 %",
+          "pytest cov ≥ 90 %",
           "SSH deploy + healthcheck 30 tentatives",
         ],
       },
@@ -440,7 +440,7 @@ export const projects: Project[] = [
       {
         title: "Calcul sur Raspberry Pi",
         description:
-          "Le moteur tourne sur un Pi physique, chez moi. Connexion WebSocket sortante vers le backend, aucun port exposé, aucune IP publique requise. Reconnexion automatique avec backoff 1 s → 60 s.",
+          "Le moteur tourne sur un Pi physique, au bureau d'étude. Connexion WebSocket sortante vers le backend, aucun port exposé, aucune IP publique requise. Reconnexion automatique avec backoff 1 s → 60 s.",
       },
       {
         title: "Calibration contre sondages IFOP",
@@ -462,7 +462,7 @@ export const projects: Project[] = [
       "Déploiement SSH avec healthcheck actif (30 tentatives, 2 s d'intervalle) — aucune validation avant que l'API réponde.",
     ],
     architecture:
-      "Deux dépôts, trois étages physiquement séparés. Le backend FastAPI vit containerisé sur un VPS Azure, derrière un Nginx qui termine le TLS et proxifie HTTP comme WebSocket (timeout 3600 s). L'API parle à Supabase — 11 tables métier, relations tracées avec CASCADE et RESTRICT réfléchis — et délègue tout le calcul de simulation à un Raspberry Pi branché chez moi. Le Pi ouvre lui-même la connexion WebSocket, pas l'inverse ; chaque appel est corrélé par un task_id UUID géré par PiWsManager. Redis porte les sessions et la canalisation realtime. Côté livraison, deux workflows GitHub Actions : le CI lint (ruff), teste (pytest, cov ≥ 40 %), build l'image Docker et push sur GHCR ; le CD, déclenché au succès du CI, SCP le compose, SSH pour pull/up --force-recreate, boucle un healthcheck 30 fois, prune les images, recharge Nginx. Dev bascule sur staging, main sur prod.",
+      "Deux dépôts, trois étages physiquement séparés. Le backend FastAPI vit containerisé sur un VPS Azure, derrière un Nginx qui termine le TLS et proxifie HTTP comme WebSocket (timeout 3600 s). L'API parle à Supabase — 11 tables métier, relations tracées avec CASCADE et RESTRICT réfléchis — et délègue tout le calcul de simulation à un Raspberry Pi branché au bureau d'étude. Le Pi ouvre lui-même la connexion WebSocket, pas l'inverse ; chaque appel est corrélé par un task_id UUID géré par PiWsManager. Redis porte les sessions et la canalisation realtime. Côté livraison, deux workflows GitHub Actions : le CI lint (ruff), teste (pytest, cov ≥ 90 %), build l'image Docker et push sur GHCR ; le CD, déclenché au succès du CI, SCP le compose, SSH pour pull/up --force-recreate, boucle un healthcheck 30 fois, prune les images, recharge Nginx. Dev bascule sur staging, main sur prod.",
     challenges: [
       {
         title: "Encoder une opinion dans un scalaire",
