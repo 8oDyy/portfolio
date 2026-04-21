@@ -1,17 +1,26 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type Variants,
+} from "framer-motion";
 import { useEffect, useState } from "react";
 
 const DURATION_MS = 2400;
 const REDUCED_DURATION_MS = 600;
+const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
+const EASE_IN_OUT = [0.83, 0, 0.17, 1] as const;
 
 export default function LoadingScreen() {
   const reduce = useReducedMotion();
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
-    // Scroll lock ownership is in Hero (covers the full reveal timeline).
     const t = setTimeout(
       () => setGone(true),
       reduce ? REDUCED_DURATION_MS : DURATION_MS,
@@ -19,72 +28,77 @@ export default function LoadingScreen() {
     return () => clearTimeout(t);
   }, [reduce]);
 
+  const plateVariants: Variants = {
+    hidden: { clipPath: "inset(50% 50% 50% 50%)" },
+    visible: {
+      clipPath: "inset(28% 18% 28% 18%)",
+      transition: { duration: 0.9, ease: EASE_OUT_EXPO, delay: reduce ? 0 : 0.2 },
+    },
+    exit: {
+      clipPath: "inset(0% 0% 0% 0%)",
+      transition: { duration: 0.75, ease: EASE_IN_OUT },
+    },
+  };
+
+  const contentVariants: Variants = {
+    hidden: { opacity: 1 },
+    visible: { opacity: 1 },
+    exit: { opacity: 0, transition: { duration: 0.25, ease: "easeOut" } },
+  };
+
   return (
     <AnimatePresence>
       {!gone && (
         <motion.div
           key="loader"
-          exit={{ y: "-100%" }}
-          transition={{ duration: reduce ? 0.3 : 1.1, ease: [0.83, 0, 0.17, 1] }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-ink text-bone"
+          className="fixed inset-0 z-[100] bg-ink text-bone"
           aria-hidden
+          initial="hidden"
+          animate="visible"
+          exit="exit"
         >
-          {/* Crop marks — printer's proof corners */}
           <CropMark corner="tl" />
           <CropMark corner="tr" />
           <CropMark corner="bl" />
           <CropMark corner="br" />
 
-          {/* Top-left label */}
-          <motion.span
-            className="mono absolute left-8 top-8 text-[0.65rem] uppercase tracking-[0.28em]"
-            style={{ color: "rgba(245,242,236,0.55)" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
+          <Label pos="left-8 top-8" delay={0.2}>
             Édition · 2026
-          </motion.span>
-
-          {/* Top-right folio */}
-          <motion.span
-            className="mono absolute right-8 top-8 text-[0.65rem] uppercase tracking-[0.28em] tabular-nums"
-            style={{ color: "rgba(245,242,236,0.55)" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-          >
+          </Label>
+          <Label pos="right-8 top-8 tabular-nums" delay={0.3}>
             N° 00 / 01
-          </motion.span>
+          </Label>
 
-          {/* Center composition */}
-          <div className="flex flex-col items-center">
-            <Glyph reduce={!!reduce} />
+          {/* Plate — bone rectangle clipped in from center */}
+          <motion.div
+            className="pointer-events-none absolute inset-0 bg-bone"
+            variants={plateVariants}
+          />
 
-            <motion.div
-              className="mt-8 flex items-center gap-3"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: reduce ? 0 : 1.3 }}
-            >
-              <span
-                className="mono text-[0.65rem] uppercase tracking-[0.32em]"
-                style={{ color: "rgba(245,242,236,0.5)" }}
-              >
-                H · B · R
-              </span>
-            </motion.div>
-          </div>
+          {/* Typography inside the plate — ink on bone (color inversion) */}
+          <motion.div
+            variants={contentVariants}
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          >
+            <div className="flex flex-col items-center gap-5 text-ink">
+              <PlateMark reduce={!!reduce} />
+              <div className="h-px w-10 bg-ink/30" />
+              <div className="mono text-[0.65rem] uppercase tracking-[0.3em] text-ink/70">
+                Portfolio / Éd. 2026
+              </div>
+            </div>
+          </motion.div>
 
-          {/* Bottom-left status */}
+          {/* Status + progress — stay on ink, outside the plate */}
           <motion.div
             className="absolute bottom-8 left-8 flex items-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: reduce ? 0 : 0.5 }}
+            variants={contentVariants}
           >
             <motion.span
-              className="block h-[6px] w-[6px] rounded-full bg-pollen"
+              className="block h-[6px] w-[6px] bg-pollen"
               animate={reduce ? undefined : { opacity: [1, 0.3, 1] }}
               transition={{ duration: 1.4, ease: "easeInOut", repeat: Infinity }}
             />
@@ -96,13 +110,17 @@ export default function LoadingScreen() {
             </span>
           </motion.div>
 
-          {/* Bottom-right signature */}
+          <motion.div variants={contentVariants}>
+            <Progress reduce={!!reduce} />
+          </motion.div>
+
           <motion.span
             className="mono absolute bottom-8 right-8 text-[0.65rem] uppercase tracking-[0.28em]"
             style={{ color: "rgba(245,242,236,0.55)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: reduce ? 0 : 0.5 }}
+            variants={contentVariants}
           >
             Annecy · FR
           </motion.span>
@@ -112,121 +130,104 @@ export default function LoadingScreen() {
   );
 }
 
-function Glyph({ reduce }: { reduce: boolean }) {
+function PlateMark({ reduce }: { reduce: boolean }) {
   if (reduce) {
-    return (
-      <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
-        <circle
-          cx="48"
-          cy="48"
-          r="38"
-          stroke="currentColor"
-          strokeWidth="1"
-        />
-        <circle cx="48" cy="48" r="5" fill="#e8ff00" />
-      </svg>
-    );
+    return <span className="display-italic text-[3.5rem] leading-none">HBR</span>;
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.82 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="relative"
+    <div className="flex items-baseline gap-[0.08em] px-[0.2em]">
+      {["H", "B", "R"].map((ch, i) => (
+        <motion.span
+          key={ch}
+          initial={{ clipPath: "inset(-20% 100% -20% -10%)" }}
+          animate={{ clipPath: "inset(-20% -10% -20% -10%)" }}
+          transition={{
+            duration: 0.55,
+            ease: EASE_OUT_EXPO,
+            delay: 0.85 + i * 0.12,
+          }}
+          className="display-italic text-[3.5rem] leading-none"
+        >
+          {ch}
+        </motion.span>
+      ))}
+    </div>
+  );
+}
+
+function Label({
+  children,
+  pos,
+  delay,
+}: {
+  children: React.ReactNode;
+  pos: string;
+  delay: number;
+}) {
+  return (
+    <motion.span
+      className={`mono absolute text-[0.65rem] uppercase tracking-[0.28em] ${pos}`}
+      style={{ color: "rgba(245,242,236,0.55)" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, delay }}
     >
-      <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
-        {/* Outer ring — traces + continuous rotation */}
-        <motion.g
-          animate={{ rotate: 360 }}
-          transition={{ duration: 3.2, ease: "linear", repeat: Infinity }}
-          style={{ transformOrigin: "48px 48px" }}
+      {children}
+    </motion.span>
+  );
+}
+
+function Progress({ reduce }: { reduce: boolean }) {
+  const progress = useMotionValue(0);
+  const width = useTransform(progress, (v) => `${v * 100}%`);
+  const [countText, setCountText] = useState("0000");
+
+  useEffect(() => {
+    const start = reduce ? 0 : 0.35;
+    const dur = reduce ? 0.3 : (DURATION_MS - 350) / 1000;
+    const controls = animate(progress, 1, {
+      duration: dur,
+      delay: start,
+      ease: [0.5, 0, 0.5, 1],
+      onUpdate: (v) => {
+        const n = Math.round(v * 100);
+        setCountText(String(n).padStart(4, "0"));
+      },
+    });
+    return () => controls.stop();
+  }, [progress, reduce]);
+
+  return (
+    <motion.div
+      className="absolute bottom-20 left-1/2 flex w-[min(280px,50vw)] -translate-x-1/2 flex-col gap-2"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: reduce ? 0 : 0.35 }}
+    >
+      <div className="flex items-baseline justify-between">
+        <span
+          className="mono text-[0.6rem] uppercase tracking-[0.28em]"
+          style={{ color: "rgba(245,242,236,0.4)" }}
         >
-          <motion.circle
-            cx="48"
-            cy="48"
-            r="38"
-            stroke="currentColor"
-            strokeWidth="1"
-            strokeLinecap="round"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 1.2, ease: [0.65, 0, 0.35, 1] }}
-          />
-        </motion.g>
-
-        {/* Tick marks — compass rose every 90° */}
-        {[0, 90, 180, 270].map((angle) => (
-          <motion.line
-            key={angle}
-            x1="48"
-            y1="6"
-            x2="48"
-            y2="10"
-            stroke="currentColor"
-            strokeOpacity="0.5"
-            strokeWidth="1"
-            style={{ transformOrigin: "48px 48px", transform: `rotate(${angle}deg)` }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.9 + (angle / 90) * 0.06 }}
-          />
-        ))}
-
-        {/* Inner arc — counter-rotating fragment */}
-        <motion.g
-          initial={{ opacity: 0, rotate: 0 }}
-          animate={{ opacity: 1, rotate: -360 }}
-          transition={{
-            opacity: { duration: 0.5, delay: 0.6 },
-            rotate: { duration: 2.4, ease: "linear", repeat: Infinity, delay: 0.6 },
-          }}
-          style={{ transformOrigin: "48px 48px" }}
+          Chargement
+        </span>
+        <span
+          className="mono text-[0.6rem] tabular-nums uppercase tracking-[0.22em]"
+          style={{ color: "rgba(245,242,236,0.75)" }}
         >
-          <circle
-            cx="48"
-            cy="48"
-            r="26"
-            stroke="currentColor"
-            strokeOpacity="0.55"
-            strokeWidth="0.75"
-            strokeLinecap="round"
-            strokeDasharray="14 150"
-          />
-        </motion.g>
-
-        {/* Ripple — emanates from core */}
-        <motion.circle
-          cx="48"
-          cy="48"
-          r="5"
-          stroke="#e8ff00"
-          strokeWidth="1.25"
-          fill="none"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: [0, 6], opacity: [0.9, 0] }}
-          transition={{
-            duration: 1.6,
-            delay: 1.1,
-            ease: "easeOut",
-            repeat: Infinity,
-            repeatDelay: 0.2,
-          }}
-          style={{ transformOrigin: "48px 48px" }}
+          {countText} / 0100
+        </span>
+      </div>
+      <div
+        className="relative h-px w-full"
+        style={{ backgroundColor: "rgba(245,242,236,0.15)" }}
+      >
+        <motion.div
+          className="absolute inset-y-0 left-0"
+          style={{ width, backgroundColor: "rgba(245,242,236,0.9)" }}
         />
-
-        {/* Core pollen dot */}
-        <motion.circle
-          cx="48"
-          cy="48"
-          r="5"
-          fill="#e8ff00"
-          initial={{ scale: 0 }}
-          animate={{ scale: [0, 1.5, 1] }}
-          transition={{ duration: 0.75, delay: 0.95, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformOrigin: "48px 48px" }}
-        />
-      </svg>
+      </div>
     </motion.div>
   );
 }

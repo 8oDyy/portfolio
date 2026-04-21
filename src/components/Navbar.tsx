@@ -60,7 +60,7 @@ export default function Navbar() {
         className="mx-auto flex h-14 max-w-[1600px] items-center justify-between px-6 md:px-10"
         initial={reduce ? false : { opacity: 0 }}
         animate={reduce ? false : { opacity: 1 }}
-        transition={{ duration: 0, delay: 4.9 }}
+        transition={{ duration: 0, delay: 4.7 }}
       >
         <a
           href="#hero"

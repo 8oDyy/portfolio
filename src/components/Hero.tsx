@@ -5,20 +5,20 @@ import { useEffect, useState } from "react";
 
 // Sequence: loader exit → NAME BOOM BOOM BOOM → tout le reste apparaît sec & net, en 3 coups
 const SNAP_EASE = [0.16, 1, 0.3, 1] as const; // expo-out — clean, sharp, no overshoot
-const BEAT = 0.6;
-const NAME_REVEAL_BASE_DELAY = 2.7;
-const NAME_SLAM_STAGGER = BEAT; // each name line = 1 noire
+const BEAT = 0.75;
+const NAME_REVEAL_BASE_DELAY = 2.9;
+const NAME_SLAM_STAGGER = BEAT; // chaque ligne = 1 noire — un chouia + lent entre les lignes
 
-// Après le dernier slam (~4.35s) : tout apparaît en cut sec, cascade en 6 temps.
-// Haut : Navbar (4.9s, dans Navbar.tsx) → N° 00 → Portfolio. Pose.
-// Bas (même rythme, 3 temps) : scroll cue → mono col → paragraphe.
+// Après Raffort (~4.15s) : cascade resserrée pour arriver plus vite au contenu.
+// Haut : Navbar (4.7s, dans Navbar.tsx) → N° 00 → Portfolio. Pose courte.
+// Bas : scroll cue → mono col → paragraphe.
 const SNAP_DURATION = 0; // vrai cut, pas d'interpolation — évite le micro-saut sur le texte
-const EYEBROW_DELAY = 5.0; // "N° 00 / Bonjour" — très court après la navbar
-const TOP_BAR_DELAY = 5.15; // "Portfolio / Éd. 2026"
-const BELOW_EDGE_DELAY = 5.7; // pose puis scroll cue
-const INTRO_MONO_DELAY = 5.85; // col gauche "Annecy / Dispo"
-const INTRO_PARAGRAPH_DELAY = 6.0; // paragraphe "J'écris des interfaces…"
-const REVEAL_DONE_MS = 6300;
+const EYEBROW_DELAY = 4.8; // "N° 00 / Bonjour" — très court après la navbar
+const TOP_BAR_DELAY = 4.95; // "Portfolio / Éd. 2026"
+const BELOW_EDGE_DELAY = 5.4; // pose puis scroll cue
+const INTRO_MONO_DELAY = 5.55; // col gauche "Annecy / Dispo"
+const INTRO_PARAGRAPH_DELAY = 5.7; // paragraphe "J'écris des interfaces…"
+const REVEAL_DONE_MS = 6000;
 
 const snapAt = (delay: number): Variants => ({
   hidden: { opacity: 0 },
@@ -34,24 +34,26 @@ const bottomCueVariants = snapAt(BELOW_EDGE_DELAY);
 const introMonoVariants = snapAt(INTRO_MONO_DELAY);
 const introParagraphVariants = snapAt(INTRO_PARAGRAPH_DELAY);
 
-// Name h1 — orchestrates 3 line slams at 1 noire apart
+// Name h1 — trois lignes qui pop en cut sec.
+// Gaps légèrement asymétriques pour compenser la perception visuelle : Boulicaut– est long,
+// Raffort est court — raccourcir le 2e intervalle (−0.2s) rééquilibre le ressenti.
 const nameContainerVariants: Variants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: NAME_SLAM_STAGGER,
-      delayChildren: NAME_REVEAL_BASE_DELAY,
-    },
-  },
+  visible: {},
 };
 
-// Each name line = 1 noire — clean sharp slam, no bounce, settles before next beat
+// offsets (s) depuis NAME_REVEAL_BASE_DELAY pour Hugo / Boulicaut– / Raffort
+const NAME_LINE_OFFSETS = [0, NAME_SLAM_STAGGER, NAME_SLAM_STAGGER * 2 - 0.25] as const;
+
 const nameLineVariants: Variants = {
-  hidden: { y: "115%" },
-  visible: {
-    y: "0%",
-    transition: { duration: 0.45, ease: SNAP_EASE },
-  },
+  hidden: { opacity: 0 },
+  visible: (i: number) => ({
+    opacity: 1,
+    transition: {
+      duration: 0,
+      delay: NAME_REVEAL_BASE_DELAY + NAME_LINE_OFFSETS[i],
+    },
+  }),
 };
 
 export default function Hero() {
@@ -133,9 +135,9 @@ export default function Hero() {
           initial={reduce ? undefined : "hidden"}
           animate={reduce ? undefined : "visible"}
         >
-          <NameLine reduce={!!reduce}>Hugo</NameLine>
-          <NameLine reduce={!!reduce} italic>Boulicaut–</NameLine>
-          <NameLine reduce={!!reduce} italic>Raffort</NameLine>
+          <NameLine index={0} reduce={!!reduce}>Hugo</NameLine>
+          <NameLine index={1} reduce={!!reduce} italic>Boulicaut–</NameLine>
+          <NameLine index={2} reduce={!!reduce} italic>Raffort</NameLine>
         </motion.h1>
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
@@ -145,7 +147,7 @@ export default function Hero() {
             initial={reduce ? undefined : "hidden"}
             animate={reduce ? undefined : "visible"}
           >
-            Fullstack JS — React / Nuxt / Flutter
+            Fullstack JS — React / Nuxt / Flutter / Python
             <br />
             Annecy — France
             <br />
@@ -199,13 +201,13 @@ function NameLine({
   children,
   italic = false,
   reduce = false,
+  index,
 }: {
   children: React.ReactNode;
   italic?: boolean;
   reduce?: boolean;
+  index: number;
 }) {
-  const [done, setDone] = useState(false);
-
   if (reduce) {
     return (
       <span
@@ -217,18 +219,12 @@ function NameLine({
   }
 
   return (
-    <span
+    <motion.span
       className={`block ${italic ? "display-italic -mt-[0.04em] text-ink/95" : ""}`}
-      style={{ clipPath: done ? "none" : "inset(-20% -25% -20% -20%)" }}
+      custom={index}
+      variants={nameLineVariants}
     >
-      <motion.span
-        className="block"
-        variants={nameLineVariants}
-        onAnimationComplete={() => setDone(true)}
-        style={{ willChange: done ? "auto" : "transform" }}
-      >
-        {children}
-      </motion.span>
-    </span>
+      {children}
+    </motion.span>
   );
 }
