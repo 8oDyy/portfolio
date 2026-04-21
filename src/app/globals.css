@@ -25,11 +25,13 @@
   --line-strong: rgba(14, 14, 14, 0.18);
   --overlay-ink-05: rgba(14, 14, 14, 0.05);
   --overlay-ink-10: rgba(14, 14, 14, 0.1);
+  --footer-h: 0px;
 }
 
 html {
-  background: var(--bone);
+  background: var(--ink);
   color: var(--ink);
+  overflow-x: clip;
 }
 
 html.lenis,
@@ -38,11 +40,11 @@ html.lenis body {
 }
 
 body {
-  background: var(--bone);
+  background: transparent;
   color: var(--ink);
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-feature-settings: "ss01", "cv01", "cv11";
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

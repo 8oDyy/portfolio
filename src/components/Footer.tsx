@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Footer() {
   const [showTop, setShowTop] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
   const year = new Date().getFullYear();
 
   useEffect(() => {
@@ -23,8 +24,29 @@ export default function Footer() {
     };
   }, []);
 
+  // Publish footer height as a CSS var so the main content can reserve space
+  // above it (the footer is position: fixed and sits behind the main).
+  useEffect(() => {
+    const el = footerRef.current;
+    if (!el) return;
+    const publish = () => {
+      document.documentElement.style.setProperty("--footer-h", `${el.offsetHeight}px`);
+    };
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    window.addEventListener("resize", publish);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", publish);
+    };
+  }, []);
+
   return (
-    <footer className="relative bg-ink text-bone">
+    <footer
+      ref={footerRef}
+      className="fixed inset-x-0 bottom-0 z-0 bg-ink text-bone"
+    >
       {/* Big sign-off */}
       <div className="px-6 md:px-10 pt-24 md:pt-36 pb-10">
         <h3 className="display text-[clamp(3rem,14vw,14rem)] leading-[0.86]">

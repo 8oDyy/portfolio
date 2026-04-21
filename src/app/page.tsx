@@ -10,7 +10,10 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="relative">
+      <main
+        className="relative z-10 bg-bone"
+        style={{ marginBottom: "var(--footer-h, 0px)" }}
+      >
         <Hero />
         <About />
         <Projects />
