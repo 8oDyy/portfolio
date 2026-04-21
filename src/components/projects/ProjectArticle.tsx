@@ -45,10 +45,18 @@ export default function ProjectArticle({ project, first }: Props) {
                 style={{ "--cover-cap": computeCoverCap(project.cover.ratio) } as React.CSSProperties}
               >
                 {project.coverVideo ? (
-                  <ScrollScrubVideo
-                    src={project.coverVideo.src}
-                    poster={project.coverVideo.poster ?? project.cover.src}
-                  />
+                  <>
+                    <div className="hidden md:block">
+                      <ScrollScrubVideo
+                        src={project.coverVideo.src}
+                        poster={project.coverVideo.poster ?? project.cover.src}
+                        captions={project.coverVideo.captions}
+                      />
+                    </div>
+                    <div className="md:hidden">
+                      <ProjectImage image={project.cover} priority={first} />
+                    </div>
+                  </>
                 ) : (
                   <ProjectImage image={project.cover} priority={first} />
                 )}

@@ -84,6 +84,8 @@ export type Project = {
     src: string;
     /** Poster fallback during load. Defaults to cover.src. */
     poster?: string;
+    /** Captions displayed under the video, switching as scroll advances. */
+    captions?: { untilProgress: number; label: string }[];
   };
   /** Additional images displayed inline below the narrative. */
   gallery: ProjectGalleryItem[];
@@ -331,6 +333,11 @@ export const projects: Project[] = [
     coverVideo: {
       src: "/projects/melo/hero.mp4",
       poster: "/projects/melo/MainPage.png",
+      captions: [
+        { untilProgress: 0.25, label: "Page d'accueil" },
+        { untilProgress: 0.5, label: "Page produit" },
+        { untilProgress: 1, label: "Recette pas à pas" },
+      ],
     },
     gallery: [
       {
@@ -342,22 +349,6 @@ export const projects: Project[] = [
           { src: "/projects/melo/Onboarding3.png", alt: "Onboarding Melo — étape 3", ratio: "9/19.5" },
           { src: "/projects/melo/Onboarding4.png", alt: "Onboarding Melo — étape 4", ratio: "9/19.5" },
           { src: "/projects/melo/Onboarding5.png", alt: "Onboarding Melo — étape 5", ratio: "9/19.5" },
-        ],
-      },
-      {
-        src: "/projects/melo/MealPage.png",
-        alt: "Liste des recettes",
-        caption: "Catalogue — filtrage et recherche",
-        ratio: "9/19.5",
-      },
-      {
-        kind: "strip",
-        caption: "Recette — ingrédients, macros et étapes pas à pas",
-        images: [
-          { src: "/projects/melo/Cokking0.png", alt: "Recette — entrée", ratio: "9/19.5" },
-          { src: "/projects/melo/Cooking.png", alt: "Recette — vue d'ensemble", ratio: "9/19.5" },
-          { src: "/projects/melo/Cooking2.png", alt: "Recette — étapes", ratio: "9/19.5" },
-          { src: "/projects/melo/cooking3.png", alt: "Recette — synthèse macros", ratio: "9/19.5" },
         ],
       },
       {
