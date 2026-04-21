@@ -4,6 +4,13 @@ export type ProjectImage = {
   caption?: string;
   /** Intrinsic ratio, e.g. "16/10", "4/5". Used for placeholders. */
   ratio?: string;
+  /**
+   * Visual frame around the image. Phone is auto-detected by ratio;
+   * browser is opt-in for desktop screenshots.
+   */
+  frame?: "browser" | "phone" | "none";
+  /** Fake URL rendered in the browser chrome when frame is "browser". */
+  url?: string;
 };
 
 /** A horizontal strip of aligned phone screenshots — used for flows. */
@@ -81,15 +88,15 @@ export const projects: Project[] = [
     category: "Fullstack",
     status: "En cours",
     tagline:
-      "Notation fiable par NFC / QR Code pour restaurants, commerces et hôtels.",
+      "Avis anti-fraude par NFC ou QR. Un scan, un token unique. Fini les notes truquées.",
     role: "Fullstack — conception & développement",
     duration: "6 mois — en cours",
     summary:
-      "Plateforme de notation anti-fraude pour professionnels, avec token dynamique à chaque scan, avis connectés ou anonymes, et dashboard pro temps réel.",
+      "Plateforme d'avis pour restaurants, commerces et hôtels. Chaque scan génère un token signé à usage unique — les liens ne se rejouent plus, les faux comptes tombent, les pros voient des retours réels.",
     problem:
-      "Les systèmes d'avis classiques sont contournables : liens statiques exploitables, multi-comptes, bots, absence de lien avec le point de vente. Les professionnels n'ont aucune garantie que les retours reçus sont honnêtes, ni aucun outil pour répondre en contexte.",
+      "Les avis en ligne se truquent sans effort : liens statiques rejouables, multi-comptes, bots, aucun ancrage avec le point de vente. Les pros encaissent sans moyen de trier le vrai du faux, et perdent du temps à répondre à des retours fictifs.",
     solution:
-      "Un tag NFC ou QR Code génère à chaque scan une URL signée avec un token dynamique unique. L'utilisateur dépose son avis — connecté via Clerk ou en anonyme nominatif — et le dashboard pro agrège les retours en temps réel avec typologie, filtre, photos et rating automatiquement recalculé.",
+      "Chaque tag NFC ou QR délivre une URL signée avec un token dynamique, valable une fois. L'avis part — connecté via Clerk ou anonyme nominatif — et le dashboard pro agrège tout en temps réel : typologie, filtres, photos, rating recalculé à la volée.",
     tech: ["Nuxt 3", "Vue.js", "TypeScript", "Supabase", "PostgreSQL", "Clerk", "Nuxt UI"],
     stack: [
       { category: "Front", items: ["Nuxt 3", "Vue 3", "Nuxt UI", "TypeScript"] },
@@ -99,56 +106,56 @@ export const projects: Project[] = [
     ],
     features: [
       {
-        title: "Scan NFC / QR Code",
+        title: "Scan NFC ou QR",
         description:
-          "Ouverture d'une URL signée avec un token dynamique unique à chaque scan. Aucun lien statique réutilisable.",
+          "Chaque scan ouvre une URL signée, valable une seule fois. Aucun lien rejouable, aucun contournement.",
       },
       {
-        title: "Anti-fraude intégré",
+        title: "Anti-fraude natif",
         description:
-          "Tokens régénérés à chaque scan, détection de comportements suspects, limite par IP et empreinte.",
+          "Tokens régénérés à chaque passage, détection des motifs suspects, rate-limit par IP et empreinte.",
       },
       {
         title: "Avis connecté ou anonyme",
         description:
-          "Dépôt via Clerk ou en anonyme avec nom d'usage indépendant — jamais lié au compte.",
+          "Dépôt via Clerk ou anonyme nominatif. Les deux identités ne se croisent jamais dans la base.",
       },
       {
         title: "Dashboard Pro",
         description:
-          "Configuration du commerce, suivi des avis, rating moyen, statistiques et réponses en temps réel.",
+          "Config du commerce, suivi des avis, rating moyen, stats et réponses. Tout en temps réel.",
       },
       {
-        title: "Modération & validation admin",
+        title: "Modération admin",
         description:
-          "Les horaires d'ouverture saisis par les pros passent en validation admin avant publication.",
+          "Les horaires saisis par les pros passent en validation avant publication. Aucune donnée douteuse en ligne.",
       },
       {
-        title: "Médias liés & taxonomie",
+        title: "Médias traçables",
         description:
-          "Photos liées à userId + businessId (+ reviewId optionnel), catégories et filtres dans la recherche.",
+          "Photos ancrées à userId + businessId (et reviewId si pertinent). Catégories, filtres, recherche.",
       },
     ],
     highlights: [
-      "Token dynamique à chaque scan — zéro lien statique exploitable.",
-      "Séparation stricte des rôles user / pro via Clerk publicMetadata.",
-      "Types Supabase générés par CLI, consommés strictement côté front et serveur.",
-      "Rating moyen et reviewCount maintenus automatiquement à l'insertion / suppression.",
-      "Photos rattachées à userId + businessId, avec reviewId optionnel pour traçabilité.",
-      "Pipeline de validation admin avant publication des horaires pro.",
+      "Token dynamique à chaque scan — zéro lien rejouable.",
+      "Séparation stricte user / pro via Clerk publicMetadata, gardée côté serveur.",
+      "Types Supabase générés par CLI, partagés entre front et serveur sans divergence.",
+      "Rating moyen et reviewCount recalculés automatiquement à l'insert et au delete.",
+      "Photos rattachées à userId + businessId, reviewId optionnel pour la traçabilité.",
+      "Horaires pro passés en validation admin avant publication.",
     ],
     architecture:
-      "Architecture full-stack Nuxt 3 + Supabase. Le front consomme une librairie serveur typée qui encapsule chaque accès à Supabase. Les types TypeScript sont générés depuis le schéma Postgres via la CLI Supabase. Les rôles utilisateur/pro sont stockés dans publicMetadata Clerk et gardés côté serveur sur chaque route sensible. Les tables principales : users, businesses, reviews, photos, categories, features, hours, reactions, fraud_events.",
+      "Full-stack Nuxt 3 + Supabase. Le front consomme une librairie serveur typée qui encapsule chaque accès Supabase. Les types TypeScript descendent du schéma Postgres via la CLI. Les rôles user/pro vivent dans publicMetadata Clerk et sont contrôlés côté serveur sur chaque route sensible. Tables principales : users, businesses, reviews, photos, categories, features, hours, reactions, fraud_events.",
     challenges: [
       {
-        title: "Unicité anti-fraude vs UX rapide",
+        title: "Sécurité vs latence",
         description:
-          "Trouver le bon équilibre entre renouvellement de token à chaque scan et latence ressentie par l'utilisateur au dépôt d'avis.",
+          "Régénérer un token à chaque scan sans ralentir le dépôt d'avis. Il a fallu pré-signer côté serveur et paralléliser la vérification avec l'ouverture du formulaire.",
       },
       {
-        title: "Double identité utilisateur",
+        title: "Deux identités, un seul utilisateur",
         description:
-          "Permettre à un même utilisateur d'apparaître tantôt connecté, tantôt anonyme, sans jamais lier les deux identités au niveau des avis.",
+          "Un même user peut apparaître connecté ou anonyme selon l'avis. Les deux identités coexistent dans les tables sans jamais être reliées — même pas par déduction.",
       },
     ],
     links: {
@@ -156,15 +163,36 @@ export const projects: Project[] = [
       demo: "",
     },
     cover: {
-      src: "",
-      alt: "Aperçu de l'interface Checkly",
-      ratio: "4/5",
+      src: "/projects/checkly/Etablissment.png",
+      alt: "Page publique d'un commerce sur Checkly",
+      ratio: "16/15",
+      frame: "browser",
+      url: "checkly.app/le-coq-gourmand",
     },
     gallery: [
-      { src: "", alt: "Page de scan NFC", caption: "Arrivée post-scan avec token signé", ratio: "3/4" },
-      { src: "", alt: "Formulaire d'avis", caption: "Dépôt d'avis — connecté ou anonyme", ratio: "3/4" },
-      { src: "", alt: "Dashboard Pro", caption: "Dashboard professionnel — stats temps réel", ratio: "16/10" },
-      { src: "", alt: "Page commerce publique", caption: "Page publique d'un commerce", ratio: "16/10" },
+      {
+        src: "/projects/checkly/Research.png",
+        alt: "Recherche d'un commerce sur Checkly",
+        caption: "Recherche — découvrir un commerce à proximité",
+        ratio: "16/9",
+        frame: "browser",
+        url: "checkly.app/recherche",
+      },
+      {
+        src: "/projects/checkly/Dashboard.png",
+        alt: "Dashboard Pro Checkly",
+        caption: "Dashboard pro — retours et stats en temps réel",
+        ratio: "2/1",
+        frame: "browser",
+        url: "pro.checkly.app/dashboard",
+      },
+      {
+        src: "/projects/checkly/Avis.png",
+        alt: "Dépôt d'avis Checkly sur mobile après scan validé",
+        caption: "Dépôt d'avis — formulaire servi après scan validé",
+        ratio: "9/19.5",
+        frame: "phone",
+      },
     ],
   },
   {
@@ -175,15 +203,15 @@ export const projects: Project[] = [
     category: "Fullstack",
     status: "En cours",
     tagline:
-      "Copilote alimentaire mobile — suggestions de repas et planning hebdomadaire pilotés par LLM.",
+      "Copilote alimentaire mobile. Profil nutri, repas suggérés par LLM, planning hebdo, courses. Zéro régime imposé.",
     role: "Fullstack — app Flutter & orchestration backend",
     duration: "8 mois — en cours",
     summary:
-      "Application mobile multi-plateforme (iOS/Android/Web/macOS) qui génère des suggestions de repas personnalisées et un planning hebdomadaire via un backend orchestrant un LLM, avec onboarding profond, abonnement RevenueCat et calculs nutritionnels côté serveur.",
+      "App mobile cross-plateforme (iOS, Android, Web, macOS). 15 écrans d'onboarding construisent un profil nutritionnel côté serveur (BMR, TDEE, macros), puis un backend VPS orchestre un LLM pour générer repas, recettes et planning — ajustés au profil réel, pas à un régime standard.",
     problem:
-      "Composer des repas équilibrés adaptés à son profil, son budget et ses contraintes alimentaires demande un effort quotidien. Les apps de diète existantes imposent des plans rigides, délèguent peu à l'utilisateur et ne s'ajustent pas au contexte réel (envie, courses, temps disponible).",
+      "Manger équilibré selon son budget, ses goûts et son temps demande un vrai effort quotidien. Les apps de diète imposent des plans rigides, ignorent le contexte (courses, envie, timing) et laissent peu la main à l'utilisateur.",
     solution:
-      "Un onboarding de 15 écrans bâtit un profil nutritionnel complet (BMR/TDEE/macros) calculé serveur-side, puis un backend sur VPS orchestre un LLM pour proposer des idées de repas contextualisées, des recettes détaillées et un planning hebdomadaire. Le client Flutter — MVVM + Provider — absorbe les retours LLM avec un parsing JSON défensif et offre une navigation fluide via GoRouter.",
+      "L'onboarding bâtit un profil complet en 15 étapes. Le serveur calcule les macros, construit les prompts, appelle le LLM, renvoie du JSON strict. Le client Flutter — MVVM + Provider — parse avec défense, affiche via GoRouter, gère l'achat via RevenueCat. Les réponses LLM sont normalisées avant d'atteindre la présentation.",
     tech: [
       "Flutter",
       "Dart",
@@ -224,61 +252,61 @@ export const projects: Project[] = [
     ],
     features: [
       {
-        title: "Onboarding profond — 15 écrans",
+        title: "Onboarding 15 écrans",
         description:
-          "Profil complet (objectif, morphologie, contraintes, activité). Le serveur calcule BMR/TDEE et les macros cibles, stockés localement pour toute la session.",
+          "Profil complet : objectif, morphologie, contraintes, activité. Le serveur calcule BMR, TDEE et macros cibles, mis en cache local pour la session.",
       },
       {
-        title: "Suggestions de repas par LLM",
+        title: "Repas suggérés par LLM",
         description:
-          "Onglet Home — l'utilisateur génère des idées contextualisées (petit-déjeuner, déjeuner, dîner, snack) selon ses contraintes, avec recette détaillée à la demande.",
+          "Onglet Home — idées contextualisées (petit-déj, déjeuner, dîner, snack) selon les contraintes. Recette détaillée à la demande.",
       },
       {
         title: "Planning hebdomadaire",
         description:
-          "Onglet Week — visualisation 7 jours × repas, ré-génération par case, export des ingrédients vers l'onglet Courses.",
+          "Onglet Week — grille 7 jours × repas. Re-génération case par case, export des ingrédients vers les Courses.",
       },
       {
-        title: "Liste de courses agrégée",
+        title: "Courses agrégées",
         description:
-          "Les ingrédients du planning sont regroupés par catégorie et ajustés aux quantités. Les items peuvent être cochés et persistent entre sessions.",
+          "Les ingrédients du planning groupés par catégorie, quantités ajustées. Cochables, persistants entre sessions.",
       },
       {
-        title: "Abonnement RevenueCat",
+        title: "Paywall RevenueCat",
         description:
-          "Paywall natif avec RevenueCat — App Store / Play Store / Web. Gate les fonctionnalités premium (planning illimité, recettes avancées).",
+          "Abonnement natif sur App Store, Play Store, Web. Gate les fonctions premium (planning illimité, recettes avancées).",
       },
       {
-        title: "Multi-plateforme",
+        title: "Une base, quatre plateformes",
         description:
-          "Une base de code Flutter livrée sur iOS, Android, Web et macOS, avec transitions GoRouter personnalisées selon la plateforme.",
+          "iOS, Android, Web, macOS. Une seule base Flutter, transitions GoRouter adaptées à chaque plateforme.",
       },
     ],
     highlights: [
-      "Architecture MVVM stricte — 8 ViewModels découplés, chacun testé indépendamment.",
-      "Backend VPS orchestrant un LLM — le client ne voit jamais le prompt brut, juste des réponses JSON typées.",
-      "Parsing défensif : les sorties LLM arrivent parfois enrobées de markdown ou de texte parasite — les fromJson absorbent, nettoient, isolent le JSON valide.",
-      "Domain models immutables — toute mutation passe par copyWith, aucune surprise d'état partagé.",
-      "Calculs BMR/TDEE/macros côté serveur — un seul endroit de vérité, les formules peuvent évoluer sans re-livrer le binaire.",
-      "Google Sign-In v7 + Sign in with Apple — gestion unifiée des sessions côté client, tokens rafraîchis en silence.",
+      "MVVM strict — 8 ViewModels découplés, chacun testé isolément.",
+      "Backend VPS orchestre le LLM. Le client ne voit jamais le prompt brut, uniquement du JSON typé.",
+      "Parsing défensif : les sorties LLM arrivent parfois enrobées de markdown ou de texte parasite. Les fromJson nettoient et isolent le JSON valide avant de planter.",
+      "Domain models immutables. Toute mutation passe par copyWith, zéro surprise d'état partagé.",
+      "Calculs BMR/TDEE/macros côté serveur. Une seule source de vérité, les formules évoluent sans re-livrer l'app.",
+      "Google Sign-In v7 + Sign in with Apple. Sessions unifiées, tokens rafraîchis en silence.",
     ],
     architecture:
-      "Client Flutter découpé en trois couches : Presentation (Screens + Widgets Material 3), ViewModels (ChangeNotifier Provider), Services (clients API + auth + billing). Les Domain Models sont immutables avec fromJson/toJson défensifs. La navigation passe par GoRouter avec des transitions personnalisées. Côté serveur, une API REST hébergée sur VPS agit comme orchestrateur : elle reçoit le profil utilisateur, calcule les métriques nutritionnelles, construit les prompts, appelle le LLM, normalise la réponse en JSON strict avant de la renvoyer. Les credentials sensibles vivent dans un .env chargé au boot via flutter_dotenv. RevenueCat gère les achats sur les trois plateformes de facturation. SharedPreferences persiste profil, planning et liste de courses en local.",
+      "Client Flutter en trois couches : Presentation (Screens + widgets Material 3), ViewModels (ChangeNotifier Provider), Services (API, auth, billing). Domain models immutables avec fromJson/toJson défensifs. Navigation GoRouter, transitions custom par plateforme. Côté serveur, une API REST sur VPS orchestre : profil → calculs nutritionnels → prompts → LLM → normalisation JSON stricte → réponse. Credentials dans un .env chargé au boot via flutter_dotenv. RevenueCat gère les trois stores de facturation. SharedPreferences persiste profil, planning et courses en local.",
     challenges: [
       {
-        title: "Domestiquer les sorties LLM",
+        title: "Domestiquer le LLM",
         description:
-          "Le LLM renvoie parfois du JSON propre, parfois du JSON enrobé dans ```json, parfois du texte libre avec des sauts de ligne parasites. Les fromJson ont été renforcés pour tolérer ces variantes sans faire planter la couche présentation.",
+          "Les réponses arrivent propres, parfois enrobées de ```json, parfois en texte libre avec des retours à la ligne parasites. Les fromJson nettoient et isolent le JSON valide avant qu'il atteigne la couche présentation.",
       },
       {
-        title: "Unifier quatre plateformes",
+        title: "Quatre plateformes, une logique",
         description:
-          "iOS et Android impliquent deux providers d'auth natifs (Google / Apple) et deux stores de billing. Le Web et macOS demandent une dégradation propre quand une API native n'existe pas.",
+          "iOS et Android demandent deux providers d'auth natifs (Google, Apple) et deux stores de billing. Le Web et macOS exigent une dégradation propre quand l'API native n'existe pas.",
       },
       {
-        title: "Onboarding de 15 écrans sans perdre l'utilisateur",
+        title: "15 écrans sans perdre l'utilisateur",
         description:
-          "Chaque écran collecte un champ ou un choix et doit pouvoir revenir en arrière sans perte. Le state est porté par un ViewModel unique jusqu'à la soumission finale au backend.",
+          "Chaque étape capture un champ ou un choix et autorise le retour arrière sans perte. Un seul ViewModel porte l'état jusqu'à la soumission finale.",
       },
     ],
     links: {
@@ -293,7 +321,7 @@ export const projects: Project[] = [
     gallery: [
       {
         kind: "strip",
-        caption: "Onboarding — du profil nutritionnel aux objectifs",
+        caption: "Onboarding — du profil nutritionnel à l'objectif",
         images: [
           { src: "/projects/melo/Onboarding1.png", alt: "Onboarding Melo — étape 1", ratio: "9/19.5" },
           { src: "/projects/melo/Onboarding2.png", alt: "Onboarding Melo — étape 2", ratio: "9/19.5" },
@@ -305,22 +333,22 @@ export const projects: Project[] = [
       {
         src: "/projects/melo/MealPage.png",
         alt: "Liste des recettes",
-        caption: "Catalogue de recettes — filtrage et recherche",
+        caption: "Catalogue — filtrage et recherche",
         ratio: "9/19.5",
       },
       {
         kind: "strip",
-        caption: "Recette détaillée — ingrédients, macros et étapes pas à pas",
+        caption: "Recette — ingrédients, macros et étapes pas à pas",
         images: [
           { src: "/projects/melo/Cokking0.png", alt: "Recette — entrée", ratio: "9/19.5" },
           { src: "/projects/melo/Cooking.png", alt: "Recette — vue d'ensemble", ratio: "9/19.5" },
-          { src: "/projects/melo/Cooking2.png", alt: "Recette — étapes de préparation", ratio: "9/19.5" },
+          { src: "/projects/melo/Cooking2.png", alt: "Recette — étapes", ratio: "9/19.5" },
           { src: "/projects/melo/cooking3.png", alt: "Recette — synthèse macros", ratio: "9/19.5" },
         ],
       },
       {
         src: "/projects/melo/Week.png",
-        alt: "Prédiction hebdomadaire",
+        alt: "Planning hebdomadaire",
         caption: "Planning 7 jours — repas générés par LLM",
         ratio: "9/19.5",
       },
@@ -333,15 +361,16 @@ export const projects: Project[] = [
     year: 2024,
     category: "Fullstack",
     status: "Concept",
-    tagline: "Réseau social — posts, messagerie temps réel et notifications.",
+    tagline:
+      "Réseau social complet — feed, DMs temps réel, notifications. Posé sur Next.js + Socket.io + Redis.",
     role: "Fullstack",
     duration: "Side-project",
     summary:
-      "Application sociale complète : feed personnalisé, système de followers, messagerie instantanée et notifications push.",
+      "MVP social qui tient la charge : feed trié par engagement, messagerie instantanée backée par Redis, notifications ciblées par événement. Pas une démo, un produit.",
     problem:
-      "Construire une base solide pour un produit social sans sur-ingénierie : authentification, feed, messagerie, notifications.",
+      "Monter un produit social viable sans sur-ingénierie. Les briques de base — auth, feed, DMs, notifs — doivent marcher ensemble, pas se contenter d'exister côte à côte.",
     solution:
-      "Stack Next.js + Socket.io + Redis, avec un feed trié par engagement et une messagerie instantanée scalable.",
+      "Next.js pour le rendu hybride, Socket.io pour les DMs, Redis pour la persistance des sessions et la diffusion d'événements. Feed trié par engagement, notifications groupées par topic.",
     tech: ["Next.js", "Socket.io", "Redis", "AWS"],
     stack: [
       { category: "Front", items: ["Next.js", "React"] },
@@ -349,12 +378,13 @@ export const projects: Project[] = [
       { category: "Infra", items: ["AWS"] },
     ],
     features: [
-      { title: "Feed personnalisé", description: "Tri par engagement + signal d'abonnement." },
-      { title: "Messagerie temps réel", description: "Socket.io + Redis pour la persistance de sessions." },
-      { title: "Notifications push", description: "Notifications ciblées par événement." },
+      { title: "Feed personnalisé", description: "Tri par engagement croisé avec le signal d'abonnement." },
+      { title: "DMs temps réel", description: "Socket.io pour la connexion, Redis pour la persistance de sessions." },
+      { title: "Notifications push", description: "Événements ciblés, groupés par topic, débrayables par utilisateur." },
     ],
     highlights: [],
-    architecture: "Next.js côté front, API Socket.io backée par Redis pour les sessions et la messagerie, déploiement AWS.",
+    architecture:
+      "Next.js côté front. API Socket.io backée par Redis pour les sessions et la messagerie. Déploiement AWS avec scaling horizontal sur les workers websocket.",
     links: {
       github: "",
       demo: "",

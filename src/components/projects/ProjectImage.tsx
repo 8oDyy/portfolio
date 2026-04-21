@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import type { ProjectImage as ProjectImageType } from "@/data/projects";
+import BrowserFrame from "./BrowserFrame";
 import PhoneFrame from "./PhoneFrame";
 
 type Props = {
@@ -19,7 +20,7 @@ export default function ProjectImage({ image, ratio, className = "", priority, l
   const [failed, setFailed] = useState(false);
   const aspect = ratio || image.ratio || "4/5";
   const isEmpty = !image.src || failed;
-  const isPhone = isPhoneRatio(aspect);
+  const frame = resolveFrame(image.frame, aspect);
 
   const content = (
     <>
@@ -40,8 +41,12 @@ export default function ProjectImage({ image, ratio, className = "", priority, l
 
   return (
     <figure className={`relative w-full ${className}`}>
-      {isPhone ? (
+      {frame === "phone" ? (
         <PhoneFrame>{content}</PhoneFrame>
+      ) : frame === "browser" ? (
+        <BrowserFrame url={image.url} ratio={aspect}>
+          {content}
+        </BrowserFrame>
       ) : (
         <div
           className="relative w-full overflow-hidden bg-ink/[0.03]"
@@ -64,6 +69,14 @@ function isPhoneRatio(ratio: string): boolean {
   const [w, h] = ratio.split("/").map(Number);
   if (!w || !h) return false;
   return h / w >= 2;
+}
+
+function resolveFrame(
+  explicit: ProjectImageType["frame"],
+  ratio: string,
+): "browser" | "phone" | "none" {
+  if (explicit) return explicit;
+  return isPhoneRatio(ratio) ? "phone" : "none";
 }
 
 function Placeholder({ ratio, label }: { ratio: string; label: string }) {

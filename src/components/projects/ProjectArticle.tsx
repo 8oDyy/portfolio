@@ -144,19 +144,7 @@ export default function ProjectArticle({ project, first }: Props) {
                     <ProjectImage image={g.items[0]} />
                   </div>
                 ) : (
-                  <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                    {g.items.map((img, j) => {
-                      const promoted = j % 3 === 0 && isLandscape(img.ratio);
-                      return (
-                        <ProjectImage
-                          key={j}
-                          image={img}
-                          className={promoted ? "md:col-span-2" : ""}
-                          ratio={promoted ? "16/7" : img.ratio}
-                        />
-                      );
-                    })}
-                  </div>
+                  <SinglesGroup key={i} items={g.items} />
                 ),
               )}
             </div>
@@ -323,6 +311,119 @@ function isLandscape(ratio?: string): boolean {
   const [w, h] = ratio.split("/").map(Number);
   if (!w || !h) return false;
   return w > h;
+}
+
+type Row =
+  | { kind: "full"; item: ProjectImageType }
+  | { kind: "pair"; items: [ProjectImageType, ProjectImageType] };
+
+function buildRows(items: ProjectImageType[]): Row[] {
+  const rows: Row[] = [];
+  let buf: ProjectImageType[] = [];
+  items.forEach((img, j) => {
+    const promoted = j % 3 === 0 && isLandscape(img.ratio);
+    if (promoted) {
+      if (buf.length === 1) {
+        rows.push({ kind: "full", item: buf[0] });
+        buf = [];
+      }
+      rows.push({ kind: "full", item: img });
+    } else {
+      buf.push(img);
+      if (buf.length === 2) {
+        rows.push({ kind: "pair", items: [buf[0], buf[1]] });
+        buf = [];
+      }
+    }
+  });
+  if (buf.length === 1) {
+    rows.push({ kind: "full", item: buf[0] });
+  }
+  return rows;
+}
+
+function SinglesGroup({ items }: { items: ProjectImageType[] }) {
+  const rows = buildRows(items);
+  return (
+    <div className="flex flex-col gap-6 md:gap-10">
+      {rows.map((row, k) => {
+        if (row.kind === "full") {
+          return <ProjectImage key={k} image={row.item} />;
+        }
+        const [a, b] = row.items;
+        const aPortrait = !isLandscape(a.ratio);
+        const bPortrait = !isLandscape(b.ratio);
+        if (aPortrait !== bPortrait) {
+          const landscape = aPortrait ? b : a;
+          const portrait = aPortrait ? a : b;
+          const landscapeFirst = !aPortrait;
+          const chromePx = landscape.frame === "browser" ? 36 : 0;
+          const gapPx = 40;
+          const widths = computePairWidths(
+            landscape.ratio,
+            portrait.ratio,
+            chromePx,
+            gapPx,
+          );
+          const landscapeEl = (
+            <div
+              key="l"
+              className="w-full md:w-[var(--l-w,auto)] md:shrink-0"
+              style={{ "--l-w": widths.landscape } as React.CSSProperties}
+            >
+              <ProjectImage image={landscape} />
+            </div>
+          );
+          const portraitEl = (
+            <div
+              key="p"
+              className="mx-auto w-full max-w-[280px] md:mx-0 md:w-[var(--p-w,auto)] md:max-w-none md:shrink-0"
+              style={{ "--p-w": widths.portrait } as React.CSSProperties}
+            >
+              <ProjectImage image={portrait} />
+            </div>
+          );
+          return (
+            <div
+              key={k}
+              className="flex flex-col gap-6 md:flex-row md:items-start md:gap-10"
+            >
+              {landscapeFirst ? [landscapeEl, portraitEl] : [portraitEl, landscapeEl]}
+            </div>
+          );
+        }
+        return (
+          <div
+            key={k}
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10"
+          >
+            <ProjectImage image={a} />
+            <ProjectImage image={b} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function computePairWidths(
+  landscapeRatio?: string,
+  portraitRatio?: string,
+  chromePx = 0,
+  gapPx = 0,
+): { landscape: string; portrait: string } {
+  const [lw, lh] = (landscapeRatio ?? "1/1").split("/").map(Number);
+  const [pw, ph] = (portraitRatio ?? "1/1").split("/").map(Number);
+  if (!lw || !lh || !pw || !ph) {
+    return { landscape: "50%", portrait: "50%" };
+  }
+  const lRatio = lh / lw;
+  const pRatio = ph / pw;
+  const alpha = pRatio / (lRatio + pRatio);
+  const beta = chromePx / (lRatio + pRatio);
+  const landscape = `calc((100% - ${gapPx}px) * ${alpha.toFixed(4)} - ${beta.toFixed(2)}px)`;
+  const portrait = `calc((100% - ${gapPx}px) * ${(1 - alpha).toFixed(4)} + ${beta.toFixed(2)}px)`;
+  return { landscape, portrait };
 }
 
 function computeCoverCap(ratio?: string): string {
