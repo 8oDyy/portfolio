@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const navItems = [
@@ -11,6 +12,7 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const reduce = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -54,7 +56,12 @@ export default function Navbar() {
         scrolled ? "bg-bone/90 backdrop-blur-sm border-b border-[var(--line)]" : ""
       }`}
     >
-      <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between px-6 md:px-10">
+      <motion.div
+        className="mx-auto flex h-14 max-w-[1600px] items-center justify-between px-6 md:px-10"
+        initial={reduce ? false : { y: "-110%", opacity: 0 }}
+        animate={reduce ? false : { y: "0%", opacity: 1 }}
+        transition={{ duration: 0.6, delay: 4.9, ease: [0.16, 1, 0.3, 1] }}
+      >
         <a
           href="#hero"
           onClick={(e) => handleClick(e, "#hero")}
@@ -88,7 +95,7 @@ export default function Navbar() {
         >
           {open ? "Fermer" : "Menu"}
         </button>
-      </div>
+      </motion.div>
 
       {open && (
         <div className="md:hidden border-t border-[var(--line)] bg-bone">

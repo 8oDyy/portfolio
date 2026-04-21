@@ -9,15 +9,19 @@ export default function Projects() {
       <header className="px-6 md:px-10 pt-24 md:pt-36">
         <div className="grid grid-cols-12 gap-6 md:gap-10 rule-b pb-8 md:pb-12">
           <div className="col-span-12 md:col-span-4">
-            <span className="eyebrow">02 / Travaux sélectionnés</span>
+            <span className="eyebrow">02 / Projets</span>
           </div>
           <div className="col-span-12 md:col-span-8">
             <h2 className="display text-[clamp(3rem,9vw,9rem)] leading-[0.88]">
-              Ce que je <span className="display-italic">construis</span>.
+              Ce que je{" "}
+              <span className="marker">
+                <span className="display-italic">construis</span>
+              </span>
+              .
             </h2>
             <p className="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-muted">
-              Une sélection de projets récents. Chaque fiche précise le rôle, la
-              stack, l&apos;intention, et ce qui a demandé des choix.
+              Trois projets récents. Pour chacun : le rôle, la stack,
+              l&apos;intention, et les choix qui ont compté.
             </p>
           </div>
         </div>

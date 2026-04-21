@@ -9,7 +9,7 @@
   --color-line: rgba(14, 14, 14, 0.08);
   --color-line-strong: rgba(14, 14, 14, 0.18);
 
-  --font-display: var(--font-fraunces);
+  --font-display: var(--font-instrument);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -32,6 +32,21 @@ html {
   background: var(--ink);
   color: var(--ink);
   overflow-x: clip;
+}
+
+/* Hide native cursor on fine-pointer devices — replaced by <InvertCursor />. */
+@media (pointer: fine) {
+  html,
+  body,
+  a,
+  button,
+  [role="button"],
+  input,
+  textarea,
+  select,
+  label {
+    cursor: none;
+  }
 }
 
 html.lenis,
@@ -69,19 +84,19 @@ body::after {
 
 /* Typography scale ------------------------------------------------------ */
 .display {
-  font-family: var(--font-display), Georgia, serif;
-  font-optical-sizing: auto;
-  font-variation-settings: "SOFT" 25, "WONK" 0;
-  letter-spacing: -0.03em;
-  line-height: 0.88;
-  font-weight: 400;
+  font-family: var(--font-instrument), "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  font-weight: 600;
+  font-feature-settings: "ss01", "ss02", "calt";
 }
 
 .display-italic {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-instrument), "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   font-style: italic;
-  font-variation-settings: "SOFT" 70, "WONK" 1;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  font-feature-settings: "ss01", "ss02", "calt";
 }
 
 .mono {
@@ -120,8 +135,7 @@ body::after {
   transition: background-size 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   padding: 0 0.05em;
 }
-.marker:hover,
-.marker-on { background-size: 100% 38%; }
+.marker:hover { background-size: 100% 38%; }
 
 /* Letter scatter utility for hero */
 .letter {

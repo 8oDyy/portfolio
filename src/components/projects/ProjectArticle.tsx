@@ -26,7 +26,7 @@ export default function ProjectArticle({ project, first }: Props) {
             </span>
             <StatusPill status={project.status} />
           </div>
-          <h2 className="col-span-12 md:col-span-12 display text-[clamp(3.5rem,11vw,11rem)] leading-[0.88]">
+          <h2 data-invert-zone className="col-span-12 md:col-span-12 display text-[clamp(3.5rem,11vw,11rem)] leading-[0.88]">
             {project.title}
           </h2>
           <p className="col-span-12 md:col-span-8 md:col-start-5 text-xl md:text-2xl leading-snug">

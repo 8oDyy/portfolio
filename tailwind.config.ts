@@ -16,7 +16,7 @@ const config: Config = {
         subtle: "#a09b94",
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "Georgia", "serif"],
+        display: ["var(--font-instrument)", "Instrument Sans", "ui-sans-serif", "system-ui", "sans-serif"],
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "SF Mono", "monospace"],
       },

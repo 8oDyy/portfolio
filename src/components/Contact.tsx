@@ -49,12 +49,16 @@ export default function Contact() {
             <h2 className="display text-[clamp(3.5rem,11vw,11rem)] leading-[0.88]">
               Travaillons
               <br />
-              <span className="display-italic">ensemble.</span>
+              <span className="marker">
+                <span className="display-italic">ensemble</span>
+              </span>
+              .
             </h2>
             <p className="mt-8 max-w-xl text-base md:text-lg leading-relaxed text-muted">
-              Je suis en recherche d&apos;alternance à partir de maintenant et
-              ouvert aux opportunités en développement. Écris-moi : je réponds
-              toujours.
+              Je cherche une{" "}
+              <span className="marker">alternance dès septembre 2026</span>. Un
+              projet, une question, un simple bonjour — écris, je réponds sous
+              48 h.
             </p>
           </div>
         </div>
@@ -66,7 +70,7 @@ export default function Contact() {
             className="block group"
             aria-label="Envoyer un email"
           >
-            <span className="eyebrow block mb-4">Par email direct</span>
+            <span className="eyebrow block mb-4">Par email, en direct</span>
             <span className="display block text-[clamp(2rem,7vw,7rem)] leading-[0.9] break-words">
               <span className="marker">{EMAIL}</span>
               <span className="inline-block ml-4 -translate-x-2 opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
@@ -81,18 +85,18 @@ export default function Contact() {
       <div className="px-6 md:px-10 py-20 md:py-28 rule-t">
         <div className="grid grid-cols-12 gap-10 md:gap-16">
           <div className="col-span-12 md:col-span-7">
-            <span className="eyebrow block mb-6">Ou envoyez un mot ici</span>
+            <span className="eyebrow block mb-6">Ou via le formulaire</span>
 
             <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-10">
               <EditorialField
-                label="Votre nom"
+                label="Nom"
                 id="name"
                 value={data.name}
                 onChange={(v) => setData({ ...data, name: v })}
                 required
               />
               <EditorialField
-                label="Votre email"
+                label="Email"
                 id="email"
                 type="email"
                 value={data.email}
@@ -100,7 +104,7 @@ export default function Contact() {
                 required
               />
               <EditorialField
-                label="Votre message"
+                label="Message"
                 id="message"
                 textarea
                 value={data.message}
@@ -115,7 +119,7 @@ export default function Contact() {
                   disabled={status === "sending"}
                   className="mono inline-flex items-center gap-3 px-6 py-4 text-xs uppercase tracking-[0.22em] bg-ink text-bone hover:bg-pollen hover:text-ink disabled:opacity-50 transition-colors"
                 >
-                  {status === "sending" ? "Envoi…" : status === "success" ? "Envoyé ✓" : status === "error" ? "Erreur — réessayer" : "Envoyer"}
+                  {status === "sending" ? "Envoi…" : status === "success" ? "Message parti ✓" : status === "error" ? "Raté — on réessaie ?" : "Envoyer"}
                   <span aria-hidden>→</span>
                 </button>
               </div>
@@ -186,7 +190,7 @@ function EditorialField({
           onChange={(e) => onChange(e.target.value)}
           rows={4}
           className="bg-transparent text-lg md:text-xl leading-relaxed text-ink outline-none resize-none placeholder:text-subtle"
-          placeholder="Dis-m&apos;en plus…"
+          placeholder="Dis-m&apos;en un peu plus…"
         />
       ) : (
         <input
@@ -206,11 +210,11 @@ function EditorialField({
 function SubmitHint({ status }: { status: Status }) {
   const msg =
     status === "success"
-      ? "Message reçu. Je réponds sous 48h."
+      ? "Bien reçu. Réponse sous 48 h."
       : status === "error"
-        ? "Erreur à l'envoi. Essaye l'email direct."
+        ? "Envoi raté — passe par l'email direct."
         : status === "sending"
           ? "Envoi en cours…"
-          : "Chiffré via EmailJS.";
+          : "Envoyé via EmailJS, aucun spam.";
   return <span className="mono text-xs uppercase tracking-[0.22em] text-subtle">{msg}</span>;
 }

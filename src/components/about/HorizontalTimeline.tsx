@@ -64,7 +64,7 @@ export default function HorizontalTimeline({ entries }: Props) {
         <div ref={trackRef} className="flex h-screen items-stretch">
           <header className="shrink-0 w-[60vw] flex flex-col justify-center px-10">
             <span className="eyebrow mb-4">01 / Parcours</span>
-            <h3 className="display text-[clamp(3rem,7vw,7rem)] leading-[0.9]">
+            <h3 data-invert-zone className="display text-[clamp(3rem,7vw,7rem)] leading-[0.9]">
               Quatre ans,
               <br />
               <span className="display-italic">quatre étapes.</span>
@@ -103,7 +103,7 @@ export default function HorizontalTimeline({ entries }: Props) {
       {/* Mobile — simple vertical list */}
       <div className="md:hidden px-6 py-20">
         <span className="eyebrow mb-4 block">01 / Parcours</span>
-        <h3 className="display text-6xl leading-[0.9] mb-10">
+        <h3 data-invert-zone className="display text-6xl leading-[0.9] mb-10">
           Quatre ans,
           <br />
           <span className="display-italic">quatre étapes.</span>

@@ -77,7 +77,7 @@ export default function Footer() {
               Framer Motion — Matter.js
             </p>
             <p className="mono text-xs text-bone/60 mt-2">
-              Typographie : Fraunces + Geist
+              Typographie : Instrument Sans + Geist
             </p>
           </div>
         </div>

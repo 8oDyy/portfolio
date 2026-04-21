@@ -8,28 +8,28 @@ const timeline: TimelineEntry[] = [
     title: "Baccalauréat",
     place: "Louis Armand — Chambéry",
     description:
-      "Fondations solides en sciences et résolution de problèmes techniques.",
+      "Spé maths + sciences. Les bases rigoureuses qui servent encore quand un bug résiste.",
   },
   {
     year: "2023",
     title: "École 42",
     place: "Lyon",
     description:
-      "Formation intensive en algorithmique et développement logiciel collaboratif.",
+      "Peer-learning, zéro prof. Un an à casser du C, du shell, des algos — et à apprendre à lire le code des autres.",
   },
   {
     year: "2025",
-    title: "Création d'Alp-Web",
-    place: "Agence Web",
+    title: "Alp-Web — fondateur",
+    place: "Agence freelance",
     description:
-      "Conception d'interfaces modernes et performantes avec stacks variées — Nuxt, Next, Supabase.",
+      "Ma propre structure. Des projets clients livrés en Nuxt, Next, Supabase — du cahier des charges à la mise en prod.",
   },
   {
     year: "2026",
     title: "BTS CIEL",
     place: "Saint-Michel — Annecy",
     description:
-      "Développement fullstack d'applications web innovantes et sécurisées.",
+      "En cours. Développement fullstack, cybersécurité, déploiement. Alternance recherchée pour prolonger la pratique en entreprise.",
   },
 ];
 
@@ -61,22 +61,22 @@ export default function About() {
   return (
     <section id="about" className="relative bg-bone text-ink">
       {/* Intro */}
-      <div className="px-6 md:px-10 pt-24 md:pt-36 rule-b">
-        <div className="grid grid-cols-12 gap-6 md:gap-10 pb-16 md:pb-24">
-          <div className="col-span-12 md:col-span-4">
+      <div className="relative min-h-screen flex flex-col justify-center px-6 md:px-10 rule-b">
+        <div className="grid grid-cols-12 gap-6 md:gap-10 py-24 md:py-32">
+          <div className="col-span-12 md:col-span-4 flex flex-col">
             <span className="eyebrow">01 / À propos</span>
           </div>
           <div className="col-span-12 md:col-span-8">
             <p className="display text-[clamp(2.2rem,5.5vw,5.5rem)] leading-[1.02]">
-              Je fais du <span className="marker marker-on">développement web</span>{" "}
-              depuis quelques années — avec une attention particulière pour
-              l&apos;<span className="display-italic">UX, les détails</span>, et la
-              robustesse du code.
+              Je code depuis 2022. Une obsession :{" "}
+              <span className="marker">que ça tienne en production</span> — l&apos;
+              <span className="display-italic">UX, les détails</span>, et le
+              code derrière.
             </p>
             <p className="mt-10 max-w-2xl text-base md:text-lg leading-relaxed text-muted">
-              J&apos;aime construire proprement. Des bases solides, des interfaces
-              lisibles, du code qu&apos;on relit sans grimacer. Je livre des solutions
-              adaptées aux besoins réels, pas à des specs imaginaires.
+              Je travaille au résultat, pas aux specs. Ce qui compte :
+              l&apos;interface répond, le code se relit, et le projet survit au
+              prochain dev qui l&apos;ouvre. Le reste est décoration.
             </p>
           </div>
         </div>
@@ -93,7 +93,8 @@ export default function About() {
           </div>
           <div className="col-span-12 md:col-span-8">
             <h3 className="display text-[clamp(2.5rem,6vw,6rem)] leading-[0.92]">
-              Les outils que <span className="display-italic">j&apos;utilise</span>.
+              Les outils que <span className="display-italic">je manie</span>{" "}
+              au quotidien.
             </h3>
           </div>
         </div>

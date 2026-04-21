@@ -25,16 +25,16 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^9",
+    "@tailwindcss/postcss": "^4.2.4",
+    "@types/node": "^20.19.39",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
+    "eslint": "^9.39.4",
     "eslint-config-next": "16.1.4",
-    "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.11",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "tailwindcss": "^4.2.4",
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.19.0+sha512.c9fc7236e92adf5c8af42fd5bf1612df99c2ceb62f27047032f4720b33f8eacdde311865e91c411f2774f618d82f320808ecb51718bfa82c060c4ba7c76a32b8"
 }

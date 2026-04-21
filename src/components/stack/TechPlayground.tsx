@@ -92,7 +92,7 @@ export default function TechPlayground({ words }: Props) {
         el.style.left = "0";
         el.style.whiteSpace = "nowrap";
         el.style.padding = "10px 20px";
-        el.style.fontFamily = "var(--font-fraunces), Georgia, serif";
+        el.style.fontFamily = "var(--font-instrument), ui-sans-serif, system-ui, sans-serif";
         el.style.fontSize = "clamp(1.25rem, 2.4vw, 2rem)";
         el.style.fontStyle = i % 3 === 1 ? "italic" : "normal";
         el.style.lineHeight = "1";

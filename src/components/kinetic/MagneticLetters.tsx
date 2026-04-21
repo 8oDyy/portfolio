@@ -11,6 +11,9 @@ type Props = {
   radius?: number;
   /** If true, apply a subtle italic/rotation to nearby letters. */
   wobble?: boolean;
+  /** Delay in ms before the magnetic effect arms (useful when the element
+   *  is still animating in and its bounding box isn't final yet). */
+  startDelay?: number;
 };
 
 /**
@@ -24,6 +27,7 @@ export default function MagneticLetters({
   strength = 28,
   radius = 180,
   wobble = false,
+  startDelay = 0,
 }: Props) {
   const wrapRef = useRef<HTMLSpanElement>(null);
 
@@ -32,8 +36,13 @@ export default function MagneticLetters({
     if (!wrap) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const letters = Array.from(wrap.querySelectorAll<HTMLElement>(".letter"));
+    let letters: HTMLElement[] = [];
     let centers: { x: number; y: number }[] = [];
+    let mx = -9999;
+    let my = -9999;
+    let raf: number | null = null;
+    let armTimer: number | null = null;
+    let armed = false;
 
     const measure = () => {
       centers = letters.map((el) => {
@@ -41,11 +50,6 @@ export default function MagneticLetters({
         return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
       });
     };
-    measure();
-
-    let mx = -9999;
-    let my = -9999;
-    let raf: number | null = null;
 
     const tick = () => {
       raf = null;
@@ -80,19 +84,33 @@ export default function MagneticLetters({
       measure();
     };
 
-    window.addEventListener("mousemove", onMove, { passive: true });
-    window.addEventListener("mouseleave", onLeave);
-    window.addEventListener("resize", onResize);
-    window.addEventListener("scroll", onResize, { passive: true });
+    const arm = () => {
+      armed = true;
+      letters = Array.from(wrap.querySelectorAll<HTMLElement>(".letter"));
+      measure();
+      window.addEventListener("mousemove", onMove, { passive: true });
+      window.addEventListener("mouseleave", onLeave);
+      window.addEventListener("resize", onResize);
+      window.addEventListener("scroll", onResize, { passive: true });
+    };
+
+    if (startDelay > 0) {
+      armTimer = window.setTimeout(arm, startDelay);
+    } else {
+      arm();
+    }
 
     return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onResize);
+      if (armTimer != null) clearTimeout(armTimer);
+      if (armed) {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseleave", onLeave);
+        window.removeEventListener("resize", onResize);
+        window.removeEventListener("scroll", onResize);
+      }
       if (raf != null) cancelAnimationFrame(raf);
     };
-  }, [text, strength, radius, wobble]);
+  }, [text, strength, radius, wobble, startDelay]);
 
   return (
     <span ref={wrapRef} className={className} aria-label={text}>
