@@ -75,6 +75,16 @@ export type Project = {
   };
   /** Cover image shown in the sticky column. */
   cover: ProjectImage;
+  /**
+   * Optional video that replaces the cover image — its currentTime is driven
+   * by scroll progress through the article (top enters viewport = 0,
+   * bottom leaves viewport = end).
+   */
+  coverVideo?: {
+    src: string;
+    /** Poster fallback during load. Defaults to cover.src. */
+    poster?: string;
+  };
   /** Additional images displayed inline below the narrative. */
   gallery: ProjectGalleryItem[];
 };
@@ -318,6 +328,10 @@ export const projects: Project[] = [
       alt: "Page d'accueil de l'app Melo",
       ratio: "9/19.5",
     },
+    coverVideo: {
+      src: "/projects/melo/hero.mp4",
+      poster: "/projects/melo/MainPage.png",
+    },
     gallery: [
       {
         kind: "strip",
@@ -355,44 +369,134 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "social-media-app",
+    slug: "crowdmind",
     number: "03",
-    title: "Social Media App",
-    year: 2024,
-    category: "Fullstack",
-    status: "Concept",
+    title: "CrowdMind",
+    year: 2026,
+    category: "Backend",
+    status: "En cours",
     tagline:
-      "Réseau social complet — feed, DMs temps réel, notifications. Posé sur Next.js + Socket.io + Redis.",
-    role: "Fullstack",
-    duration: "Side-project",
+      "Et si une opinion se calculait ? 100 citoyens synthétiques, 22 topics pondérés, moteur déporté sur Raspberry Pi. Zero LLM en prod.",
+    role: "Backend & infra — conception & développement",
+    duration: "6 semaines — en cours",
     summary:
-      "MVP social qui tient la charge : feed trié par engagement, messagerie instantanée backée par Redis, notifications ciblées par événement. Pas une démo, un produit.",
+      "Projet de recherche backend. Une API FastAPI sur Azure génère des agents, délègue le calcul à un Raspberry Pi branché chez moi via WebSocket sortant, persiste dans Supabase, et renvoie la distribution — tout se calcule, rien ne s'invente.",
     problem:
-      "Monter un produit social viable sans sur-ingénierie. Les briques de base — auth, feed, DMs, notifs — doivent marcher ensemble, pas se contenter d'exister côte à côte.",
+      "Demander à un LLM unique « que pense le public ? », c'est demander à une seule tête. Cher, lent, imprévisible, aucune distribution en sortie — une moyenne n'a jamais fait un sondage.",
     solution:
-      "Next.js pour le rendu hybride, Socket.io pour les DMs, Redis pour la persistance des sessions et la diffusion d'événements. Feed trié par engagement, notifications groupées par topic.",
-    tech: ["Next.js", "Socket.io", "Redis", "AWS"],
+      "100 agents tirés sur 5 clusters politiques français : centre-gauche progressiste, centre-droite conservateur, gauche radicale, droite radicale, divers. Chaque agent porte 4 axes idéologiques et 5 axes démographiques. Le moteur détecte les topics via 22 regex, pondère les axes, applique les modificateurs démographiques, injecte un bruit gaussien seedé par paire agent × question — et sort une distribution en moins de 200 ms.",
+    tech: [
+      "FastAPI",
+      "Python 3.13",
+      "Supabase",
+      "PostgreSQL",
+      "WebSockets",
+      "Raspberry Pi",
+      "Docker",
+      "Nginx",
+      "Azure",
+      "GitHub Actions",
+      "Redis",
+    ],
     stack: [
-      { category: "Front", items: ["Next.js", "React"] },
-      { category: "Back", items: ["Socket.io", "Redis"] },
-      { category: "Infra", items: ["AWS"] },
+      {
+        category: "API (cloud)",
+        items: ["FastAPI", "Python 3.13", "Pydantic", "Uvicorn"],
+      },
+      {
+        category: "Worker (edge)",
+        items: [
+          "Raspberry Pi",
+          "websockets",
+          "systemd",
+          "Moteur heuristique (pure stdlib)",
+        ],
+      },
+      {
+        category: "Data",
+        items: ["Supabase", "PostgreSQL", "Redis"],
+      },
+      {
+        category: "Infra",
+        items: ["VPS Azure", "Docker Compose", "Nginx (TLS + WSS)", "GHCR"],
+      },
+      {
+        category: "CI/CD",
+        items: [
+          "GitHub Actions (CI + CD)",
+          "ruff check & format",
+          "pytest cov ≥ 40 %",
+          "SSH deploy + healthcheck 30 tentatives",
+        ],
+      },
     ],
     features: [
-      { title: "Feed personnalisé", description: "Tri par engagement croisé avec le signal d'abonnement." },
-      { title: "DMs temps réel", description: "Socket.io pour la connexion, Redis pour la persistance de sessions." },
-      { title: "Notifications push", description: "Événements ciblés, groupés par topic, débrayables par utilisateur." },
+      {
+        title: "5 clusters politiques français",
+        description:
+          "Population tirée sur gaussiennes centrées autour des cinq pôles du paysage français. Les axes démographiques — âge, éducation, classe sociale, urbain/rural — corrèlent avec les axes idéologiques, pas à l'aveugle.",
+      },
+      {
+        title: "Moteur heuristique 22 topics",
+        description:
+          "Immigration, nucléaire, retraites, pouvoir d'achat, Europe, laïcité… Chaque topic est un couple (regex, poids par axe). Une question transversale matche plusieurs topics, les poids se moyennent automatiquement.",
+      },
+      {
+        title: "100 % reproductible",
+        description:
+          "Même seed, mêmes agents, mêmes réponses. Chaque paire agent × question a son propre RNG dérivé d'un hash MD5 — indispensable pour comparer deux scénarios ou calibrer les poids sans bruit parasite.",
+      },
+      {
+        title: "Calcul sur Raspberry Pi",
+        description:
+          "Le moteur tourne sur un Pi physique, chez moi. Connexion WebSocket sortante vers le backend, aucun port exposé, aucune IP publique requise. Reconnexion automatique avec backoff 1 s → 60 s.",
+      },
+      {
+        title: "Calibration contre sondages IFOP",
+        description:
+          "10 cas de référence tirés de sondages IFOP. Chaque modification de poids est évaluée contre ces distributions avant merge — le moteur ne dérive pas en silence.",
+      },
+      {
+        title: "Trois formats de questions",
+        description:
+          "Stance (pour/contre/mitigé), likert (échelle numérique), QCM (choix multiples). Les trois cohabitent dans un même questionnaire, agrégation automatique par type.",
+      },
     ],
-    highlights: [],
+    highlights: [
+      "Architecture hexagonale — endpoints, services, repositories, infrastructure. Les tests injectent FakePiClient et FakeRepository, zéro accès réseau.",
+      "WebSocket sortant initié par le Pi — aucun port ouvert derrière le NAT domestique, aucun DynDNS à maintenir.",
+      "Corrélation backend ↔ Pi par task_id UUID. PiWsManager expose un call_sync aux endpoints HTTP synchrones.",
+      "Moins de 200 ms pour 100 agents × 5 questions. Zéro LLM, zéro appel externe en prod.",
+      "Deux environnements mappés sur des GitHub environments distincts — dev bascule sur staging, main sur prod.",
+      "Déploiement SSH avec healthcheck actif (30 tentatives, 2 s d'intervalle) — aucune validation avant que l'API réponde.",
+    ],
     architecture:
-      "Next.js côté front. API Socket.io backée par Redis pour les sessions et la messagerie. Déploiement AWS avec scaling horizontal sur les workers websocket.",
+      "Deux dépôts, trois étages physiquement séparés. Le backend FastAPI vit containerisé sur un VPS Azure, derrière un Nginx qui termine le TLS et proxifie HTTP comme WebSocket (timeout 3600 s). L'API parle à Supabase — 11 tables métier, relations tracées avec CASCADE et RESTRICT réfléchis — et délègue tout le calcul de simulation à un Raspberry Pi branché chez moi. Le Pi ouvre lui-même la connexion WebSocket, pas l'inverse ; chaque appel est corrélé par un task_id UUID géré par PiWsManager. Redis porte les sessions et la canalisation realtime. Côté livraison, deux workflows GitHub Actions : le CI lint (ruff), teste (pytest, cov ≥ 40 %), build l'image Docker et push sur GHCR ; le CD, déclenché au succès du CI, SCP le compose, SSH pour pull/up --force-recreate, boucle un healthcheck 30 fois, prune les images, recharge Nginx. Dev bascule sur staging, main sur prod.",
+    challenges: [
+      {
+        title: "Encoder une opinion dans un scalaire",
+        description:
+          "Le vrai travail de fond. Trouver les bons poids par axe pour chaque topic, pour que la distribution colle à celle d'un vrai sondage. Beaucoup d'allers-retours sur la polarité (réduire / renforcer / négation) et les modificateurs démographiques — calibrés contre 10 sondages IFOP de référence.",
+      },
+      {
+        title: "Tunneler le Pi sans l'exposer",
+        description:
+          "Le Pi vit derrière un NAT domestique. Contrainte : zéro port entrant, zéro IP publique, zéro DynDNS. Réponse : un WebSocket sortant permanent initié par le Pi, avec reconnexion automatique (backoff 1 s → 60 s) et corrélation des appels par task_id UUID côté backend.",
+      },
+      {
+        title: "CI/CD zéro-intervention",
+        description:
+          "Rendre le déploiement impossible à casser à la main. Pipeline : lint → tests → build Docker → push GHCR → SCP compose → SSH pull/up --force-recreate → healthcheck 30 tentatives → prune → nginx reload. Dev bascule sur staging, main sur prod, via GitHub environments distincts — aucun SSH manuel requis.",
+      },
+    ],
     links: {
       github: "",
       demo: "",
     },
     cover: {
       src: "",
-      alt: "Social Media App",
-      ratio: "4/5",
+      alt: "CrowdMind — architecture backend FastAPI + Raspberry Pi",
+      ratio: "16/10",
     },
     gallery: [],
   },
