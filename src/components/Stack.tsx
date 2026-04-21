@@ -7,6 +7,7 @@ import TechPlayground from "./stack/TechPlayground";
 
 const marqueeRows = [
   {
+    duration: 55,
     items: [
       "React",
       "Next.js",
@@ -19,10 +20,12 @@ const marqueeRows = [
     ],
   },
   {
-    items: ["Node.js", "Supabase", "PostgreSQL", "Express", "MongoDB", "Redis", "GraphQL"],
+    duration: 40,
     reverse: true,
+    items: ["Node.js", "Supabase", "PostgreSQL", "Express", "MongoDB", "Redis", "GraphQL"],
   },
   {
+    duration: 70,
     items: ["Git", "Docker", "Vercel", "AWS", "GitHub Actions", "Figma", "Flutter", "C++"],
   },
 ];

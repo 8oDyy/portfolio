@@ -1,6 +1,13 @@
 "use client";
 
-type Row = { items: string[]; reverse?: boolean };
+import type { CSSProperties } from "react";
+
+type Row = {
+  items: string[];
+  reverse?: boolean;
+  /** Duration in seconds for one full loop. Default 45. */
+  duration?: number;
+};
 
 type Props = {
   rows: Row[];
@@ -10,18 +17,36 @@ export default function TechMarquee({ rows }: Props) {
   return (
     <div className="border-y border-[var(--line-strong)] divide-y divide-[var(--line)] bg-bone">
       {rows.map((row, i) => (
-        <MarqueeRow key={i} items={row.items} reverse={row.reverse} />
+        <MarqueeRow
+          key={i}
+          items={row.items}
+          reverse={row.reverse}
+          duration={row.duration}
+        />
       ))}
     </div>
   );
 }
 
-function MarqueeRow({ items, reverse }: { items: string[]; reverse?: boolean }) {
+function MarqueeRow({
+  items,
+  reverse,
+  duration = 45,
+}: {
+  items: string[];
+  reverse?: boolean;
+  duration?: number;
+}) {
+  const style = {
+    animationDirection: reverse ? "reverse" : "normal",
+    "--marquee-duration": `${duration}s`,
+  } as CSSProperties;
+
   return (
     <div className="flex overflow-hidden py-4 md:py-6">
       <div
         className="flex shrink-0 animate-marquee whitespace-nowrap items-baseline"
-        style={{ animationDirection: reverse ? "reverse" : "normal" }}
+        style={style}
       >
         <MarqueeInner items={items} />
         <MarqueeInner items={items} />
