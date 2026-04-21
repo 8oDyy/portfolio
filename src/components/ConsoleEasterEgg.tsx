@@ -75,7 +75,7 @@ export default function ConsoleEasterEgg() {
           `color:${INK};font-family:ui-monospace,monospace;padding-left:6px;`,
         );
         log(
-          "%cgithub%c github.com/hugoboulicaut",
+          "%cgithub%c github.com/8oDyy",
           label,
           `color:${INK};font-family:ui-monospace,monospace;padding-left:6px;`,
         );

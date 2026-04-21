@@ -39,7 +39,7 @@ export default function ProjectArticle({ project, first }: Props) {
         <div data-scrub-root className="grid grid-cols-12 gap-8 md:gap-12">
           {/* Cover (sticky on desktop) */}
           <div className="col-span-12 md:col-span-5">
-            <div className="md:sticky md:top-24">
+            <div className="md:sticky md:top-0 md:flex md:h-screen md:flex-col md:justify-center md:py-12">
               <div
                 className="mx-auto md:max-w-[var(--cover-cap,none)]"
                 style={{ "--cover-cap": computeCoverCap(project.cover.ratio) } as React.CSSProperties}

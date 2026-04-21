@@ -20,13 +20,22 @@ export default function Contact() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn("EmailJS env vars missing");
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+      return;
+    }
     setStatus("sending");
     try {
       await emailjs.send(
-        "service_fv7r9tk",
-        "template_i5y4s5k",
+        serviceId,
+        templateId,
         { from_name: data.name, from_email: data.email, message: data.message },
-        "gxO199Q3iQXQ1dZfg",
+        publicKey,
       );
       setStatus("success");
       setData({ name: "", email: "", message: "" });
@@ -119,7 +128,7 @@ export default function Contact() {
                   disabled={status === "sending"}
                   className="mono inline-flex items-center gap-3 px-6 py-4 text-xs uppercase tracking-[0.22em] bg-ink text-bone hover:bg-pollen hover:text-ink disabled:opacity-50 transition-colors"
                 >
-                  {status === "sending" ? "Envoi…" : status === "success" ? "Message parti ✓" : status === "error" ? "Raté — on réessaie ?" : "Envoyer"}
+                  {status === "sending" ? "Envoi…" : status === "success" ? "Message parti ✓" : status === "error" ? "Raté — on réessaie ?" : "Envoyer — 48 h max"}
                   <span aria-hidden>→</span>
                 </button>
               </div>

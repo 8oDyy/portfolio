@@ -20,15 +20,25 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.hugoboulicautraffort.fr"),
   title: "Hugo Boulicaut-Raffort — Développeur",
   description:
     "Portfolio éditorial de Hugo Boulicaut-Raffort, développeur fullstack JavaScript. Projets, parcours, stack technique.",
   keywords: ["portfolio", "développeur", "fullstack", "react", "nextjs", "typescript"],
   authors: [{ name: "Hugo Boulicaut-Raffort" }],
+  alternates: { canonical: "/" },
   openGraph: {
+    siteName: "Hugo Boulicaut-Raffort",
     title: "Hugo Boulicaut-Raffort — Développeur",
     description: "Portfolio éditorial — développeur fullstack JavaScript.",
     type: "website",
+    locale: "fr_FR",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hugo Boulicaut-Raffort — Développeur",
+    description: "Portfolio éditorial — développeur fullstack JavaScript.",
   },
 };
 
@@ -42,7 +52,15 @@ export default function RootLayout({
       lang="fr"
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSans.variable}`}
     >
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <a
+          href="#hero"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-ink focus:text-bone focus:px-4 focus:py-2 focus:text-sm mono uppercase tracking-[0.22em]"
+        >
+          Aller au contenu
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

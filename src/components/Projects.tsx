@@ -20,8 +20,8 @@ export default function Projects() {
               .
             </h2>
             <p className="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-muted">
-              Trois projets récents. Pour chacun : le rôle, la stack,
-              l&apos;intention, et les choix qui ont compté.
+              Trois projets. Ce qu&apos;ils sont, ce qu&apos;ils résolvent,
+              ce qui a demandé de choisir.
             </p>
           </div>
         </div>

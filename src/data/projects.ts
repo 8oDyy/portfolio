@@ -175,7 +175,7 @@ export const projects: Project[] = [
       demo: "",
     },
     cover: {
-      src: "/projects/checkly/Etablissment.png",
+      src: "/projects/checkly/Etablissement.jpg",
       alt: "Page publique d'un commerce sur Checkly",
       ratio: "16/15",
       frame: "browser",
@@ -183,7 +183,7 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: "/projects/checkly/Research.png",
+        src: "/projects/checkly/Research.jpg",
         alt: "Recherche d'un commerce sur Checkly",
         caption: "Recherche — découvrir un commerce à proximité",
         ratio: "16/9",
@@ -199,7 +199,7 @@ export const projects: Project[] = [
         url: "pro.checkly.app/dashboard",
       },
       {
-        src: "/projects/checkly/Avis.png",
+        src: "/projects/checkly/Avis.jpg",
         alt: "Dépôt d'avis Checkly sur mobile après scan validé",
         caption: "Dépôt d'avis — formulaire servi après scan validé",
         ratio: "9/19.5",
@@ -326,13 +326,13 @@ export const projects: Project[] = [
       demo: "",
     },
     cover: {
-      src: "/projects/melo/MainPage.png",
+      src: "/projects/melo/MainPage.jpg",
       alt: "Page d'accueil de l'app Melo",
       ratio: "9/19.5",
     },
     coverVideo: {
       src: "/projects/melo/hero.mp4",
-      poster: "/projects/melo/MainPage.png",
+      poster: "/projects/melo/MainPage.jpg",
       captions: [
         { untilProgress: 0.25, label: "Page d'accueil" },
         { untilProgress: 0.5, label: "Page produit" },
@@ -485,9 +485,10 @@ export const projects: Project[] = [
       demo: "",
     },
     cover: {
-      src: "",
-      alt: "CrowdMind — architecture backend FastAPI + Raspberry Pi",
-      ratio: "16/10",
+      src: "/projects/crowdmind/pi.jpg",
+      alt: "CrowdMind — Raspberry Pi exécutant le moteur heuristique",
+      ratio: "16/9",
+      frame: "none",
     },
     gallery: [],
   },

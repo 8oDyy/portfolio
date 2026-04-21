@@ -145,6 +145,8 @@ export default function Hero() {
             initial={reduce ? undefined : "hidden"}
             animate={reduce ? undefined : "visible"}
           >
+            Fullstack JS — React / Nuxt / Flutter
+            <br />
             Annecy — France
             <br />
             Dispo alternance / Sept. 2026

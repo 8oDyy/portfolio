@@ -45,7 +45,7 @@ export default function ScrollScrubVideo({ src, poster, captions }: Props) {
       st?.kill();
       st = ScrollTrigger.create({
         trigger,
-        start: "top top+=96",
+        start: "top top+=160",
         end: "bottom bottom",
         scrub: true,
         onUpdate: (self) => {
@@ -87,7 +87,7 @@ export default function ScrollScrubVideo({ src, poster, captions }: Props) {
           poster={poster}
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           disableRemotePlayback
           className="absolute inset-0 h-full w-full object-cover"
         />

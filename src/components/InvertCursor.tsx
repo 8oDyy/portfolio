@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 const BASE_SIZE = 24;
 const HOT_SIZE = 180;
 const LERP = 0.22; // higher = snappier tracking (0 = frozen, 1 = instant)
-const TRANSITION = "width 0.35s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1), margin 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s";
+const TRANSITION =
+  "width 0.35s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1), margin 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s";
 const HOT_SELECTOR = "[data-invert-zone]";
 // Garde le curseur hors-champ tant que la séquence d'ouverture du Hero n'est pas finie.
 // Aligné avec les delays de Hero.tsx : dernier snap à 6.0s, curseur à 6.15s.
@@ -13,9 +14,9 @@ const REVEAL_GATE_MS = 6150;
 
 export default function InvertCursor() {
   const ref = useRef<HTMLDivElement>(null);
-  const [hot, setHot] = useState(false);
   const [visible, setVisible] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const [hot, setHot] = useState(false);
 
   useEffect(() => {
     const t = window.setTimeout(() => setRevealed(true), REVEAL_GATE_MS);
@@ -29,6 +30,9 @@ export default function InvertCursor() {
     const el = ref.current;
     if (!el) return;
 
+    // Pose la classe dès que le faux curseur est actif pour masquer le curseur natif
+    document.documentElement.classList.add("cursor-active");
+
     let targetX = -500;
     let targetY = -500;
     let curX = -500;
@@ -38,7 +42,8 @@ export default function InvertCursor() {
     const loop = () => {
       curX += (targetX - curX) * LERP;
       curY += (targetY - curY) * LERP;
-      el.style.transform = `translate3d(${curX}px, ${curY}px, 0)`;
+      el.style.setProperty("--cx", `${curX}px`);
+      el.style.setProperty("--cy", `${curY}px`);
       rafId = requestAnimationFrame(loop);
     };
 
@@ -67,6 +72,7 @@ export default function InvertCursor() {
     rafId = requestAnimationFrame(loop);
 
     return () => {
+      document.documentElement.classList.remove("cursor-active");
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseout", onOut);
@@ -77,7 +83,6 @@ export default function InvertCursor() {
   }, []);
 
   const size = hot ? HOT_SIZE : BASE_SIZE;
-  const halfSize = size / 2;
 
   return (
     <div
@@ -88,8 +93,9 @@ export default function InvertCursor() {
         mixBlendMode: "difference",
         width: `${size}px`,
         height: `${size}px`,
-        marginLeft: `-${halfSize}px`,
-        marginTop: `-${halfSize}px`,
+        marginLeft: `-${size / 2}px`,
+        marginTop: `-${size / 2}px`,
+        transform: "translate3d(var(--cx, 0), var(--cy, 0), 0)",
         opacity: visible && revealed ? 1 : 0,
         transition: TRANSITION,
       }}

@@ -35,10 +35,8 @@ export default function Footer() {
     publish();
     const ro = new ResizeObserver(publish);
     ro.observe(el);
-    window.addEventListener("resize", publish);
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", publish);
     };
   }, []);
 
@@ -74,7 +72,7 @@ export default function Footer() {
             <span className="mono text-xs uppercase tracking-[0.22em] text-bone/60 block">Colophon</span>
             <p className="mono text-xs text-bone/60 mt-2 leading-relaxed">
               Next.js — Tailwind — GSAP — <br />
-              Framer Motion — Matter.js
+              Framer Motion
             </p>
             <p className="mono text-xs text-bone/60 mt-2">
               Typographie : Instrument Sans + Geist

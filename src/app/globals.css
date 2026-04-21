@@ -35,17 +35,13 @@ html {
 }
 
 /* Hide native cursor on fine-pointer devices — replaced by <InvertCursor />.
-   Universal selector + !important pour écraser les overrides (cursor-default, etc.). */
+   Gated behind .cursor-active posée par InvertCursor au mount pour éviter le flash
+   avant que le faux curseur soit à l'écran. */
 @media (pointer: fine) {
-  html,
-  html * {
+  html.cursor-active,
+  html.cursor-active * {
     cursor: none !important;
   }
-}
-
-html.lenis,
-html.lenis body {
-  height: auto;
 }
 
 body {
@@ -166,6 +162,16 @@ body::after {
   .animate-marquee { animation: none !important; }
   body::after { display: none; }
   [style*="secret-word"] { animation: none !important; }
+}
+
+/* Focus ring — visible sur navigation clavier uniquement */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 /* Scrollbar — hairline on bone */
