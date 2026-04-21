@@ -113,7 +113,7 @@ export const projects: Project[] = [
     stack: [
       { category: "Front", items: ["Nuxt 3", "Vue 3", "Nuxt UI", "TypeScript"] },
       { category: "Back / Data", items: ["Supabase", "PostgreSQL", "Row Level Security"] },
-      { category: "Auth", items: ["Supabse Auth", "publicMetadata.role"] },
+      { category: "Auth", items: ["Supabase Auth", "publicMetadata.role"] },
       { category: "Outillage", items: ["Supabase CLI (types)", "Vercel"] },
     ],
     features: [
