@@ -2,6 +2,7 @@
 
 import type { Project, ProjectGalleryItem, ProjectImage as ProjectImageType, ProjectStrip } from "@/data/projects";
 import ProjectImage from "./ProjectImage";
+import ScrollScrubVideo from "./ScrollScrubVideo";
 
 type Props = {
   project: Project;
@@ -35,7 +36,7 @@ export default function ProjectArticle({ project, first }: Props) {
         </header>
 
         {/* Main body — sticky cover + scrolling narrative */}
-        <div className="grid grid-cols-12 gap-8 md:gap-12">
+        <div data-scrub-root className="grid grid-cols-12 gap-8 md:gap-12">
           {/* Cover (sticky on desktop) */}
           <div className="col-span-12 md:col-span-5">
             <div className="md:sticky md:top-24">
@@ -43,7 +44,14 @@ export default function ProjectArticle({ project, first }: Props) {
                 className="mx-auto md:max-w-[var(--cover-cap,none)]"
                 style={{ "--cover-cap": computeCoverCap(project.cover.ratio) } as React.CSSProperties}
               >
-                <ProjectImage image={project.cover} priority={first} />
+                {project.coverVideo ? (
+                  <ScrollScrubVideo
+                    src={project.coverVideo.src}
+                    poster={project.coverVideo.poster ?? project.cover.src}
+                  />
+                ) : (
+                  <ProjectImage image={project.cover} priority={first} />
+                )}
               </div>
               <MetaBlock project={project} />
             </div>
