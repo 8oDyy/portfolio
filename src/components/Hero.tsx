@@ -100,10 +100,11 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen w-full overflow-hidden bg-bone text-ink"
+      className="relative flex min-h-svh w-full flex-col overflow-hidden bg-bone text-ink"
     >
-      {/* Top meta bar */}
-      <div className="absolute inset-x-0 top-14 z-10 px-6 md:px-10 pt-10 overflow-hidden">
+      {/* Top meta bar — in flow so it never overlaps the name on short screens.
+          pt-24 ≈ navbar h-14 (56px) + ancienne respiration pt-10 (40px). */}
+      <div className="z-10 px-6 pt-24 md:px-10 overflow-hidden">
         <motion.div
           className="flex items-baseline justify-between rule-b pb-3"
           variants={reduce ? undefined : topBarVariants}
@@ -115,10 +116,11 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Name composition */}
-      <div className="relative z-10 flex min-h-screen flex-col justify-center px-6 md:px-10">
+      {/* Name composition — flex-1 prend l'espace restant entre les deux barres,
+          contenu centré dedans : plus de chevauchement possible. */}
+      <div className="relative z-10 flex flex-1 flex-col justify-center px-6 py-6 md:px-10">
         <motion.div
-          className="flex items-baseline gap-4 mb-6 md:mb-10"
+          className="flex items-baseline gap-4 mb-4 md:mb-10"
           variants={reduce ? undefined : eyebrowRowVariants}
           initial={reduce ? undefined : "hidden"}
           animate={reduce ? undefined : "visible"}
@@ -140,7 +142,7 @@ export default function Hero() {
           <NameLine index={2} reduce={!!reduce} italic>Raffort</NameLine>
         </motion.h1>
 
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+        <div className="mt-6 md:mt-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
           <motion.p
             className="mono col-span-1 md:col-span-4 text-xs uppercase tracking-[0.22em] text-muted"
             variants={reduce ? undefined : introMonoVariants}
@@ -155,7 +157,7 @@ export default function Hero() {
           </motion.p>
 
           <motion.p
-            className="col-span-1 md:col-span-7 md:col-start-6 text-xl md:text-2xl leading-snug max-w-xl"
+            className="col-span-1 md:col-span-7 md:col-start-6 text-lg sm:text-xl md:text-2xl leading-snug max-w-xl"
             variants={reduce ? undefined : introParagraphVariants}
             initial={reduce ? undefined : "hidden"}
             animate={reduce ? undefined : "visible"}
@@ -171,8 +173,8 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Bottom edge: scroll cue */}
-      <div className="absolute inset-x-0 bottom-6 z-10 px-6 md:px-10">
+      {/* Bottom edge: scroll cue — in flow, poussé en bas par le flex-1 du centre. */}
+      <div className="z-10 px-6 pb-6 md:px-10">
         <motion.div
           className="flex items-center justify-between rule-t pt-3"
           variants={reduce ? undefined : bottomCueVariants}
